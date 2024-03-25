@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "953169490748",
+    "project_id": "thingsboard-pe-app",
+    "storage_bucket": "thingsboard-pe-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:953169490748:android:e1d48dce8841163480e439",
+        "android_client_info": {
+          "package_name": "org.thingsboard.pe.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCFJ6_5SKPDbnp5qXlWuEeCyF96xvMkrc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
