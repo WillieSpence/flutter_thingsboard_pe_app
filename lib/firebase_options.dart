@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '953169490748',
     projectId: 'thingsboard-pe-app',
     storageBucket: 'thingsboard-pe-app.appspot.com',
-    iosBundleId: 'org.thingsboard.pe.app',
+    iosBundleId: 'org.omnithings.app',
   );
 }
