@@ -95,18 +95,19 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
     } else {
       return Stack(
         children: [
-          SvgPicture.asset(ThingsboardImage.thingsboardCenter,
-              height: widget.size,
-              width: widget.size,
-              colorFilter: ColorFilter.mode(
-                  widget._getValueColor(context), BlendMode.srcIn)),
+          //SvgPicture.asset(ThingsboardImage.thingsboardCenter,
+          //    height: widget.size,
+          //    width: widget.size,
+          //    colorFilter: ColorFilter.mode(
+          //        widget._getValueColor(context), BlendMode.srcIn)),
           AnimatedBuilder(
             animation: _rotation!,
-            child: SvgPicture.asset(ThingsboardImage.thingsboardOuter,
+           //child: SvgPicture.asset(ThingsboardImage.thingsboardOuter,
+            child: SvgPicture.asset(ThingsboardImage.thingsboardCenter,
                 height: widget.size,
-                width: widget.size,
-                colorFilter: ColorFilter.mode(
-                    widget._getValueColor(context), BlendMode.srcIn)),
+                width: widget.size),
+              //  colorFilter: ColorFilter.mode(
+              //      widget._getValueColor(context), BlendMode.srcIn)),
             builder: (BuildContext context, Widget? child) {
               return Transform.rotate(
                   angle: _rotation!.value * pi * 2, child: child);
