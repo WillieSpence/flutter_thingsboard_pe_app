@@ -154,7 +154,7 @@ class _DashboardState extends TbContextState<Dashboard> {
           var controller = await _controller.future;
           await controller.postWebMessage(
               message: WebMessage(data: jsonEncode(windowMessage)),
-              targetOrigin: Uri.parse('*'));
+              targetOrigin: WebUri('*'));
         }
       }
     }
@@ -219,7 +219,7 @@ class _DashboardState extends TbContextState<Dashboard> {
     var webMessage = WebMessage(data: jsonEncode(windowMessage));
     if (!UniversalPlatform.isWeb) {
       await controller!
-          .postWebMessage(message: webMessage, targetOrigin: Uri.parse('*'));
+          .postWebMessage(message: webMessage, targetOrigin: WebUri('*'));
     }
   }
 
@@ -228,7 +228,7 @@ class _DashboardState extends TbContextState<Dashboard> {
     var windowMessage = <String, dynamic>{'type': 'toggleDashboardLayout'};
     var webMessage = WebMessage(data: jsonEncode(windowMessage));
     await controller.postWebMessage(
-        message: webMessage, targetOrigin: Uri.parse('*'));
+        message: webMessage, targetOrigin: WebUri('*'));
   }
 
   Future<void> tryLocalNavigation(String? path) async {
@@ -291,130 +291,135 @@ class _DashboardState extends TbContextState<Dashboard> {
               children: [
                 UniversalPlatform.isWeb
                     ? Center(child: Text('Not implemented!'))
-                    : InAppWebView(
-                        key: webViewKey,
-                        initialUrlRequest: URLRequest(url: _initialUrl),
-                        initialOptions: options,
-                        onWebViewCreated: (webViewController) {
-                          log.debug("onWebViewCreated");
-                          webViewController.addJavaScriptHandler(
-                              handlerName: "tbMobileDashboardLoadedHandler",
-                              callback: (args) async {
-                                bool hasRightLayout = args[0];
-                                bool rightLayoutOpened = args[1];
-                                log.debug(
-                                    "Invoked tbMobileDashboardLoadedHandler: hasRightLayout: $hasRightLayout, rightLayoutOpened: $rightLayoutOpened");
-                                _dashboardController
-                                    .onHasRightLayout(hasRightLayout);
-                                _dashboardController
-                                    .onRightLayoutOpened(rightLayoutOpened);
-                                dashboardLoading.value = false;
-                              });
-                          webViewController.addJavaScriptHandler(
-                              handlerName: "tbMobileDashboardLayoutHandler",
-                              callback: (args) async {
-                                bool rightLayoutOpened = args[0];
-                                log.debug(
-                                    "Invoked tbMobileDashboardLayoutHandler: rightLayoutOpened: $rightLayoutOpened");
-                                _dashboardController
-                                    .onRightLayoutOpened(rightLayoutOpened);
-                              });
-                          webViewController.addJavaScriptHandler(
-                              handlerName: "tbMobileDashboardStateNameHandler",
-                              callback: (args) async {
-                                log.debug(
-                                    "Invoked tbMobileDashboardStateNameHandler: $args");
-                                if (args.isNotEmpty && args[0] is String) {
-                                  if (widget._titleCallback != null) {
-                                    widget._titleCallback!(args[0]);
+                    : SafeArea( // Added SafeArea here
+                        child: Container( // Added Container here
+                          constraints: BoxConstraints.expand(), // Ensure it takes up the full available space
+                          child: InAppWebView(
+                            key: webViewKey,
+                            initialUrlRequest: URLRequest(url: WebUri(_initialUrl.toString())),
+                            initialOptions: options,
+                            onWebViewCreated: (webViewController) {
+                              log.debug("onWebViewCreated");
+                              webViewController.addJavaScriptHandler(
+                                  handlerName: "tbMobileDashboardLoadedHandler",
+                                  callback: (args) async {
+                                    bool hasRightLayout = args[0];
+                                    bool rightLayoutOpened = args[1];
+                                    log.debug(
+                                        "Invoked tbMobileDashboardLoadedHandler: hasRightLayout: $hasRightLayout, rightLayoutOpened: $rightLayoutOpened");
+                                    _dashboardController
+                                        .onHasRightLayout(hasRightLayout);
+                                    _dashboardController
+                                        .onRightLayoutOpened(rightLayoutOpened);
+                                    dashboardLoading.value = false;
+                                  });
+                              webViewController.addJavaScriptHandler(
+                                  handlerName: "tbMobileDashboardLayoutHandler",
+                                  callback: (args) async {
+                                    bool rightLayoutOpened = args[0];
+                                    log.debug(
+                                        "Invoked tbMobileDashboardLayoutHandler: rightLayoutOpened: $rightLayoutOpened");
+                                    _dashboardController
+                                        .onRightLayoutOpened(rightLayoutOpened);
+                                  });
+                              webViewController.addJavaScriptHandler(
+                                  handlerName: "tbMobileDashboardStateNameHandler",
+                                  callback: (args) async {
+                                    log.debug(
+                                        "Invoked tbMobileDashboardStateNameHandler: $args");
+                                    if (args.isNotEmpty && args[0] is String) {
+                                      if (widget._titleCallback != null) {
+                                        widget._titleCallback!(args[0]);
+                                      }
+                                    }
+                                  });
+                              webViewController.addJavaScriptHandler(
+                                  handlerName: "tbMobileNavigationHandler",
+                                  callback: (args) async {
+                                    log.debug(
+                                        "Invoked tbMobileNavigationHandler: $args");
+                                    if (args.length > 0) {
+                                      String? path = args[0];
+                                      Map<String, dynamic>? params;
+                                      if (args.length > 1) {
+                                        params = args[1];
+                                      }
+                                      log.debug("path: $path");
+                                      log.debug("params: $params");
+                                      tryLocalNavigation(path);
+                                    }
+                                  });
+                              webViewController.addJavaScriptHandler(
+                                  handlerName: "tbMobileHandler",
+                                  callback: (args) async {
+                                    log.debug("Invoked tbMobileHandler: $args");
+                                    return await widgetActionHandler
+                                        .handleWidgetMobileAction(
+                                            args, webViewController);
+                                  });
+                            },
+                            shouldOverrideUrlLoading:
+                                (controller, navigationAction) async {
+                              var uri = navigationAction.request.url!;
+                              var uriString = uri.toString();
+                              log.debug('shouldOverrideUrlLoading $uriString');
+                              if (Platform.isAndroid ||
+                                  Platform.isIOS &&
+                                      navigationAction.iosWKNavigationType ==
+                                          IOSWKNavigationType.LINK_ACTIVATED) {
+                                if (uriString.startsWith(ThingsboardAppConstants
+                                    .thingsBoardApiEndpoint)) {
+                                  var target = uriString.substring(
+                                      ThingsboardAppConstants
+                                          .thingsBoardApiEndpoint.length);
+                                  if (!target.startsWith("?accessToken")) {
+                                    if (target.startsWith("/")) {
+                                      target = target.substring(1);
+                                    }
+                                    await tryLocalNavigation(target);
+                                    return NavigationActionPolicy.CANCEL;
                                   }
+                                } else if (await canLaunchUrlString(uriString)) {
+                                  await launchUrlString(
+                                    uriString,
+                                  );
+                                  return NavigationActionPolicy.CANCEL;
                                 }
-                              });
-                          webViewController.addJavaScriptHandler(
-                              handlerName: "tbMobileNavigationHandler",
-                              callback: (args) async {
-                                log.debug(
-                                    "Invoked tbMobileNavigationHandler: $args");
-                                if (args.length > 0) {
-                                  String? path = args[0];
-                                  Map<String, dynamic>? params;
-                                  if (args.length > 1) {
-                                    params = args[1];
-                                  }
-                                  log.debug("path: $path");
-                                  log.debug("params: $params");
-                                  tryLocalNavigation(path);
-                                }
-                              });
-                          webViewController.addJavaScriptHandler(
-                              handlerName: "tbMobileHandler",
-                              callback: (args) async {
-                                log.debug("Invoked tbMobileHandler: $args");
-                                return await widgetActionHandler
-                                    .handleWidgetMobileAction(
-                                        args, webViewController);
-                              });
-                        },
-                        shouldOverrideUrlLoading:
-                            (controller, navigationAction) async {
-                          var uri = navigationAction.request.url!;
-                          var uriString = uri.toString();
-                          log.debug('shouldOverrideUrlLoading $uriString');
-                          if (Platform.isAndroid ||
-                              Platform.isIOS &&
-                                  navigationAction.iosWKNavigationType ==
-                                      IOSWKNavigationType.LINK_ACTIVATED) {
-                            if (uriString.startsWith(ThingsboardAppConstants
-                                .thingsBoardApiEndpoint)) {
-                              var target = uriString.substring(
-                                  ThingsboardAppConstants
-                                      .thingsBoardApiEndpoint.length);
-                              if (!target.startsWith("?accessToken")) {
-                                if (target.startsWith("/")) {
-                                  target = target.substring(1);
-                                }
-                                await tryLocalNavigation(target);
-                                return NavigationActionPolicy.CANCEL;
                               }
-                            } else if (await canLaunchUrlString(uriString)) {
-                              await launchUrlString(
-                                uriString,
-                              );
-                              return NavigationActionPolicy.CANCEL;
-                            }
-                          }
-                          return Platform.isIOS
-                              ? NavigationActionPolicy.ALLOW
-                              : NavigationActionPolicy.CANCEL;
-                        },
-                        onUpdateVisitedHistory:
-                            (controller, url, androidIsReload) async {
-                          log.debug('onUpdateVisitedHistory: $url');
-                          _dashboardController
-                              .onHistoryUpdated(controller.canGoBack());
-                        },
-                        onConsoleMessage: (controller, consoleMessage) {
-                          log.debug(
-                              '[JavaScript console] ${consoleMessage.messageLevel}: ${consoleMessage.message}');
-                        },
-                        onLoadStart: (controller, url) async {
-                          log.debug('onLoadStart: $url');
-                        },
-                        onLoadStop: (controller, url) async {
-                          log.debug('onLoadStop: $url');
-                          if (webViewLoading) {
-                            webViewLoading = false;
-                            _controller.complete(controller);
-                          }
-                        },
-                        androidOnPermissionRequest:
-                            (controller, origin, resources) async {
-                          log.debug(
-                              'androidOnPermissionRequest origin: $origin, resources: $resources');
-                          return PermissionRequestResponse(
-                              resources: resources,
-                              action: PermissionRequestResponseAction.GRANT);
-                        },
+                              return Platform.isIOS
+                                  ? NavigationActionPolicy.ALLOW
+                                  : NavigationActionPolicy.CANCEL;
+                            },
+                            onUpdateVisitedHistory:
+                                (controller, url, androidIsReload) async {
+                              log.debug('onUpdateVisitedHistory: $url');
+                              _dashboardController
+                                  .onHistoryUpdated(controller.canGoBack());
+                            },
+                            onConsoleMessage: (controller, consoleMessage) {
+                              log.debug(
+                                  '[JavaScript console] ${consoleMessage.messageLevel}: ${consoleMessage.message}');
+                            },
+                            onLoadStart: (controller, url) async {
+                              log.debug('onLoadStart: $url');
+                            },
+                            onLoadStop: (controller, url) async {
+                              log.debug('onLoadStop: $url');
+                              if (webViewLoading) {
+                                webViewLoading = false;
+                                _controller.complete(controller);
+                              }
+                            },
+                            androidOnPermissionRequest:
+                                (controller, origin, resources) async {
+                              log.debug(
+                                  'androidOnPermissionRequest origin: $origin, resources: $resources');
+                              return PermissionRequestResponse(
+                                  resources: resources,
+                                  action: PermissionRequestResponseAction.GRANT);
+                            },
+                          ),
+                        ),
                       ),
                 if (!UniversalPlatform.isWeb)
                   TwoValueListenableBuilder(

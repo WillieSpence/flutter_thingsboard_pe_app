@@ -43,7 +43,7 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
 
   @override
   void initState() {
-    _initialUrl = Uri.parse(ThingsboardAppConstants.thingsBoardApiEndpoint +
+    _initialUrl = WebUri(ThingsboardAppConstants.thingsBoardApiEndpoint +
         '/signup/recaptcha?siteKey=${widget.siteKey}');
     super.initState();
   }
@@ -72,7 +72,7 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
       children: [
         InAppWebView(
             key: recaptchaWebViewKey,
-            initialUrlRequest: URLRequest(url: _initialUrl),
+            initialUrlRequest: URLRequest(url: WebUri(_initialUrl.toString())),
             initialOptions: options,
             onWebViewCreated: (webViewController) {
               webViewController.addJavaScriptHandler(
@@ -120,6 +120,6 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
     var controller = await _webViewController.future;
     await controller.postWebMessage(
         message: WebMessage(data: jsonEncode(windowMessage)),
-        targetOrigin: Uri.parse('*'));
+        targetOrigin: WebUri('*'));
   }
 }
