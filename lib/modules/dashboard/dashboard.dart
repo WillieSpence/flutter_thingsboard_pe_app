@@ -301,7 +301,7 @@ class _DashboardState extends TbContextState<Dashboard> {
                     ? Center(child: Text('Not implemented!'))
                     : InAppWebView(
                         key: webViewKey,
-                        initialUrlRequest: URLRequest(url: _initialUrl),
+                        initialUrlRequest: URLRequest(url: WebUri.uri(_initialUrl)),
                         initialOptions: options,
                         onWebViewCreated: (webViewController) {
                           log.debug("onWebViewCreated");

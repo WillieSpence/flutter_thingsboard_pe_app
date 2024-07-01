@@ -39,7 +39,7 @@ class _UrlPageState extends TbPageState<UrlPage> {
           ? const Center(child: Text('Not implemented!'))
           : InAppWebView(
               initialUrlRequest: URLRequest(
-                url: Uri.parse(widget.url),
+                url: WebUri.uri(Uri.parse(widget.url)),
               ),
               androidOnPermissionRequest:
                   (controller, origin, resources) async {
