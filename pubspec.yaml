@@ -24,6 +24,7 @@ dependencies:
   fading_edge_scrollview: ^4.0.0
   stream_transform: ^2.1.0
   flutter_inappwebview: ^6.0.0
+
 #  flutter_downloader: ^1.6.0
 #  permission_handler: ^8.0.0+2
 #  path_provider: ^2.0.2
@@ -73,6 +74,24 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.9
 
+# Add the following dependency overrides for iOS & macOS, as needed -->
+dependency_overrides:
+  flutter_inappwebview_ios:
+    git:
+      url: https://github.com/andychucs/flutter_inappwebview.git
+      ref: master
+      path: flutter_inappwebview_ios
+
+  flutter_inappwebview_macos:
+    git:
+      url: https://github.com/andychucs/flutter_inappwebview.git
+      ref: master
+      path: flutter_inappwebview_macos
+  url_launcher_ios: ^6.3.1
+  devtools_app_shared: ^0.2.2
+  devtools_extensions: ^0.2.1
+  pointer_interceptor: ^0.10.0
+
 flutter:
   uses-material-design: true
   assets:
@@ -112,3 +131,4 @@ flutter_icons:
   image_path: "assets/images/omnithings_symbol.png"
 flutter_intl:
   enabled: true
+

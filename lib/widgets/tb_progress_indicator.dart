@@ -98,7 +98,7 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
     } else {
       return Stack(
         children: [
-          SvgPicture.asset(
+          /*SvgPicture.asset(
             ThingsboardImage.thingsboardCenter,
             height: widget.size,
             width: widget.size,
@@ -106,17 +106,17 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
               widget._getValueColor(context),
               BlendMode.srcIn,
             ),
-          ),
+          ),*/
           AnimatedBuilder(
             animation: _rotation!,
             child: SvgPicture.asset(
-              ThingsboardImage.thingsboardOuter,
+              ThingsboardImage.thingsboardCenter,
               height: widget.size,
               width: widget.size,
-              colorFilter: ColorFilter.mode(
+              /*colorFilter: ColorFilter.mode(
                 widget._getValueColor(context),
                 BlendMode.srcIn,
-              ),
+              ),*/
             ),
             builder: (BuildContext context, Widget? child) {
               return Transform.rotate(
