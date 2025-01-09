@@ -1,11 +1,13 @@
 abstract class ThingsboardImage {
   static const thingsBoardWithTitle =
       'assets/images/thingsboard_with_title.svg';
+  static const thingsBoardEUWithTitle =
+      'assets/images/logo_title_white_EU_cloud.svg';
   static final thingsboard = 'assets/images/thingsboard.svg';
   //static final thingsboardOuter = 'assets/images/thingsboard_outer.svg';
   static final thingsboardCenter = 'assets/images/omnithings_center.svg';
   static final dashboardPlaceholder = 'assets/images/dashboard-placeholder.svg';
-  static final deviceProfilePlaceholder =
+  static const deviceProfilePlaceholder =
       'assets/images/device-profile-placeholder.svg';
   static const emailVerification = 'assets/images/email-verification.svg';
   static const emailVerified = 'assets/images/email-verified.svg';
