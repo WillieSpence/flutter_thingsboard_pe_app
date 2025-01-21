@@ -42,7 +42,7 @@ android {
         applicationId "org.omnithings.solutions.app"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 8
+        versionCode 9
         //versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
