@@ -51,18 +51,19 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCCFJ6_5SKPDbnp5qXlWuEeCyF96xvMkrc',
-    appId: '1:953169490748:android:e1d48dce8841163480e439',
+    appId: '1:953169490748:android:0949b44fde5c586580e439',
     messagingSenderId: '953169490748',
     projectId: 'thingsboard-pe-app',
-    storageBucket: 'thingsboard-pe-app.appspot.com',
+    storageBucket: 'thingsboard-pe-app.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCEyPfqelfc9JRWWZ5o2DsfxXD-ScSCM6k',
-    appId: '1:953169490748:ios:5829203320830adb80e439',
+    appId: '1:953169490748:ios:8968fba0c46f7bf480e439',
     messagingSenderId: '953169490748',
     projectId: 'thingsboard-pe-app',
-    storageBucket: 'thingsboard-pe-app.appspot.com',
+    storageBucket: 'thingsboard-pe-app.firebasestorage.app',
     iosBundleId: 'org.omnithings.app',
   );
+
 }
