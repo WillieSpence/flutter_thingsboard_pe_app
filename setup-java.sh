@@ -36,7 +36,9 @@ echo "Environment ready for Flutter development!"
 echo "You can now run:"
 echo "  fvm flutter doctor"
 echo "  fvm flutter run"
-echo "  ./start-emulator.sh"
+echo "  ./start-emulator.sh android     # Start Android emulator"
+echo "  ./start-emulator.sh ios         # Start iOS simulator"
+echo "  ./start-emulator.sh list        # List all devices"
 
 # Check if FVM is available and show Flutter version
 if command -v fvm &> /dev/null; then

@@ -1,7 +1,14 @@
 #!/bin/bash
 
 # Complete Development Environment Setup
-# This ensures consistent Java version across all tools
+# echo -e "\n${GREEN}Available Commands:${NC}"
+echo "  fvm flutter doctor       - Check Flutter setup"
+echo "  ./start-emulator.sh android - Start Android emulator"  
+echo "  ./start-emulator.sh ios     - Start iOS simulator"
+echo "  ./start-emulator.sh list    - List all available devices"
+echo "  fvm flutter run          - Run the app"
+echo "  gradle --version         - Check Gradle version"
+echo "  fvm use <version>        - Set Flutter version for project"nsures consistent Java version across all tools
 
 # Colors for output
 RED='\033[0;31m'
