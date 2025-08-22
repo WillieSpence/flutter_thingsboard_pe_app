@@ -111,22 +111,22 @@ flutter_launcher_icons:
   ### android config
   android: "launcher_icon"
   #fallback android icon
-  image_path_android: "assets/branding/icon_filled.png"
+  image_path_android: "assets/branding/omnithings_symbol.png"
   # icon config for android 13+
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/branding/icon_foreground.png"
+  adaptive_icon_foreground: "assets/branding/omnithings_symbol_fg.png"
   adaptive_icon_foreground_inset: 16
-  adaptive_icon_monochrome: "assets/branding/icon_monochrome.png"
+  adaptive_icon_monochrome: "assets/branding/omnithings_symbol_mc.png"
   ###
   ### ios config
   ios: true
   #fallback ios icon
-  image_path_ios: "assets/branding/icon_foreground.png"
+  image_path_ios: "assets/branding/omnithings_symbol_fg.png"
   background_color_ios: "#ffffff"
   desaturate_tinted_to_grayscale_ios: true
   remove_alpha_ios: true
   # ios 18+ icon 
-  image_path_ios_dark_transparent: "assets/branding/icon_foreground.png"
+  image_path_ios_dark_transparent: "assets/branding/omnithings_symbol_fg.png"
   # ios 26 liquid glass icon currently this config is not implemented
   # image_path_ios_liquid_glass_icon: "assets/branding/icon_liquid_glass_ios.png"
   # liquid_glass_specular_ios: true
