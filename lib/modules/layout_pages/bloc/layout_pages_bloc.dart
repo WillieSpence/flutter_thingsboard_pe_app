@@ -1,8 +1,10 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:thingsboard_app/config/routes/route_not_found_widget.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/view/alarms_page.dart';
 import 'package:thingsboard_app/modules/asset/assets_page.dart';
 import 'package:thingsboard_app/modules/audit_log/audit_logs_page.dart';
@@ -25,10 +27,8 @@ import 'package:thingsboard_app/utils/services/layouts/i_layout_service.dart';
 import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 
 class LayoutPagesBloc extends Bloc<LayoutPagesEvent, LayoutPagesState> {
-  LayoutPagesBloc({
-    required this.layoutService,
-    required this.tbContext,
-  }) : super(const BottomBarLoadingState()) {
+  LayoutPagesBloc({required this.layoutService, required this.tbContext})
+    : super(const BottomBarLoadingState()) {
     on(_onEvent);
   }
 
@@ -41,53 +41,58 @@ class LayoutPagesBloc extends Bloc<LayoutPagesEvent, LayoutPagesState> {
   ) async {
     switch (event) {
       case BottomBarFetchEvent():
-        final items = layoutService.getCachedPageLayouts();
-
-        layoutService.setBottomBarItems(
-          items
-              .map(
-                (e) => TbMainNavigationItem(
-                  page: MainItemWidget(
-                    tbContext,
-                    path: e.path ?? '',
-                    child: getWidget(e),
-                  ),
-                  title: getLabel(e, event.context),
-                  icon: getIcon(e),
-                  path: getPath(e),
-                  showAdditionalIcon: e.id == Pages.notifications,
-                  additionalIconSmall: e.id == Pages.notifications
-                      ? notificationSmallNumberWidget()
-                      : null,
-                  additionalIconLarge: e.id == Pages.notifications
-                      ? notificationLargeNumberWidget()
-                      : null,
-                ),
-              )
-              .toList(),
-          more: TbMainNavigationItem(
-            page: MainItemWidget(
-              tbContext,
-              path: '/more',
-              child: MorePage(tbContext),
-            ),
-            title: S.of(event.context).more,
-            icon: Icons.menu_outlined,
-            path: '/more',
-          ),
-        );
-
-        emit(BottomBarDataState(items: layoutService.getBottomBarItems()));
-        break;
-
+        await onBottomBarFetchEvent(event, emit);
       case BottomBarOrientationChangedEvent():
         layoutService.setDeviceScreenSize(
           event.screenSize,
           orientation: event.orientation,
         );
         emit(BottomBarDataState(items: layoutService.getBottomBarItems()));
-        break;
     }
+  }
+
+  Future<void> onBottomBarFetchEvent(
+    BottomBarFetchEvent event,
+    Emitter emit,
+  ) async {
+    final items = layoutService.getCachedPageLayouts();
+    layoutService.setBottomBarItems(
+      items
+          .map(
+            (e) => TbMainNavigationItem(
+              page: MainItemWidget(
+                tbContext,
+                path: e.path ?? '',
+                child: getWidget(e),
+              ),
+              title: getLabel(e, event.context),
+              icon: getIcon(e),
+              path: getPath(e),
+              showAdditionalIcon: e.id == Pages.notifications,
+              additionalIconSmall:
+                  e.id == Pages.notifications
+                      ? notificationSmallNumberWidget()
+                      : null,
+              additionalIconLarge:
+                  e.id == Pages.notifications
+                      ? notificationLargeNumberWidget()
+                      : null,
+            ),
+          )
+          .toList(),
+      more: TbMainNavigationItem(
+        page: MainItemWidget(
+          tbContext,
+          path: '/more',
+          child: MorePage(tbContext),
+        ),
+        title: S.of(event.context).more,
+        icon: Icons.menu_outlined,
+        path: '/more',
+      ),
+    );
+
+    emit(BottomBarDataState(items: layoutService.getBottomBarItems()));
   }
 
   Widget getWidget(PageLayout pageLayout) {
@@ -130,10 +135,13 @@ class LayoutPagesBloc extends Bloc<LayoutPagesEvent, LayoutPagesState> {
           }
 
           // Find the route by its path
-          final match = tbContext.router.match(path);
-          if (match != null && match.route.handler != null) {
-            // Execute the handler's function to retrieve the widget
-            return match.route.handler?.handlerFunc(null, match.parameters);
+          final match = tbContext.thingsboardAppRouter.router.match(path);
+          if (match != null &&
+              match.route.handler != null &&
+              match.route.handler is Handler) {
+            final Handler handler = match.route.handler as Handler;
+            return handler.handlerFunc(null, match.parameters) ??
+                RouteNotFoundWidget(settings: RouteSettings(name: path));
           }
         }
 
@@ -150,9 +158,9 @@ class LayoutPagesBloc extends Bloc<LayoutPagesEvent, LayoutPagesState> {
       case Pages.home:
         return S.of(context).home;
       case Pages.alarms:
-        return S.of(context).alarms;
+        return S.of(context).alarms(2);
       case Pages.devices:
-        return S.of(context).devices;
+        return S.of(context).devices(2);
       case Pages.customers:
         return S.of(context).customers;
       case Pages.assets:
@@ -160,11 +168,11 @@ class LayoutPagesBloc extends Bloc<LayoutPagesEvent, LayoutPagesState> {
       case Pages.audit_logs:
         return S.of(context).auditLogs;
       case Pages.notifications:
-        return S.of(context).notifications;
+        return S.of(context).notifications(2);
       case Pages.device_list:
         return S.of(context).deviceList;
       case Pages.dashboards:
-        return S.of(context).dashboards;
+        return S.of(context).dashboards(2);
       case Pages.undefined:
       case null:
         return pageLayout.label ?? '-';
@@ -238,6 +246,7 @@ class LayoutPagesBloc extends Bloc<LayoutPagesEvent, LayoutPagesState> {
   IconData getIconFromString(String? icon) {
     if (icon != null) {
       if (icon.contains('mdi')) {
+        // translate-me-ignore-next-line
         return MdiIcons.fromString(icon.split('mdi:').last) ??
             Icons.error_outline;
       }

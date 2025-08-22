@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/device/devices_base.dart';
 import 'package:thingsboard_app/modules/device/devices_list.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
+import 'package:thingsboard_app/widgets/tb_app_search_bar.dart';
 
 class DevicesListPage extends TbContextWidget {
-  final String? deviceType;
-  final bool? active;
-  final bool searchMode;
-
   DevicesListPage(
-    TbContext tbContext, {
-    super.key,
+    super.tbContext, {
     this.deviceType,
     this.active,
     this.searchMode = false,
-  }) : super(tbContext);
+    super.key,
+  });
+  final String? deviceType;
+  final bool? active;
+  final bool searchMode;
 
   @override
   State<StatefulWidget> createState() => _DevicesListPageState();
@@ -39,7 +40,7 @@ class _DevicesListPageState extends TbContextState<DevicesListPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var devicesList = DevicesList(
+    final devicesList = DevicesList(
       tbContext,
       _deviceQueryController,
       searchMode: widget.searchMode,
@@ -49,20 +50,22 @@ class _DevicesListPageState extends TbContextState<DevicesListPage>
     if (widget.searchMode) {
       appBar = TbAppSearchBar(
         tbContext,
-        onSearch: (searchText) =>
-            _deviceQueryController.onSearchText(searchText),
+        onSearch:
+            (searchText) => _deviceQueryController.onSearchText(searchText),
       );
     } else {
-      String titleText = widget.deviceType != null
-          ? widget.deviceType!
-          : S.of(context).allDevices;
+      final String titleText =
+          widget.deviceType != null
+              ? widget.deviceType!
+              : S.of(context).allDevices;
       String? subTitleText;
       if (widget.active != null) {
-        subTitleText = widget.active == true
-            ? S.of(context).active
-            : S.of(context).inactive;
+        subTitleText =
+            widget.active == true
+                ? S.of(context).active
+                : S.of(context).inactive;
       }
-      Column title = Column(
+      final Column title = Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -77,10 +80,7 @@ class _DevicesListPageState extends TbContextState<DevicesListPage>
             Text(
               subTitleText,
               style: TextStyle(
-                color: Theme.of(context)
-                    .primaryTextTheme
-                    .titleLarge!
-                    .color!
+                color: Theme.of(context).primaryTextTheme.titleLarge!.color!
                     .withAlpha((0.38 * 255).ceil()),
                 fontSize: 12,
                 fontWeight: FontWeight.normal,
@@ -97,15 +97,20 @@ class _DevicesListPageState extends TbContextState<DevicesListPage>
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              List<String> params = [];
+              final List<String> params = [];
+              // translate-me-ignore-next-line
               params.add('search=true');
               if (widget.deviceType != null) {
+                // translate-me-ignore-next-line
                 params.add('deviceType=${widget.deviceType}');
               }
               if (widget.active != null) {
+                // translate-me-ignore-next-line
                 params.add('active=${widget.active}');
               }
-              navigateTo('/deviceList?${params.join('&')}');
+              getIt<ThingsboardAppRouter>()
+              // translate-me-ignore-next-line
+              .navigateTo('/deviceList?${params.join('&')}');
             },
           ),
         ],

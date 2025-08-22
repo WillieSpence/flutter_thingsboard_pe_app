@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/notification/controllers/notification_query_ctrl.dart';
+import 'package:thingsboard_app/modules/notification/di/notifcations_di.dart';
 import 'package:thingsboard_app/modules/notification/repository/notification_pagination_repository.dart';
 import 'package:thingsboard_app/modules/notification/repository/notification_repository.dart';
 import 'package:thingsboard_app/modules/notification/service/notifications_local_service.dart';
@@ -10,6 +15,7 @@ import 'package:thingsboard_app/modules/notification/widgets/filter_segmented_bu
 import 'package:thingsboard_app/modules/notification/widgets/notification_list.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/services/firebase/i_firebase_service.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/utils/ui/back_button_widget.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
@@ -27,7 +33,8 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
   late final NotificationPaginationRepository paginationRepository;
   final notificationQueryCtrl = NotificationQueryCtrl();
   late final NotificationRepository notificationRepository;
-
+  final overlayService = getIt<IOverlayService>();
+  late final StreamSubscription<int> listener;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +42,11 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
         tbContext,
         leading: BackButtonWidget(
           onPressed: () {
-            final navigator = Navigator.of(tbContext.currentState!.context);
+            final navigator = Navigator.of(context);
             if (navigator.canPop()) {
-              tbContext.pop();
+              navigator.pop();
             } else {
-              tbContext.navigateTo(
+              getIt<ThingsboardAppRouter>().navigateTo(
                 '/main',
                 replace: true,
                 transition: TransitionType.fadeIn,
@@ -48,11 +55,11 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
             }
           },
         ),
-        title: const Text('Notifications'),
+        title:  Text(S.of(context).notifications(2)),
         actions: [
           TextButton(
             child: Text(
-              'Mark all as read',
+              S.of(context).markAllAsRead,
               style: TextStyle(color: Theme.of(context).primaryColor),
             ),
             onPressed: () async {
@@ -66,85 +73,75 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () async => _refresh(),
-        child: StreamBuilder(
-          stream: NotificationsLocalService.notificationsNumberStream.stream,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              _refresh();
-            }
+        onRefresh: ()  => _refresh(),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 5,
+              vertical: 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 20),
+                  child: FilterSegmentedButton(
+                    selected: notificationsFilter,
+                    onSelectionChanged: (newSelection) {
+                      if (notificationsFilter == newSelection) {
+                        return;
+                      }
 
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 10,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, bottom: 20),
-                      child: FilterSegmentedButton(
-                        selected: notificationsFilter,
-                        onSelectionChanged: (newSelection) {
-                          if (notificationsFilter == newSelection) {
-                            return;
-                          }
+                      setState(() {
+                        notificationsFilter = newSelection;
 
-                          setState(() {
-                            notificationsFilter = newSelection;
-
-                            notificationRepository.filterByReadStatus(
-                              notificationsFilter == NotificationsFilter.unread,
-                            );
-                          });
-                        },
-                        segments: const [
-                          FilterSegments(
-                            label: 'Unread',
-                            value: NotificationsFilter.unread,
-                          ),
-                          FilterSegments(
-                            label: 'All',
-                            value: NotificationsFilter.all,
-                          ),
-                        ],
+                        notificationRepository.filterByReadStatus(
+                          notificationsFilter == NotificationsFilter.unread,
+                        );
+                      });
+                    },
+                    segments:  [
+                      FilterSegments(
+                        label: S.of(context).unread,
+                        value: NotificationsFilter.unread,
                       ),
-                    ),
-                    Expanded(
-                      child: NotificationsList(
-                        pagingController: paginationRepository.pagingController,
-                        thingsboardClient: tbClient,
-                        tbContext: tbContext,
-                        onClearNotification: (id, read) async {
-                          await notificationRepository.deleteNotification(id);
-                          if (!read) {
-                            await notificationRepository
-                                .decreaseNotificationBadgeCount();
-                          }
-
-                          if (mounted) {
-                            notificationQueryCtrl.refresh();
-                          }
-                        },
-                        onReadNotification: (id) async {
-                          await notificationRepository
-                              .markNotificationAsRead(id);
-                          await notificationRepository
-                              .decreaseNotificationBadgeCount();
-
-                          if (mounted) {
-                            notificationQueryCtrl.refresh();
-                          }
-                        },
+                      FilterSegments(
+                        label: S.of(context).all,
+                        value: NotificationsFilter.all,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+                Expanded(
+                  child: NotificationsList(
+                    pagingController: paginationRepository.pagingController,
+                    thingsboardClient: tbClient,
+                    tbContext: tbContext,
+                    onClearNotification: (id, read) async {
+                      await notificationRepository.deleteNotification(id);
+                      if (!read) {
+                        await notificationRepository
+                            .decreaseNotificationBadgeCount();
+                      }
+
+                      if (mounted) {
+                        notificationQueryCtrl.refresh();
+                      }
+                    },
+                    onReadNotification: (id) async {
+                      await notificationRepository.markNotificationAsRead(id);
+                      await notificationRepository
+                          .decreaseNotificationBadgeCount();
+
+                      if (mounted) {
+                        notificationQueryCtrl.refresh();
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -156,7 +153,7 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
       tbClient: widget.tbContext.tbClient,
       notificationQueryPageCtrl: notificationQueryCtrl,
     )..init();
-
+    NotifcationsDi.init();
     notificationRepository = NotificationRepository(
       notificationQueryCtrl: notificationQueryCtrl,
       thingsboardClient: widget.tbContext.tbClient,
@@ -164,24 +161,27 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
 
     final authority = widget.tbClient.getAuthUser()!.authority;
     final pushNotificationsDisabled = getIt<IFirebaseService>().apps.isEmpty;
+
     if (pushNotificationsDisabled) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (authority == Authority.TENANT_ADMIN ||
             authority == Authority.CUSTOMER_USER) {
-          showWarnNotification(
-            'Push notifications are not configured. '
-            'Please contact your system administrator.',
+          overlayService.showWarnNotification(
+          (context) => 
+            S.of(context).pushNotificationsAreNotConfiguredpleaseContactYourSystemAdministrator,
           );
         } else if (authority == Authority.SYS_ADMIN) {
-          showWarnNotification(
-            'Firebase is not configured.'
-            ' Please refer to the official Firebase documentation for'
-            ' guidance on how to do so.',
+          overlayService.showWarnNotification(
+(context) => 
+            S.of(context).firebaseIsNotConfiguredPleaseReferToTheOfficialFirebase
           );
         }
       });
     }
-
+    listener =
+        NotificationsLocalService.notificationsNumberStream.stream.listen((e) {
+      //  _refresh();
+    });
     super.initState();
   }
 
@@ -189,6 +189,8 @@ class _NotificationPageState extends TbContextState<NotificationPage> {
   void dispose() {
     paginationRepository.dispose();
     notificationQueryCtrl.dispose();
+    NotifcationsDi.dispose();
+    listener.cancel();
     super.dispose();
   }
 

@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:intl/intl.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/alarm/alarms_base.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/widgets/details/alarm_details_content_widget.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
+import 'package:thingsboard_app/utils/translation_utils.dart';
 import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
@@ -40,10 +43,7 @@ class _AlarmDetailsWidgetState extends State<AlarmDetailsWidget>
       child: ScrollOnExpand(
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black.withOpacity(.12),
-              width: 1,
-            ),
+            border: Border.all(color: Colors.black.withValues(alpha: .12)),
             borderRadius: BorderRadius.circular(6),
           ),
           child: ExpandablePanel(
@@ -56,18 +56,19 @@ class _AlarmDetailsWidgetState extends State<AlarmDetailsWidget>
                   Text(
                     S.of(context).details,
                     style: TbTextStyles.labelLarge.copyWith(
-                      color: Colors.black.withOpacity(.76),
+                      color: Colors.black.withValues(alpha: .76),
                     ),
                   ),
                   RotationTransition(
-                    turns: Tween(begin: .0, end: .5).animate(
-                      animationController,
-                    ),
+                    turns: Tween(
+                      begin: .0,
+                      end: .5,
+                    ).animate(animationController),
                     child: Transform.rotate(
                       angle: pi / 2,
                       child: Icon(
                         Icons.arrow_left_outlined,
-                        color: Colors.black.withOpacity(.38),
+                        color: Colors.black.withValues(alpha: .38),
                       ),
                     ),
                   ),
@@ -82,7 +83,7 @@ class _AlarmDetailsWidgetState extends State<AlarmDetailsWidget>
                   AlarmDetailsContentWidget(
                     title: S.of(context).status,
                     details:
-                        alarmStatusTranslations[widget.alarmInfo.status] ?? '',
+                        widget.alarmInfo.status?.getTranslatedAlarmStatus(context) ?? '',
                   ),
                   AlarmDetailsContentWidget(
                     title: S.of(context).type,
@@ -91,10 +92,9 @@ class _AlarmDetailsWidgetState extends State<AlarmDetailsWidget>
                   AlarmDetailsContentWidget(
                     title: S.of(context).severity,
                     details:
-                        alarmSeverityTranslations[widget.alarmInfo.severity] ??
-                            '',
+                       widget.alarmInfo.severity.getTranslatedAlarmSeverity(context),
                     detailsStyle: TbTextStyles.labelLarge.copyWith(
-                      color: alarmSeverityColors[widget.alarmInfo.severity],
+                      color: widget.alarmInfo.severity.toColor(),
                     ),
                   ),
                   AlarmDetailsContentWidget(
@@ -120,7 +120,7 @@ class _AlarmDetailsWidgetState extends State<AlarmDetailsWidget>
                       width: double.infinity,
                       child: TextButton(
                         onPressed: () {
-                          widget.tbContext.navigateToDashboard(
+                          getIt<ThingsboardAppRouter>().navigateToDashboard(
                             widget.alamDashboardId!,
                             dashboardTitle: widget.alarmInfo.originatorName,
                             state: Utils.createDashboardEntityState(
@@ -130,8 +130,9 @@ class _AlarmDetailsWidgetState extends State<AlarmDetailsWidget>
                           );
                         },
                         style: TextButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).primaryColor.withOpacity(.1),
+                          backgroundColor: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: .1),
                           padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         child: Text(

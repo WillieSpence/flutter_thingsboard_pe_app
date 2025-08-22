@@ -11,7 +11,7 @@ import 'package:thingsboard_app/modules/alarm/domain/usecases/details/fetch_alar
 import 'package:thingsboard_app/modules/alarm/domain/usecases/details/post_alarm_comments_usecase.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/bloc/activity/bloc.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-import 'package:thingsboard_app/utils/services/communication/events.dart';
+import 'package:thingsboard_app/utils/services/communication/events/alarm_assignee_updated_event.dart';
 import 'package:thingsboard_app/utils/services/communication/i_communication_service.dart';
 
 class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
@@ -91,7 +91,6 @@ class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
           ),
         );
 
-        break;
       case PostAlarmCommentEvent():
         try {
           await postAlarmCommentsUseCase(
@@ -110,7 +109,6 @@ class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
           logger.debug(e);
         }
 
-        break;
 
       case UpdateAlarmCommentEvent():
         add(const AlarmActivityFetchEvent());
@@ -127,7 +125,6 @@ class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
           logger.debug(e);
         }
 
-        break;
       case AlarmEditCommentEvent():
         emit(
           AlarmCommentEditState(
@@ -137,7 +134,6 @@ class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
           ),
         );
 
-        break;
       case DeleteAlarmCommentEvent():
         await deleteAlarmCommentUseCase(
           DeleteCommentParams(
@@ -147,11 +143,9 @@ class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
         );
         paginationRepository.pagingController.refresh();
 
-        break;
       case CancelAlarmCommentEditing():
         add(const AlarmActivityFetchEvent());
 
-        break;
       case AlarmActivityRefreshEvent():
         if (comments?.isEmpty == true) {
           comments = null;
@@ -160,7 +154,6 @@ class AlarmActivityBloc extends Bloc<AlarmActivityEvent, AlarmActivityState> {
         paginationRepository.pagingController.refresh();
         add(const AlarmActivityFetchEvent());
 
-        break;
     }
   }
 

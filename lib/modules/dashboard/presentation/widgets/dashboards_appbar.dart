@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
 class DashboardsAppbar extends StatelessWidget {
@@ -8,9 +10,11 @@ class DashboardsAppbar extends StatelessWidget {
     required this.body,
     this.dashboardState = false,
     super.key,
+    this.leading,
   });
 
   final TbContext tbContext;
+  final Widget? leading;
   final Widget body;
   final bool dashboardState;
 
@@ -18,12 +22,14 @@ class DashboardsAppbar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TbAppBar(
+       canGoBack: leading != null,
         tbContext,
-        leading: Navigator.of(context).canPop()
-            ? BackButton(
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
+        leading: leading ??
+            (Navigator.of(context).canPop()
+                ? BackButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                : null),
         elevation: dashboardState ? 0 : 8,
         title: Center(
           child: SizedBox(
@@ -38,8 +44,14 @@ class DashboardsAppbar extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                tbContext.navigateTo('/tenants?search=true');
+                getIt<ThingsboardAppRouter>()
+                    // translate-me-ignore-next-line
+                    .navigateTo('/tenants?search=true');
               },
+            ),
+          if (leading != null)
+            const SizedBox(
+              width: 56,
             ),
         ],
       ),

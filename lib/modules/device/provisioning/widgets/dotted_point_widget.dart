@@ -9,7 +9,6 @@ class DottedPointWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Container(
           padding: const EdgeInsets.all(3),
@@ -17,9 +16,7 @@ class DottedPointWidget extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.black,
             shape: BoxShape.circle,
-            border: Border.all(
-              color: Colors.black.withOpacity(.54),
-            ),
+            border: Border.all(color: Colors.black.withValues(alpha: .54)),
           ),
         ),
         const SizedBox(width: 16),
@@ -28,7 +25,7 @@ class DottedPointWidget extends StatelessWidget {
           child: Text(
             text,
             style: TbTextStyles.bodyMedium.copyWith(
-              color: Colors.black.withOpacity(.54),
+              color: Colors.black.withValues(alpha: .54),
             ),
           ),
         ),

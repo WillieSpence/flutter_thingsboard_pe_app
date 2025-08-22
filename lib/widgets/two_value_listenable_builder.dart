@@ -3,12 +3,12 @@ import 'package:flutter/widgets.dart';
 
 class TwoValueListenableBuilder<A, B> extends StatelessWidget {
   const TwoValueListenableBuilder({
-    Key? key,
     required this.firstValueListenable,
     required this.secondValueListenable,
     required this.builder,
     this.child,
-  }) : super(key: key);
+    super.key,
+  });
 
   final ValueListenable<A> firstValueListenable;
   final ValueListenable<B> secondValueListenable;
@@ -19,10 +19,10 @@ class TwoValueListenableBuilder<A, B> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<A>(
       valueListenable: firstValueListenable,
-      builder: (_, a, __) {
+      builder: (_, a, _) {
         return ValueListenableBuilder<B>(
           valueListenable: secondValueListenable,
-          builder: (context, b, __) {
+          builder: (context, b, _) {
             return builder(context, a, b, child);
           },
         );

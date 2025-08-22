@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
+import 'package:thingsboard_app/config/themes/tb_theme.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/logger/tb_logger.dart';
 import 'package:thingsboard_app/locator.dart';
@@ -12,6 +14,7 @@ import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
 class NotificationService {
+  NotificationService(this._tbClient, this._log, this._tbContext);
   static FirebaseMessaging _messaging = FirebaseMessaging.instance;
   late NotificationDetails _notificationDetails;
   final TbLogger _log;
@@ -27,8 +30,6 @@ class NotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  NotificationService(this._tbClient, this._log, this._tbContext);
-
   Future<void> init() async {
     _log.debug('NotificationService::init()');
 
@@ -42,7 +43,7 @@ class NotificationService {
 
     _onMessageOpenedAppSubscription =
         FirebaseMessaging.onMessageOpenedApp.listen(
-      (message) async {
+      (message)  {
         NotificationService.handleClickOnNotification(
           message.data,
           _tbContext,
@@ -60,15 +61,15 @@ class NotificationService {
 
       _onTokenRefreshSubscription =
           FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-        if (_fcmToken != null) {
-          _tbClient.getUserService().removeMobileSession(_fcmToken!).then((_) {
-            _fcmToken = token;
             if (_fcmToken != null) {
-              _saveToken(_fcmToken!);
+          _tbClient.getUserService().removeMobileSession(_fcmToken!).then((_) {
+                _fcmToken = token;
+                if (_fcmToken != null) {
+                  _saveToken(_fcmToken!);
+                }
+              });
             }
           });
-        }
-      });
 
       await _initFlutterLocalNotificationsPlugin();
       await _configFirebaseMessaging();
@@ -87,14 +88,13 @@ class NotificationService {
 
   Future<String?> getToken() async {
     try {
-      _fcmToken = await _messaging.getToken();
-      return _fcmToken;
+    return  _fcmToken = await _messaging.getToken();
     } catch (_) {
       return null;
     }
   }
 
-  Future<RemoteMessage?> initialMessage() async {
+  Future<RemoteMessage?> initialMessage()  {
     return _messaging.getInitialMessage();
   }
 
@@ -122,7 +122,7 @@ class NotificationService {
 
   Future<void> _initFlutterLocalNotificationsPlugin() async {
     const initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/thingsboard');
+        AndroidInitializationSettings('@drawable/ic_launcher_foreground');
 
     const initializationSettingsIOS = DarwinInitializationSettings();
 
@@ -136,24 +136,28 @@ class NotificationService {
       onDidReceiveNotificationResponse: (response) {
         if (response.notificationResponseType ==
             NotificationResponseType.selectedNotification) {
-          final data = json.decode(response.payload ?? '');
+          final data =
+              json.decode(response.payload ?? '') as Map<String, dynamic>;
           handleClickOnNotification(data, _tbContext);
         }
       },
     );
 
-    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    final androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      color: appPrimaryColor,
       'general',
+      // translate-me-ignore-next-line
       'General notifications',
       importance: Importance.max,
       priority: Priority.high,
+      // translate-me-ignore-next-line
       channelDescription: 'This channel is used for general notifications',
       showWhen: false,
     );
 
     const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
 
-    _notificationDetails = const NotificationDetails(
+    _notificationDetails = NotificationDetails(
       android: androidPlatformChannelSpecifics,
       iOS: iOSPlatformChannelSpecifics,
     );
@@ -162,13 +166,7 @@ class NotificationService {
   Future<NotificationSettings> _requestPermission() async {
     _messaging = FirebaseMessaging.instance;
     final result = await _messaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
       provisional: true,
-      sound: true,
     );
 
     if (result.authorizationStatus == AuthorizationStatus.denied) {
@@ -192,10 +190,11 @@ class NotificationService {
     _log.debug('FCM token: $fcmToken');
 
     if (fcmToken != null) {
-      MobileSessionInfo? mobileInfo =
+      final MobileSessionInfo? mobileInfo =
           await _tbClient.getUserService().getMobileSession(fcmToken);
       if (mobileInfo != null) {
-        int timeAfterCreatedToken = DateTime.now().millisecondsSinceEpoch -
+        final int timeAfterCreatedToken =
+            DateTime.now().millisecondsSinceEpoch -
             mobileInfo.fcmTokenTimestamp;
         if (timeAfterCreatedToken > const Duration(days: 30).inMilliseconds) {
           fcmToken = await _resetToken(fcmToken);
@@ -211,12 +210,12 @@ class NotificationService {
 
   Future<void> _saveToken(String token) async {
     await _tbClient.getUserService().saveMobileSession(
-          token,
-          MobileSessionInfo(DateTime.now().millisecondsSinceEpoch),
-        );
+      token,
+      MobileSessionInfo(DateTime.now().millisecondsSinceEpoch),
+    );
   }
 
-  void showNotification(RemoteMessage message) async {
+  Future<void> showNotification(RemoteMessage message) async {
     final notification = message.notification;
 
     if (notification != null) {
@@ -254,49 +253,55 @@ class NotificationService {
     if (data['enabled'] == true || data['onClick.enabled'] == 'true') {
       switch (data['linkType'] ?? data['onClick.linkType']) {
         case 'DASHBOARD':
-          final dashboardId =
-              data['dashboardId'] ?? data['onClick.dashboardId'];
-          dynamic entityId;
+          String? dashboardId;
+          if ((data['dashboardId'] ?? data['onClick.dashboardId']) != null) {
+            dashboardId =
+                (data['dashboardId'] ?? data['onClick.dashboardId']).toString();
+          }
+          EntityId? entityId;
           if ((data['stateEntityId'] ?? data['onClick.stateEntityId']) !=
                   null &&
               (data['stateEntityType'] ?? data['onClick.stateEntityType']) !=
                   null) {
             entityId = EntityId.fromTypeAndUuid(
               entityTypeFromString(
-                data['stateEntityType'] ?? data['onClick.stateEntityType'],
+                (data['stateEntityType'] ?? data['onClick.stateEntityType'])
+                    .toString(),
               ),
-              data['stateEntityId'] ?? data['onClick.stateEntityId'],
+              (data['stateEntityId'] ?? data['onClick.stateEntityId'])
+                  .toString(),
             );
           }
 
           final state = Utils.createDashboardEntityState(
             entityId,
-            stateId: data['dashboardState'] ?? data['onClick.dashboardState'],
+            stateId: (data['dashboardState'] ?? data['onClick.dashboardState'])
+                    .toString(),
           );
 
           if (dashboardId != null) {
-            tbContext.navigateToDashboard(dashboardId, state: state);
+            getIt<ThingsboardAppRouter>()
+                .navigateToDashboard(dashboardId, state: state);
           }
 
-          break;
         case 'LINK':
-          final link = data['link'] ?? data['onClick.link'];
-          if (link != null) {
+          final rawLink = data['link'] ?? data['onClick.link'];
+          if (rawLink != null) {
+           final  link = (data['link'] ?? data['onClick.link']).toString();
             if (Uri.parse(link).isAbsolute) {
-              tbContext.navigateTo('/url/${Uri.encodeComponent(link)}');
+              getIt<ThingsboardAppRouter>()
+                  .navigateTo('/url/${Uri.encodeComponent(link)}');
             } else if (link == '/notifications' &&
                 !isOnNotificationsScreenAlready) {
-              tbContext.navigateTo(link);
+              getIt<ThingsboardAppRouter>().navigateTo(link);
             } else {
-              tbContext.navigateTo(link);
+              getIt<ThingsboardAppRouter>().navigateTo(link);
             }
           }
-
-          break;
       }
     } else {
       if (!isOnNotificationsScreenAlready) {
-        tbContext.navigateTo('/notifications');
+        getIt<ThingsboardAppRouter>().navigateTo('/notifications');
       }
     }
   }
@@ -304,9 +309,9 @@ class NotificationService {
   Future<int> _getNotificationsCountRemote() async {
     try {
       return _tbClient.getNotificationService().getUnreadNotificationsCount(
-            'MOBILE_APP',
-            requestConfig: RequestConfig(ignoreErrors: true),
-          );
+        'MOBILE_APP',
+        requestConfig: RequestConfig(ignoreErrors: true),
+      );
     } catch (_) {
       return 0;
     }

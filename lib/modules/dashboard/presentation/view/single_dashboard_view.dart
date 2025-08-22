@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/locator.dart';
+import 'package:thingsboard_app/modules/dashboard/di/dashboards_di.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/view/dashboard_permission_error_view.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/widgets/dashboard_widget.dart';
@@ -10,13 +10,13 @@ import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
 class SingleDashboardView extends TbContextWidget {
   SingleDashboardView(
-    TbContext tbContext, {
+    super.tbContext, {
     required this.id,
     this.title,
     this.state,
     this.hideToolbar,
     super.key,
-  }) : super(tbContext);
+  });
 
   final String id;
   final String? title;
@@ -32,7 +32,7 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
   final dashboardTitleValue = ValueNotifier<String>('Dashboard');
   final hasRightLayout = ValueNotifier(false);
   bool canGoBack = false;
-
+  late final String diKey;
   late final Animation<double> rightLayoutMenuAnimation;
   late final AnimationController rightLayoutMenuController;
   late final bool havePermission;
@@ -65,7 +65,6 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
             }
           },
         ),
-        showLoadingIndicator: false,
         elevation: 1,
         shadowColor: Colors.transparent,
         title: ValueListenableBuilder<String>(
@@ -140,6 +139,8 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
     havePermission = getIt<IPermissionService>()
         .haveViewDashboardPermission(widget.tbContext);
 
+     diKey = UniqueKey().toString();
+     DashboardsDi.init(diKey, tbClient: tbClient);
     rightLayoutMenuController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -157,6 +158,7 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
 
   @override
   void dispose() {
+     DashboardsDi.dispose(diKey);
     rightLayoutMenuController.dispose();
     _dashboardController?.canGoBack.dispose();
     super.dispose();

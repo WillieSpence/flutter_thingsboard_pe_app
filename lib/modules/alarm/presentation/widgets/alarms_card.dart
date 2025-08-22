@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/alarm/alarms_base.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
+import 'package:thingsboard_app/utils/translation_utils.dart';
 import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 
 class AlarmCard extends TbContextWidget {
+  AlarmCard(super.tbContext, {super.key, required this.alarm});
   final AlarmInfo alarm;
-
-  AlarmCard(TbContext tbContext, {super.key, required this.alarm})
-      : super(tbContext);
 
   @override
   State<StatefulWidget> createState() => _AlarmCardState();
@@ -29,7 +29,7 @@ class _AlarmCardState extends TbContextState<AlarmCard> {
         ),
         border: Border(
           left: BorderSide(
-            color: alarmSeverityColors[widget.alarm.severity]!,
+            color: widget.alarm.severity.toColor(),
             width: 4,
           ),
         ),
@@ -52,7 +52,6 @@ class _AlarmCardState extends TbContextState<AlarmCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Flexible(
@@ -72,7 +71,7 @@ class _AlarmCardState extends TbContextState<AlarmCard> {
                                     ),
                                   ),
                                   style: TbTextStyles.bodyMedium.copyWith(
-                                    color: Colors.black.withOpacity(.54),
+                                    color: Colors.black.withValues(alpha: .54),
                                   ),
                                 ),
                               ],
@@ -88,17 +87,20 @@ class _AlarmCardState extends TbContextState<AlarmCard> {
                                         ? widget.alarm.originatorName!
                                         : '',
                                     style: TbTextStyles.bodyMedium.copyWith(
-                                      color: Colors.black.withOpacity(.54),
+                                      color: Colors.black.withValues(
+                                        alpha: .54,
+                                      ),
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
-                                  alarmSeverityTranslations[
-                                      widget.alarm.severity]!,
+                                  widget.alarm.severity.getTranslatedAlarmSeverity(context),
                                   style: TbTextStyles.labelMedium.copyWith(
-                                    color: alarmSeverityColors[
-                                        widget.alarm.severity]!,
+                                    color:
+                                       widget
+                                            .alarm
+                                            .severity.toColor(),
                                   ),
                                 ),
                               ],
@@ -112,26 +114,26 @@ class _AlarmCardState extends TbContextState<AlarmCard> {
                 Divider(
                   height: 24,
                   thickness: 1,
-                  color: Colors.black.withOpacity(.05),
+                  color: Colors.black.withValues(alpha: .05),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(
                         fit: FlexFit.tight,
                         child: Text(
-                          alarmStatusTranslations[widget.alarm.status]!,
+                          widget.alarm.status?.getTranslatedAlarmStatus(context) ?? '',
                           style: TbTextStyles.bodyMedium.copyWith(
-                            color: Colors.black.withOpacity(.76),
+                            color: Colors.black.withValues(alpha: .76),
                           ),
                         ),
                       ),
                       CircleAvatar(
                         radius: 16,
-                        backgroundColor:
-                            Theme.of(context).primaryColor.withOpacity(.06),
+                        backgroundColor: Theme.of(
+                          context,
+                        ).primaryColor.withValues(alpha: .06),
                         child: IconButton(
                           icon: Icon(
                             Icons.more_vert,
@@ -139,9 +141,11 @@ class _AlarmCardState extends TbContextState<AlarmCard> {
                             color: Theme.of(context).primaryColor,
                           ),
                           padding: const EdgeInsets.all(7.0),
-                          onPressed: () => navigateTo(
-                            '/alarmDetails/${widget.alarm.id?.id}',
-                          ),
+                          onPressed:
+                              () => getIt<ThingsboardAppRouter>().navigateTo(
+                                // translate-me-ignore-next-line
+                                '/alarmDetails/${widget.alarm.id?.id}',
+                              ),
                         ),
                       ),
                     ],

@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/locator.dart';
 
 typedef DashboardTitleCallback = void Function(String title);
 
@@ -34,25 +36,26 @@ class DashboardController {
   }) async {
     final windowMessage = <String, dynamic>{
       'type': 'openDashboardMessage',
-      'data': <String, dynamic>{'dashboardId': dashboardId},
+     
     };
+    final data =  <String, dynamic>{'dashboardId': dashboardId};
     if (state != null) {
-      windowMessage['data']['state'] = state;
+     data['state'] = state;
     }
     if (home) {
-      windowMessage['data']['embedded'] = true;
+      data['embedded'] = true;
     }
     if (hideToolbar == true) {
-      windowMessage['data']['hideToolbar'] = true;
+     data['hideToolbar'] = true;
     }
-
+windowMessage['data'] = data;
     await controller?.postWebMessage(
       message: WebMessage(data: jsonEncode(windowMessage)),
       targetOrigin: WebUri('*'),
     );
   }
 
-  void onHistoryUpdated(Future<bool> canGoBackFuture) async {
+  Future<void> onHistoryUpdated(Future<bool> canGoBackFuture) async {
     canGoBack.value = await canGoBackFuture;
   }
 
@@ -103,14 +106,14 @@ class DashboardController {
         if ((firstPart == 'dashboard' || firstPart == 'dashboards') &&
             parts.length > 1) {
           final dashboardId = parts[1];
-          await tbContext.navigateToDashboard(dashboardId);
+          await getIt<ThingsboardAppRouter>().navigateToDashboard(dashboardId);
         } else if (firstPart != 'dashboard') {
           var targetPath = '/$firstPart';
           if (firstPart == 'devices' && home == true) {
             targetPath = '/devicesPage';
           }
 
-          await tbContext.navigateTo(targetPath);
+          await getIt<ThingsboardAppRouter>().navigateTo(targetPath);
         }
       } else {
         throw UnimplementedError('The path $path is currently not supported.');
@@ -122,6 +125,10 @@ class DashboardController {
     canGoBack.dispose();
     hasRightLayout.dispose();
     rightLayoutOpened.dispose();
-    controller?.dispose();
+    try {
+      controller?.dispose();
+    } catch (e) {
+      tbContext.log.error('Error during dispose: $e');
+    }
   }
 }

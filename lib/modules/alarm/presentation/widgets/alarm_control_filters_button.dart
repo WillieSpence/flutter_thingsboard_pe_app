@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 
 class AlarmControlFiltersButton extends StatelessWidget {
   const AlarmControlFiltersButton({
@@ -19,16 +20,16 @@ class AlarmControlFiltersButton extends StatelessWidget {
         TextButton(
           onPressed: onResetTap,
           style: ButtonStyle(
-            padding: MaterialStateProperty.all(
+            padding: WidgetStateProperty.all(
               const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 8,
               ),
             ),
           ),
-          child: const Text(
-            'Reset',
-            style: TextStyle(
+          child:  Text(
+            S.of(context).reset,
+            style: const TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),
@@ -38,16 +39,16 @@ class AlarmControlFiltersButton extends StatelessWidget {
         TextButton(
           onPressed: onCancelTap,
           style: ButtonStyle(
-            padding: MaterialStateProperty.all(
+            padding: WidgetStateProperty.all(
               const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 8,
               ),
             ),
           ),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
+          child:  Text(
+            S.of(context).cancel,
+            style: const TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),
@@ -57,22 +58,22 @@ class AlarmControlFiltersButton extends StatelessWidget {
         FilledButton(
           onPressed: onUpdateTap,
           style: ButtonStyle(
-            shape: MaterialStateProperty.all(
+            shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 // Change your radius here
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
-            padding: MaterialStateProperty.all(
+            padding: WidgetStateProperty.all(
               const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 8,
               ),
             ),
           ),
-          child: const Text(
-            'Update',
-            style: TextStyle(
+          child:  Text(
+            S.of(context).update,
+            style: const TextStyle(
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),

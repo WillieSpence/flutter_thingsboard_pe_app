@@ -45,8 +45,8 @@ class NotificationsList extends StatelessWidget {
             ),
           );
         },
-        firstPageProgressIndicatorBuilder: (_) => SizedBox.expand(
-          child: Container(
+        firstPageProgressIndicatorBuilder: (_) =>  SizedBox.expand(
+          child: ColoredBox(
             color: const Color(0x99FFFFFF),
             child: Center(
               child: TbProgressIndicator(
@@ -58,7 +58,7 @@ class NotificationsList extends StatelessWidget {
         ),
         noItemsFoundIndicatorBuilder: (_) => const NoNotificationsFoundWidget(),
       ),
-      separatorBuilder: (_, __) => const Divider(thickness: 1),
+      separatorBuilder: (_, _) => const Divider(thickness: 1),
     );
   }
 }

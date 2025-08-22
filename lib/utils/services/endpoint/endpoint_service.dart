@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:thingsboard_app/constants/app_constants.dart';
-import 'package:thingsboard_app/core/auth/login/region.dart';
+import 'package:thingsboard_app/core/auth/login/select_region/model/region.dart';
 import 'package:thingsboard_app/utils/services/endpoint/i_endpoint_service.dart';
 import 'package:thingsboard_app/utils/services/local_database/i_local_database_service.dart';
 
@@ -46,7 +46,10 @@ class EndpointService implements IEndpointService {
   @override
   Future<bool> isCustomEndpoint() async {
     _cachedEndpoint ??= await getEndpoint();
-    return !_defaultEndpoints.contains(_cachedEndpoint);
+    final host = Uri.parse(_cachedEndpoint!).host;
+    final defaultHosts = _defaultEndpoints.map((e) => Uri.parse(e).host).toSet();
+    final isCustom = !defaultHosts.contains(host);
+    return isCustom;
   }
 
   @override
@@ -55,7 +58,7 @@ class EndpointService implements IEndpointService {
   }
 
   @override
-  Future<Region?> getSelectedRegion() async {
+  Future<Region?> getSelectedRegion() {
     return databaseService.getSelectedRegion();
   }
 

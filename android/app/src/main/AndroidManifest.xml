@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="org.thingsboard.pe.app">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
@@ -25,6 +24,10 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-feature android:name="android.hardware.wifi" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
@@ -47,6 +50,7 @@
         android:fullBackupContent="false"
         android:label="OmniThings App"
         android:icon="@mipmap/launcher_icon"
+        android:label="${appLabel}"
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true">
         <!-- Set custom default icon. This is used when no icon is set for incoming notification
@@ -54,7 +58,7 @@
         See README(https://goo.gl/l4GJaQ) for more. -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/thingsboard" />
+            android:resource="@drawable/ic_launcher_foreground" />
 
         <activity
             android:name=".MainActivity"
@@ -71,6 +75,7 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
@@ -88,8 +93,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="app.pe.thingsboard.org"
-                    android:scheme="tbscheme" />
+                    android:host="${redirectURLHost}"
+                    android:scheme="${redirectURLScheme}" />
             </intent-filter>
             <!-- App Links -->
             <intent-filter android:autoVerify="true">
@@ -97,9 +102,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:host="thingsboard.cloud"
-                    android:pathPrefix="/api/noauth/qr"
-                    android:scheme="https" />
+                    android:host="${appLinksUrlHost}"
+                    android:pathPrefix="${webPathPrefix}"
+                    android:scheme="${appLinksUrlScheme}" />
             </intent-filter>
         </activity>
         <activity
@@ -107,9 +112,11 @@
             android:exported="true">
             <intent-filter android:label="tb_web_auth">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="org.thingsboard.pe.app.auth" />
+
+                <data android:scheme="${authScheme}" />
             </intent-filter>
         </activity>
 

@@ -9,7 +9,7 @@ import 'package:thingsboard_app/modules/alarm/domain/usecases/assignee/assign_al
 import 'package:thingsboard_app/modules/alarm/domain/usecases/assignee/unassign_alarm_usecase.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/bloc/alarm_assignee/bloc.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-import 'package:thingsboard_app/utils/services/communication/events.dart';
+import 'package:thingsboard_app/utils/services/communication/events/alarm_assignee_updated_event.dart';
 import 'package:thingsboard_app/utils/services/communication/i_communication_service.dart';
 
 class AlarmAssigneeBloc extends Bloc<AlarmAssigneeEvent, AlarmAssigneeState> {
@@ -63,15 +63,12 @@ class AlarmAssigneeBloc extends Bloc<AlarmAssigneeEvent, AlarmAssigneeState> {
           AlarmAssigneeUpdatedEvent(event.userId),
         );
 
-        break;
       case AlarmAssigneeSearchEvent():
         queryCtrl.onSearchText(event.searchText);
 
-        break;
       case AlarmAssigneeResetSearchTextEvent():
         queryCtrl.onSearchText(null);
 
-        break;
       case AlarmAssigneeUnassignedEvent():
         emit(const AlarmAssigneeEmptyState());
 
@@ -80,11 +77,9 @@ class AlarmAssigneeBloc extends Bloc<AlarmAssigneeEvent, AlarmAssigneeState> {
           const AlarmAssigneeUpdatedEvent(null),
         );
 
-        break;
       case AlarmAssigneeRefreshEvent():
         paginationRepository.refresh();
 
-        break;
       case AlarmFetchAssigneeEvent():
         final alarmInfo = await fetchAlarmUseCase(id);
         if (alarmInfo?.assignee != null) {
@@ -103,7 +98,6 @@ class AlarmAssigneeBloc extends Bloc<AlarmAssigneeEvent, AlarmAssigneeState> {
           emit(AlarmAssigneeSelectedState(assignee));
         }
 
-        break;
     }
   }
 }

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/core/entity/entity_grid_card.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/dashboard/domain/pagination/dashboards_pagination_repository.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/controller/dashboard_page_controller.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/widgets/dashboard_grid_card.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/utils/services/permission/i_permission_service.dart';
 import 'package:thingsboard_app/utils/ui/pagination_widgets/first_page_exception_widget.dart';
 import 'package:thingsboard_app/utils/ui/pagination_widgets/first_page_progress_builder.dart';
@@ -30,6 +31,9 @@ class DashboardsGridWidget extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         getIt<DashboardsPaginationRepository>().refresh();
+       await  dashboardPageCtrl.dashboardController.future.then(
+          (v) async => await v.controller?.reload(),
+        );
       },
       child: SafeArea(
         child: PaginationGridWidget<PageLink, DashboardInfo>(
@@ -52,12 +56,12 @@ class DashboardsGridWidget extends StatelessWidget {
                     title: dashboard.title,
                   );
                 } else {
-                  tbContext.showErrorNotification(
-                    'You don\'t have permissions to perform this operation!',
+                  getIt<IOverlayService>().showErrorNotification( (_) =>
+                    S.of(context).youDontHavePermissionsToPerformThisOperation,
                   );
                 }
               },
-              settings: EntityCardSettings(dropShadow: true),
+              settings: EntityCardSettings(),
             ),
             firstPageProgressIndicatorBuilder: (_) =>
                 const FirstPageProgressBuilder(),
@@ -65,7 +69,7 @@ class DashboardsGridWidget extends StatelessWidget {
                 const NewPageProgressBuilder(),
             noItemsFoundIndicatorBuilder: (context) =>
                 FirstPageExceptionIndicator(
-              title: 'No dashboards found',
+              title: S.of(context).noDashboardsFound,
               message: S.of(context).listIsEmptyText,
               onTryAgain: () {
                 getIt<DashboardsPaginationRepository>()

@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:thingsboard_app/core/auth/login/login_page_background.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
@@ -19,17 +18,16 @@ typedef ProviderDescFunction = String Function(
 typedef TextFunction = String Function(BuildContext context);
 
 class TwoFactorAuthProviderLoginData {
-  TextFunction nameFunction;
-  ProviderDescFunction descFunction;
-  TextFunction placeholderFunction;
-  String icon;
-
   TwoFactorAuthProviderLoginData({
     required this.nameFunction,
     required this.descFunction,
     required this.placeholderFunction,
     required this.icon,
   });
+  TextFunction nameFunction;
+  ProviderDescFunction descFunction;
+  TextFunction placeholderFunction;
+  String icon;
 }
 
 final Map<TwoFaProviderType, TwoFactorAuthProviderLoginData>
@@ -38,6 +36,7 @@ final Map<TwoFaProviderType, TwoFactorAuthProviderLoginData>
     nameFunction: (context) => S.of(context).mfaProviderTopt,
     descFunction: (context, contact) => S.of(context).totpAuthDescription,
     placeholderFunction: (context) => S.of(context).toptAuthPlaceholder,
+    // translate-me-ignore-next-line
     icon: 'cellphone-key',
   ),
   TwoFaProviderType.SMS: TwoFactorAuthProviderLoginData(
@@ -52,19 +51,20 @@ final Map<TwoFaProviderType, TwoFactorAuthProviderLoginData>
     descFunction: (context, contact) =>
         S.of(context).emailAuthDescription(contact ?? ''),
     placeholderFunction: (context) => S.of(context).emailAuthPlaceholder,
+    // translate-me-ignore-next-line
     icon: 'email-outline',
   ),
   TwoFaProviderType.BACKUP_CODE: TwoFactorAuthProviderLoginData(
     nameFunction: (context) => S.of(context).mfaProviderBackupCode,
     descFunction: (context, contact) => S.of(context).backupCodeAuthDescription,
     placeholderFunction: (context) => S.of(context).backupCodeAuthPlaceholder,
+    // translate-me-ignore-next-line
     icon: 'lock-outline',
   ),
 };
 
 class TwoFactorAuthenticationPage extends TbPageWidget {
-  TwoFactorAuthenticationPage(TbContext tbContext, {super.key})
-      : super(tbContext);
+  TwoFactorAuthenticationPage(super.tbContext, {super.key});
 
   @override
   State<StatefulWidget> createState() => _TwoFactorAuthenticationPageState();
@@ -76,11 +76,11 @@ class _TwoFactorAuthenticationPageState
   final ValueNotifier<TwoFaProviderType?> _selectedProvider =
       ValueNotifier<TwoFaProviderType?>(null);
   TwoFaProviderType? _prevProvider;
-  int? _minVerificationPeriod;
-  final List<TwoFaProviderType> _allowProviders = [];
-  final ValueNotifier<bool> _disableSendButton = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> _showResendAction = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> _hideResendButton = ValueNotifier<bool>(true);
+  late int? _minVerificationPeriod;
+  final _allowProviders = <TwoFaProviderType>[];
+  final _disableSendButton = ValueNotifier<bool>(false);
+  final _showResendAction = ValueNotifier<bool>(false);
+  final _hideResendButton = ValueNotifier<bool>(true);
   Timer? _timer;
   Timer? _tooManyRequestsTimer;
   final ValueNotifier<int> _countDownTime = ValueNotifier<int>(0);
@@ -88,9 +88,10 @@ class _TwoFactorAuthenticationPageState
   @override
   void initState() {
     super.initState();
-    var providersInfo = tbContext.twoFactorAuthProviders;
+    final providersInfo = tbContext.twoFactorAuthProviders;
+
     for (final provider in TwoFaProviderType.values) {
-      var providerConfig =
+      final providerConfig =
           providersInfo!.firstWhereOrNull((config) => config.type == provider);
       if (providerConfig != null) {
         if (providerConfig.isDefault) {
@@ -150,7 +151,7 @@ class _TwoFactorAuthenticationPageState
                           valueListenable: _selectedProvider,
                           builder: (context, providerType, widget) {
                             if (providerType == null) {
-                              var children = <Widget>[
+                              final children = <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 16),
                                   child: Text(
@@ -164,10 +165,10 @@ class _TwoFactorAuthenticationPageState
                                 ),
                               ];
                               for (final type in _allowProviders) {
-                                var providerData =
+                                final providerData =
                                     twoFactorAuthProvidersLoginData[type]!;
                                 Widget? icon;
-                                var iconData = MdiIcons.fromString(
+                                final iconData = MdiIcons.fromString(
                                   providerData.icon,
                                 );
                                 if (iconData != null) {
@@ -208,7 +209,7 @@ class _TwoFactorAuthenticationPageState
                                 children: children,
                               );
                             } else {
-                              var providerConfig = tbContext
+                              final providerConfig = tbContext
                                   .twoFactorAuthProviders
                                   ?.firstWhereOrNull(
                                 (config) => config.type == providerType,
@@ -216,7 +217,7 @@ class _TwoFactorAuthenticationPageState
                               if (providerConfig == null) {
                                 return const SizedBox.shrink();
                               }
-                              var providerDescription =
+                              final providerDescription =
                                   twoFactorAuthProvidersLoginData[providerType]!
                                       .descFunction;
                               return FormBuilder(
@@ -273,7 +274,6 @@ class _TwoFactorAuthenticationPageState
                                     SizedBox(
                                       height: 49,
                                       child: Row(
-                                        mainAxisSize: MainAxisSize.max,
                                         children: [
                                           ValueListenableBuilder<bool>(
                                             valueListenable: _showResendAction,
@@ -428,7 +428,7 @@ class _TwoFactorAuthenticationPageState
       keyboardType = TextInputType.text;
     }
 
-    List<FormFieldValidator<String>> validators = [
+    final List<FormFieldValidator<String>> validators = [
       FormBuilderValidators.required(
         errorText: S.of(context).verificationCodeInvalid,
       ),
@@ -442,7 +442,7 @@ class _TwoFactorAuthenticationPageState
       ),
     ];
 
-    var providerFormData = twoFactorAuthProvidersLoginData[providerType]!;
+    final providerFormData = twoFactorAuthProvidersLoginData[providerType]!;
 
     return FormBuilderTextField(
       name: 'verificationCode',
@@ -460,8 +460,8 @@ class _TwoFactorAuthenticationPageState
   Future<void> _sendVerificationCode(BuildContext context) async {
     FocusScope.of(context).unfocus();
     if (_twoFactorAuthFormKey.currentState?.saveAndValidate() ?? false) {
-      var formValue = _twoFactorAuthFormKey.currentState!.value;
-      String verificationCode = formValue['verificationCode'];
+      final formValue = _twoFactorAuthFormKey.currentState!.value;
+      final String verificationCode = formValue['verificationCode'].toString();
       try {
         await tbClient.checkTwoFaVerificationCode(
           _selectedProvider.value!,
@@ -486,10 +486,11 @@ class _TwoFactorAuthenticationPageState
               _disableSendButton.value = false;
             });
           } else {
-            showErrorNotification(e.message ?? 'Code verification failed!');
+            overlayService.showErrorNotification( (_) => 
+                e.message ?? S.of(context).codeVerificationFailed);
           }
         } else {
-          showErrorNotification('Code verification failed!');
+          overlayService.showErrorNotification((_) =>  S.of(context).codeVerificationFailed);
         }
       }
     }
@@ -500,8 +501,8 @@ class _TwoFactorAuthenticationPageState
     _selectedProvider.value = type;
     _showResendAction.value = false;
     if (type != null) {
-      var providersInfo = tbContext.twoFactorAuthProviders;
-      var providerConfig =
+      final providersInfo = tbContext.twoFactorAuthProviders;
+      final providerConfig =
           providersInfo!.firstWhereOrNull((config) => config.type == type)!;
       if (type != TwoFaProviderType.TOTP &&
           type != TwoFaProviderType.BACKUP_CODE) {

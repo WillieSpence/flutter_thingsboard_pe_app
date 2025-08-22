@@ -6,7 +6,7 @@ import 'package:thingsboard_app/core/logger/tb_logger.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/device/provisioning/bloc/bloc.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-import 'package:thingsboard_app/utils/services/communication/events.dart';
+import 'package:thingsboard_app/utils/services/communication/events/device_provisioning_status_changed_event.dart';
 import 'package:thingsboard_app/utils/services/communication/i_communication_service.dart';
 
 class DeviceProvisioningBloc
@@ -29,19 +29,14 @@ class DeviceProvisioningBloc
       switch (event.status) {
         case DeviceProvisioningStatus.idle:
           add(const ProvisioningIdleEvent());
-          break;
         case DeviceProvisioningStatus.wifi:
           add(const SendWifiCredentialsEvent());
-          break;
         case DeviceProvisioningStatus.confirmation:
           add(const ConfirmConnectionEvent());
-          break;
         case DeviceProvisioningStatus.success:
           add(const SuccessfullyProvisionedEvent());
-          break;
         case DeviceProvisioningStatus.fail:
           add(const ErrorDuringProvisioningEvent());
-          break;
         default:
           break;
       }
@@ -86,11 +81,9 @@ class DeviceProvisioningBloc
     switch (event) {
       case SendWifiCredentialsEvent():
         emit(const DeviceProvisioningSendWifiCreds());
-        break;
 
       case ConfirmConnectionEvent():
         emit(const DeviceProvisioningConfirmConnection());
-        break;
 
       case SuccessfullyProvisionedEvent():
         emit(const DeviceProvisioningSuccessState());
@@ -153,20 +146,16 @@ class DeviceProvisioningBloc
 
           emit(DeviceProvisioningClaimingErrorState(message));
         }
-        break;
 
       case ErrorDuringProvisioningEvent():
         emit(const DeviceProvisioningErrorState());
-        break;
 
       case ProvisioningIdleEvent():
         emit(const DeviceProvisioningIdleState());
-        break;
 
       case ProceedWithClaimingEvent():
         mustReconnectToWifiBeforeClaiming = false;
         add(const SuccessfullyProvisionedEvent());
-        break;
     }
   }
 

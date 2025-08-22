@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
+import 'package:thingsboard_app/core/auth/noauth/data/model/switch_endpoint_args.dart';
 import 'package:thingsboard_app/core/auth/noauth/di/noauth_di.dart';
 import 'package:thingsboard_app/core/auth/noauth/presentation/bloc/bloc.dart';
 import 'package:thingsboard_app/core/auth/noauth/presentation/widgets/noauth_loading_widget.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 
 class SwitchEndpointNoAuthView extends TbPageWidget {
-  SwitchEndpointNoAuthView({
-    required this.tbContext,
+  SwitchEndpointNoAuthView(
+    super.tbContext, {
     required this.arguments,
-  }) : super(tbContext);
+    super.key,
+  });
 
-  final Map<String, dynamic>? arguments;
-  final TbContext tbContext;
+  final SwitchEndpointArgs? arguments;
 
   @override
   State<StatefulWidget> createState() => _SwitchEndpointNoAuthViewState();
@@ -44,17 +46,18 @@ class _SwitchEndpointNoAuthViewState
             listener: (context, state) {
               if (state is NoAuthErrorState) {
                 Future.delayed(const Duration(seconds: 5), () {
-                  if (mounted) {
-                    widget.tbContext.pop();
+                  if (context.mounted) {
+                    getIt<ThingsboardAppRouter>().pop(null, context);
                   }
                 });
               } else if (state is NoAuthDoneState) {
                 GetIt.instance<NoAuthBloc>().close();
-                if (tbClient.isPreVerificationToken()) {
-                  navigateTo('/login/mfa', replace: true, clearStack: true);
-                } else {
-                  tbContext.updateRouteState();
-                }
+                // if (tbClient.isPreVerificationToken()) {
+                //   getIt<ThingsboardAppRouter>().navigateTo('/login/mfa',
+                //       replace: true, clearStack: true,);
+                // } else {
+                //   tbContext.updateRouteState();
+                // }
               }
             },
             buildWhen: (_, state) => state is! NoAuthDoneState,
@@ -115,7 +118,7 @@ class _SwitchEndpointNoAuthViewState
                           const SizedBox(height: 10),
                           Text(
                             state.message ??
-                                'Something went wrong ... Rollback',
+                                S.of(context).somethingWentWrongRollback,
                             textAlign: TextAlign.center,
                             style: Theme.of(context)
                                 .textTheme

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/thingsboard_client.dart'
     show SignUpField, SignUpFieldsId, SignUpFieldsIdToString;
 
@@ -24,6 +24,7 @@ class SingUpFieldWidget extends StatelessWidget {
     }
 
     return FormBuilderTextField(
+      autofillHints: getHintsFromId(),
       obscureText: obscureText,
       name: field.id.toShortString(),
       keyboardType: keyboardTypeFromId(),
@@ -38,7 +39,35 @@ class SingUpFieldWidget extends StatelessWidget {
       ),
     );
   }
-
+List<String>? getHintsFromId() {
+    switch (field.id) {
+      case SignUpFieldsId.email:
+        return [AutofillHints.email];
+      case SignUpFieldsId.first_name:
+        return [AutofillHints.givenName];
+      case SignUpFieldsId.last_name:
+        return [AutofillHints.familyName];
+      case SignUpFieldsId.phone:
+        return [AutofillHints.telephoneNumber];
+      case SignUpFieldsId.address:
+        return [AutofillHints.streetAddressLine1];
+      case SignUpFieldsId.address2:
+        return [AutofillHints.streetAddressLine2];
+      case SignUpFieldsId.country:
+        return [AutofillHints.countryName];
+      case SignUpFieldsId.city:
+        return [AutofillHints.addressCity];
+      case SignUpFieldsId.state:
+        return [AutofillHints.addressState];
+      case SignUpFieldsId.zip:
+        return [AutofillHints.postalCode];
+      case SignUpFieldsId.repeat_password:
+      case SignUpFieldsId.password:
+        return [AutofillHints.newPassword, AutofillHints.password];
+      default:
+        return null;
+    }
+}
   TextInputType? keyboardTypeFromId() {
     switch (field.id) {
       case SignUpFieldsId.email:
@@ -67,7 +96,7 @@ class SingUpFieldWidget extends StatelessWidget {
     return '${field.label} ${S.of(context).isRequiredText}';
   }
 
-  dynamic validator(BuildContext context) {
+   FormFieldValidator<String>? validator(BuildContext context) {
     final validators = <FormFieldValidator>[];
     if (field.required) {
       validators.add(

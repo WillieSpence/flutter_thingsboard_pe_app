@@ -8,7 +8,7 @@
 .buildlog/
 .history
 .svn/
-
+android/build/
 # IntelliJ related
 *.iml
 *.ipr
@@ -19,7 +19,7 @@
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
-
+ios/Flutter/AppConfig.xcconfig
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
@@ -32,6 +32,7 @@
 /build/
 /ios/build/
 
+.vscode/
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -40,11 +41,14 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
-
+app_constants.json
+google-services.json
+GoogleService-Info.plist
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
 /android/app/release
-
+/android/app/.cxx
 # FVM Version Cache
 .fvm/
+tb_firebase_options.dart

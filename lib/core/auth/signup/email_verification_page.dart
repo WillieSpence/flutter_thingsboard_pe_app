@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
 import 'package:thingsboard_app/core/auth/login/login_page_background.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
+import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
 class EmailVerificationPage extends TbPageWidget {
-  final String _email;
 
-  EmailVerificationPage(TbContext tbContext, {super.key, required String email})
-      : _email = email,
-        super(tbContext);
+  EmailVerificationPage(super.tbContext, {super.key, required String email})
+      : _email = email;
+  final String _email;
 
   @override
   State<StatefulWidget> createState() => _EmailVerificationPageState();
@@ -131,16 +133,20 @@ class _EmailVerificationPageState extends TbPageState<EmailVerificationPage> {
   Future<void> _resendEmail() async {
     await tbClient.getSignupService().resendEmailActivation(
           widget._email,
-          pkgName: tbContext.packageName,
-          platform: tbContext.platformType,
+          pkgName: getIt<IDeviceInfoService>().getApplicationId(),
+          platform: getIt<IDeviceInfoService>().getPlatformType(),
         );
 
-    navigateTo(
+   getIt<ThingsboardAppRouter>().navigateTo(
       '/signup/emailVerification?email=${widget._email}',
       replace: true,
     );
-    showSuccessNotification(
+    if(mounted) {
+getIt<IOverlayService>().showSuccessNotification(
+  (_) => 
       S.of(context).emailVersificationSuccessfullySentNotification,
     );
+    }
+   
   }
 }

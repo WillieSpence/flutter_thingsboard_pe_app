@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/modules/profile/change_password_page.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
 class ProfilePage extends TbPageWidget {
+  ProfilePage(
+    super.tbContext, {
+    bool fullscreen = false,
+    super.key,
+  }) : _fullscreen = fullscreen;
   final bool _fullscreen;
-
-  ProfilePage(TbContext tbContext, {super.key, bool fullscreen = false})
-      : _fullscreen = fullscreen,
-        super(tbContext);
 
   @override
   State<StatefulWidget> createState() => _ProfilePageState();
@@ -39,7 +39,7 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
       backgroundColor: Colors.white,
       appBar: TbAppBar(
         tbContext,
-        title: const Text('Profile'),
+        title:  Text(S.of(context).profile),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -81,7 +81,7 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
                         ]),
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
-                          labelText: S.of(context).emailStar,
+                          labelText: '${S.of(context).email} *',
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -124,11 +124,9 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
             builder: (BuildContext context, bool loading, child) {
               if (loading) {
                 return SizedBox.expand(
-                  child: Container(
+                  child: ColoredBox(
                     color: const Color(0x99FFFFFF),
-                    child: Center(
-                      child: TbProgressIndicator(tbContext, size: 50.0),
-                    ),
+                    child:  Center(child: TbProgressIndicator(tbContext, size: 50.0)),
                   ),
                 );
               } else {
@@ -148,7 +146,7 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
     _isLoadingNotifier.value = false;
   }
 
-  _setUser() {
+  void _setUser() {
     _profileFormKey.currentState?.patchValue({
       'email': _currentUser!.email,
       'firstName': _currentUser!.firstName ?? '',
@@ -161,9 +159,9 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
       FocusScope.of(context).unfocus();
       if (_profileFormKey.currentState?.saveAndValidate() ?? false) {
         final formValue = _profileFormKey.currentState!.value;
-        _currentUser!.email = formValue['email'];
-        _currentUser!.firstName = formValue['firstName'];
-        _currentUser!.lastName = formValue['lastName'];
+        _currentUser!.email = formValue['email'].toString();
+        _currentUser!.firstName = formValue['firstName'].toString();
+        _currentUser!.lastName = formValue['lastName'].toString();
         _isLoadingNotifier.value = true;
         try {
           _currentUser =
@@ -172,14 +170,12 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
           _setUser();
           await Future.delayed(const Duration(milliseconds: 300));
           _isLoadingNotifier.value = false;
-          showSuccessNotification(
-            S.of(context).profileSuccessNotification,
-            duration: const Duration(milliseconds: 1500),
-          );
-          showSuccessNotification(
-            S.of(context).profileSuccessNotification,
-            duration: const Duration(milliseconds: 1500),
-          );
+          if (mounted) {
+            overlayService.showSuccessNotification(
+            (_) =>  S.of(context).profileSuccessNotification,
+              duration: const Duration(milliseconds: 1500),
+            );
+          }
         } catch (_) {
           _isLoadingNotifier.value = false;
         }
@@ -187,12 +183,12 @@ class _ProfilePageState extends TbPageState<ProfilePage> {
     }
   }
 
-  _changePassword() async {
-    var res = await tbContext
+  Future<void> _changePassword() async {
+    final res = await tbContext
         .showFullScreenDialog<bool>(ChangePasswordPage(tbContext));
-    if (res == true) {
-      showSuccessNotification(
-        S.of(context).passwordSuccessNotification,
+    if (res == true && mounted) {
+      overlayService.showSuccessNotification(
+      (_) =>   S.of(context).passwordSuccessNotification,
         duration: const Duration(milliseconds: 1500),
       );
     }

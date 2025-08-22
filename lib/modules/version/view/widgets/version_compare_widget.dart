@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/utils/utils.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -37,8 +38,6 @@ class _VersionCompareWidgetState extends TbContextState<VersionCompareWidget>
       appBar: TbAppBar(
         tbContext,
         title: Text(S.of(context).updateRequired),
-        leading: null,
-        canGoBack: false,
       ),
       body: SafeArea(
         child: Padding(
@@ -63,18 +62,9 @@ class _VersionCompareWidgetState extends TbContextState<VersionCompareWidget>
                 ],
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Html(
-                    data: releaseNotes,
-                    onLinkTap: (link, _, __) {
-                      if (link != null) {
-                        launchUrlString(
-                          link,
-                          mode: LaunchMode.externalApplication,
-                        );
-                      }
-                    },
-                  ),
+                child: HtmlWidget(
+                  releaseNotes,
+                  onTapUrl: (link) => Utils.onWebViewLinkPressed(link)
                 ),
               ),
               Align(

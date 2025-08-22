@@ -24,7 +24,7 @@ class DashboardPageController {
     String? title,
     String? state,
     bool? hideToolbar,
-  }) async {
+  })  {
     if (title != null) {
       dashboardTitleValue.value = title;
     }
@@ -37,10 +37,10 @@ class DashboardPageController {
       );
     });
 
-    return pageCtrl.open(1, animate: true);
+    return pageCtrl.open(1);
   }
 
-  Future<bool> closeDashboard() async {
-    return pageCtrl.close(1, animate: true);
+  Future<bool> closeDashboard()  {
+    return pageCtrl.close(1);
   }
 }

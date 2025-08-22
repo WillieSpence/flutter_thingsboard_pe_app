@@ -2,14 +2,16 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-import 'package:thingsboard_app/utils/services/device_profile_cache.dart';
+import 'package:thingsboard_app/utils/services/device_profile/device_profile_cache.dart';
+import 'package:thingsboard_app/utils/services/device_profile/model/cached_device_profile.dart';
 import 'package:thingsboard_app/utils/services/entity_query_api.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
@@ -23,13 +25,13 @@ mixin DeviceProfilesBase on EntitiesBase<DeviceProfileInfo, PageLink> {
   String get noItemsFoundText => 'No devices found';
 
   @override
-  Future<PageData<DeviceProfileInfo>> fetchEntities(PageLink pageLink) {
-    return DeviceProfileCache.getDeviceProfileInfos(tbClient, pageLink);
+  Future<PageData<DeviceProfileInfo>> fetchEntities(PageLink pageLink, {bool refresh = false}) {
+    return DeviceProfileCache.getDeviceProfileInfos(tbClient, pageLink, invalidateCache: refresh);
   }
 
   @override
   void onEntityTap(DeviceProfileInfo deviceProfile) {
-    navigateTo(
+    getIt<ThingsboardAppRouter>().navigateTo(
       '/deviceList?deviceType=${Uri.encodeComponent(deviceProfile.name)}',
     );
   }
@@ -67,10 +69,8 @@ class RefreshDeviceCounts {
 }
 
 class AllDevicesCard extends TbContextWidget {
+  AllDevicesCard(super.tbContext, this.refreshDeviceCounts, {super.key});
   final RefreshDeviceCounts refreshDeviceCounts;
-
-  AllDevicesCard(TbContext tbContext, this.refreshDeviceCounts, {super.key})
-      : super(tbContext);
 
   @override
   State<StatefulWidget> createState() => _AllDevicesCardState();
@@ -106,12 +106,18 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
   Future<void> _countDevices() {
     _activeDevicesCount.add(null);
     _inactiveDevicesCount.add(null);
-    Future<int> activeDevicesCount =
-        EntityQueryApi.countDevices(tbClient, active: true);
-    Future<int> inactiveDevicesCount =
-        EntityQueryApi.countDevices(tbClient, active: false);
-    Future<List<int>> countsFuture =
-        Future.wait([activeDevicesCount, inactiveDevicesCount]);
+    final Future<int> activeDevicesCount = EntityQueryApi.countDevices(
+      tbClient,
+      active: true,
+    );
+    final Future<int> inactiveDevicesCount = EntityQueryApi.countDevices(
+      tbClient,
+      active: false,
+    );
+    final Future<List<int>> countsFuture = Future.wait([
+      activeDevicesCount,
+      inactiveDevicesCount,
+    ]);
     countsFuture.then((counts) {
       if (mounted) {
         _activeDevicesCount.add(counts[0]);
@@ -137,16 +143,13 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
         ),
         child: Card(
           margin: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
           elevation: 0,
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 15),
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -163,9 +166,8 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
               ),
               const Divider(height: 1),
               Padding(
-                padding: const EdgeInsets.all(0),
+                padding: EdgeInsets.zero,
                 child: Row(
-                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Flexible(
                       fit: FlexFit.tight,
@@ -181,7 +183,7 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
                             stream: _activeDevicesCount.stream,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                var deviceCount = snapshot.data!;
+                                final deviceCount = snapshot.data!;
                                 return _buildDeviceCount(
                                   context,
                                   true,
@@ -207,7 +209,9 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
                           ),
                         ),
                         onTap: () {
-                          navigateTo('/deviceList?active=true');
+                          getIt<ThingsboardAppRouter>()
+                          // translate-me-ignore-next-line
+                          .navigateTo('/deviceList?active=true');
                         },
                       ),
                     ),
@@ -231,7 +235,7 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
                             stream: _inactiveDevicesCount.stream,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                var deviceCount = snapshot.data!;
+                                final deviceCount = snapshot.data!;
                                 return _buildDeviceCount(
                                   context,
                                   false,
@@ -257,7 +261,9 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
                           ),
                         ),
                         onTap: () {
-                          navigateTo('/deviceList?active=false');
+                          getIt<ThingsboardAppRouter>()
+                          // translate-me-ignore-next-line
+                          .navigateTo('/deviceList?active=false');
                         },
                       ),
                     ),
@@ -269,25 +275,22 @@ class _AllDevicesCardState extends TbContextState<AllDevicesCard> {
         ),
       ),
       onTap: () {
-        navigateTo('/deviceList');
+        getIt<ThingsboardAppRouter>().navigateTo('/deviceList');
       },
     );
   }
 }
 
 class DeviceProfileCard extends TbContextWidget {
+  DeviceProfileCard(super.tbContext, this.deviceProfile, {super.key});
   final DeviceProfileInfo deviceProfile;
-
-  DeviceProfileCard(TbContext tbContext, this.deviceProfile, {super.key})
-      : super(tbContext);
 
   @override
   State<StatefulWidget> createState() => _DeviceProfileCardState();
 }
 
 class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
-  late Future<int> activeDevicesCount;
-  late Future<int> inactiveDevicesCount;
+  late Future<CachedDeviceProfileInfo> countedProfile;
 
   @override
   void initState() {
@@ -303,61 +306,40 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
     }
   }
 
-  _countDevices() {
-    activeDevicesCount = EntityQueryApi.countDevices(
+  void _countDevices() {
+    countedProfile = DeviceProfileCache.getDevicesCount(
       tbClient,
-      deviceType: widget.deviceProfile.name,
-      active: true,
-    );
-    inactiveDevicesCount = EntityQueryApi.countDevices(
-      tbClient,
-      deviceType: widget.deviceProfile.name,
-      active: false,
+      widget.deviceProfile.name,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    var entity = widget.deviceProfile;
-    var hasImage = entity.image != null;
+    final entity = widget.deviceProfile;
+    final hasImage = entity.image != null;
     Widget image;
-    BoxFit imageFit;
-    double padding;
     if (hasImage) {
-      image = Utils.imageFromTbImage(context, tbClient, entity.image!);
-      imageFit = BoxFit.contain;
-      padding = 8;
+      image = Utils.imageFromTbImage(
+        context,
+        tbClient,
+        entity.image,
+        width: 64,
+        height: 64,
+      );
     } else {
       image = SvgPicture.asset(
+        width: 64,
+        height: 64,
         ThingsboardImage.deviceProfilePlaceholder,
-        colorFilter: ColorFilter.mode(
-          Theme.of(context).primaryColor,
-          BlendMode.overlay,
-        ),
         semanticsLabel: 'Device profile',
       );
-      imageFit = BoxFit.cover;
-      padding = 0;
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: Column(
         children: [
           Expanded(
-            child: Stack(
-              children: [
-                SizedBox.expand(
-                  child: Padding(
-                    padding: EdgeInsets.all(padding),
-                    child: FittedBox(
-                      clipBehavior: Clip.hardEdge,
-                      fit: imageFit,
-                      child: image,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            child: Padding(padding: const EdgeInsets.all(16), child: image),
           ),
           SizedBox(
             height: 44,
@@ -368,7 +350,6 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
                   entity.name,
                   textAlign: TextAlign.center,
                   maxLines: 1,
-                  minFontSize: 12,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     fontWeight: FontWeight.w500,
@@ -382,13 +363,13 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
           const Divider(height: 1),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
-            child: FutureBuilder<int>(
-              future: activeDevicesCount,
+            child: FutureBuilder<CachedDeviceProfileInfo>(
+              future: countedProfile,
               builder: (context, snapshot) {
                 if (snapshot.hasData &&
                     snapshot.connectionState == ConnectionState.done) {
-                  var deviceCount = snapshot.data!;
-                  return _buildDeviceCount(context, true, deviceCount);
+                  final deviceCount = snapshot.data!;
+                  return _buildDeviceCount(context, true, deviceCount.activeCount!);
                 } else {
                   return SizedBox(
                     height: 40,
@@ -411,7 +392,8 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
               },
             ),
             onTap: () {
-              navigateTo(
+              getIt<ThingsboardAppRouter>().navigateTo(
+                // translate-me-ignore-next-line
                 '/deviceList?active=true&deviceType=${Uri.encodeComponent(entity.name)}',
               );
             },
@@ -419,13 +401,13 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
           const Divider(height: 1),
           GestureDetector(
             behavior: HitTestBehavior.opaque,
-            child: FutureBuilder<int>(
-              future: inactiveDevicesCount,
+            child: FutureBuilder<CachedDeviceProfileInfo>(
+              future: countedProfile,
               builder: (context, snapshot) {
                 if (snapshot.hasData &&
                     snapshot.connectionState == ConnectionState.done) {
-                  var deviceCount = snapshot.data!;
-                  return _buildDeviceCount(context, false, deviceCount);
+                  final deviceCount = snapshot.data!;
+                  return _buildDeviceCount(context, false, deviceCount.inactiveCount!);
                 } else {
                   return SizedBox(
                     height: 40,
@@ -448,7 +430,8 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
               },
             ),
             onTap: () {
-              navigateTo(
+              getIt<ThingsboardAppRouter>().navigateTo(
+                // translate-me-ignore-next-line
                 '/deviceList?active=false&deviceType=${Uri.encodeComponent(entity.name)}',
               );
             },
@@ -460,13 +443,12 @@ class _DeviceProfileCardState extends TbContextState<DeviceProfileCard> {
 }
 
 Widget _buildDeviceCount(BuildContext context, bool active, int count) {
-  Color color = active ? const Color(0xFF008A00) : const Color(0xFFAFAFAF);
+  final Color color =
+      active ? const Color(0xFF008A00) : const Color(0xFFAFAFAF);
   return Padding(
     padding: const EdgeInsets.all(12),
     child: Row(
-      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Row(
           children: [
@@ -509,10 +491,9 @@ Widget _buildDeviceCount(BuildContext context, bool active, int count) {
 }
 
 class StrikeThroughPainter extends CustomPainter {
+  StrikeThroughPainter({required this.color, this.offset = 0});
   final Color color;
   final double offset;
-
-  StrikeThroughPainter({required this.color, this.offset = 0});
 
   @override
   void paint(Canvas canvas, Size size) {

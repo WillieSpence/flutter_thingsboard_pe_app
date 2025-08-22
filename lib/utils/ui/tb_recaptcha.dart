@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/utils/services/endpoint/i_endpoint_service.dart';
@@ -36,12 +37,8 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
 
   final setting = InAppWebViewSettings(
     mediaPlaybackRequiresUserGesture: false,
-    javaScriptEnabled: true,
-    cacheEnabled: true,
     clearCache: true,
     supportZoom: false,
-    useHybridComposition: true,
-    thirdPartyCookiesEnabled: true,
     allowsInlineMediaPlayback: true,
     isInspectable: kDebugMode,
   );
@@ -88,25 +85,27 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
           onWebViewCreated: (webViewController) {
             webViewController.addJavaScriptHandler(
               handlerName: 'tbMobileRecaptchaLoadedHandler',
-              callback: (args) async {
+              callback: (args)  {
                 recaptchaLoading.value = false;
               },
             );
             webViewController.addJavaScriptHandler(
               handlerName: 'tbMobileRecaptchaHandler',
-              callback: (args) async {
+              callback: (args)  {
                 final recaptchaResponse = args[0];
-                pop(recaptchaResponse);
+                getIt<ThingsboardAppRouter>().pop(recaptchaResponse);
               },
             );
           },
           onConsoleMessage: (controller, consoleMessage) {
             log.debug(
+              // translate-me-ignore-next-line
               '[JavaScript console] ${consoleMessage.messageLevel}: '
               '${consoleMessage.message}',
             );
           },
-          onLoadStop: (controller, url) async {
+          onLoadStop: (controller, url)  {
+            // translate-me-ignore-next-line
             log.debug('onLoadStop: $url');
             if (webViewLoading) {
               webViewLoading = false;
@@ -132,9 +131,9 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
     );
   }
 
-  void refresh() async {
-    var windowMessage = <String, dynamic>{'type': 'resetRecaptcha'};
-    var controller = await _webViewController.future;
+  Future<void> refresh() async {
+    final windowMessage = <String, dynamic>{'type': 'resetRecaptcha'};
+    final controller = await _webViewController.future;
     await controller.postWebMessage(
       message: WebMessage(data: jsonEncode(windowMessage)),
       targetOrigin: WebUri('*'),

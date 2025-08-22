@@ -1,19 +1,23 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-import 'package:thingsboard_app/utils/services/device_profile_cache.dart';
+import 'package:thingsboard_app/utils/services/device_profile/device_profile_cache.dart';
+import 'package:thingsboard_app/utils/services/device_profile/model/cached_device_profile.dart';
 import 'package:thingsboard_app/utils/services/entity_query_api.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
 mixin DevicesBase on EntitiesBase<EntityData, EntityDataQuery> {
+  final IOverlayService overlayService = getIt();
   @override
   String get title => 'Devices';
 
@@ -21,40 +25,41 @@ mixin DevicesBase on EntitiesBase<EntityData, EntityDataQuery> {
   String get noItemsFoundText => 'No devices found';
 
   @override
-  Future<PageData<EntityData>> fetchEntities(EntityDataQuery dataQuery) {
+  Future<PageData<EntityData>> fetchEntities(EntityDataQuery dataQuery, {bool refresh = false}) {
     return tbClient.getEntityQueryService().findEntityDataByQuery(dataQuery);
   }
 
   @override
-  void onEntityTap(EntityData device) async {
-    var profile = await DeviceProfileCache.getDeviceProfileInfo(
+  Future<void> onEntityTap(EntityData device) async {
+    final profile = await DeviceProfileCache.getDeviceProfileInfo(
       tbClient,
       device.field('type')!,
       device.entityId.id!,
     );
-    if (profile.defaultDashboardId != null) {
+    if (profile.info .defaultDashboardId != null) {
+  //TODO: Merge conflict here
       if (hasGenericPermission(Resource.WIDGETS_BUNDLE, Operation.READ) &&
           hasGenericPermission(Resource.WIDGET_TYPE, Operation.READ)) {
-        var dashboardId = profile.defaultDashboardId!.id!;
-        var state = Utils.createDashboardEntityState(
+        final dashboardId = profile.info.defaultDashboardId!.id!;
+        final state = Utils.createDashboardEntityState(
           device.entityId,
-          entityName: device.field('name')!,
-          entityLabel: device.field('label')!,
+          entityName: device.field('name'),
+          entityLabel: device.field('label'),
         );
-        navigateToDashboard(
+        getIt<ThingsboardAppRouter>().navigateToDashboard(
           dashboardId,
           dashboardTitle: device.field('name'),
           state: state,
         );
       } else {
-        showErrorNotification(
-          'You don\'t have permissions to perform this operation!',
+       getIt<IOverlayService>().showErrorNotification((context) =>
+                    S.of(context).youDontHavePermissionsToPerformThisOperation
         );
       }
     } else {
       if (tbClient.isTenantAdmin()) {
-        showWarnNotification(
-          'Mobile dashboard should be configured in device profile!',
+        overlayService.showWarnNotification( (context) => 
+          S.of(context).mobileDashboardShouldBeConfiguredInDeviceProfile,
         );
       }
     }
@@ -109,7 +114,7 @@ class DeviceQueryController extends PageKeyController<EntityDataQuery> {
   @override
   EntityDataQuery nextPageKey(EntityDataQuery pageKey) => pageKey.next();
 
-  onSearchText(String searchText) {
+  void onSearchText(String searchText) {
     value.pageKey.pageLink.page = 0;
     value.pageKey.pageLink.textSearch = searchText;
     notifyListeners();
@@ -117,17 +122,16 @@ class DeviceQueryController extends PageKeyController<EntityDataQuery> {
 }
 
 class DeviceCard extends TbContextWidget {
-  final EntityData device;
-  final bool listWidgetCard;
-  final bool displayImage;
-
   DeviceCard(
-    TbContext tbContext, {
+    super.tbContext, {
     super.key,
     required this.device,
     this.listWidgetCard = false,
     this.displayImage = false,
-  }) : super(tbContext);
+  });
+  final EntityData device;
+  final bool listWidgetCard;
+  final bool displayImage;
 
   @override
   State<StatefulWidget> createState() => _DeviceCardState();
@@ -136,7 +140,7 @@ class DeviceCard extends TbContextWidget {
 class _DeviceCardState extends TbContextState<DeviceCard> {
   final entityDateFormat = DateFormat('yyyy-MM-dd');
 
-  late Future<DeviceProfileInfo> deviceProfileFuture;
+  late Future<CachedDeviceProfileInfo> deviceProfileFuture;
 
   @override
   void initState() {
@@ -154,8 +158,8 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
   void didUpdateWidget(DeviceCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.displayImage || !widget.listWidgetCard) {
-      var oldDevice = oldWidget.device;
-      var device = widget.device;
+      final oldDevice = oldWidget.device;
+      final device = widget.device;
       if (oldDevice.field('type')! != device.field('type')!) {
         deviceProfileFuture = DeviceProfileCache.getDeviceProfileInfo(
           tbClient,
@@ -195,33 +199,28 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
             ),
           ),
         ),
-        FutureBuilder<DeviceProfileInfo>(
+        FutureBuilder<CachedDeviceProfileInfo>(
           future: deviceProfileFuture,
           builder: (context, snapshot) {
             if (snapshot.hasData &&
                 snapshot.connectionState == ConnectionState.done) {
-              var profile = snapshot.data!;
-              bool hasDashboard = profile.defaultDashboardId != null;
+              final profile = snapshot.data!;
+              final bool hasDashboard = profile.info.defaultDashboardId != null;
               Widget image;
               BoxFit imageFit;
-              if (profile.image != null) {
+              if (profile.info.image != null) {
                 image =
-                    Utils.imageFromTbImage(context, tbClient, profile.image!);
+                    Utils.imageFromTbImage(context, tbClient, profile.info.image);
                 imageFit = BoxFit.contain;
               } else {
                 image = SvgPicture.asset(
                   ThingsboardImage.deviceProfilePlaceholder,
-                  colorFilter: ColorFilter.mode(
-                    Theme.of(context).primaryColor,
-                    BlendMode.overlay,
-                  ),
+                 
                   semanticsLabel: 'Device',
                 );
-                imageFit = BoxFit.cover;
+                imageFit = BoxFit.contain;
               }
               return Row(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const SizedBox(width: 20),
                   Flexible(
@@ -231,8 +230,6 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                       children: [
                         const SizedBox(height: 12),
                         Row(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             if (widget.displayImage)
                               Container(
@@ -265,7 +262,6 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                               child: Column(
                                 children: [
                                   Row(
-                                    mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
@@ -305,7 +301,6 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                                   ),
                                   const SizedBox(height: 4),
                                   Row(
-                                    mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
@@ -389,19 +384,19 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
               // color: Color(0xFFEEEEEE),
               borderRadius: BorderRadius.horizontal(left: Radius.circular(4)),
             ),
-            child: FutureBuilder<DeviceProfileInfo>(
+            child: FutureBuilder<CachedDeviceProfileInfo>(
               future: deviceProfileFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasData &&
                     snapshot.connectionState == ConnectionState.done) {
-                  var profile = snapshot.data!;
+                  final profile = snapshot.data!;
                   Widget image;
                   BoxFit imageFit;
-                  if (profile.image != null) {
+                  if (profile.info.image != null) {
                     image = Utils.imageFromTbImage(
                       context,
                       tbClient,
-                      profile.image!,
+                      profile.info.image,
                     );
                     imageFit = BoxFit.contain;
                   } else {
@@ -444,7 +439,6 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
             ),
           ),
         Flexible(
-          fit: FlexFit.loose,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
             child: Column(

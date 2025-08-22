@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/utils/ui/tb_alert_dialog.dart';
 import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 
@@ -9,7 +9,7 @@ class ExitConfirmationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TbAlertDialog(
-      title: const Text('Exit device provisioning'),
+      title:  Text(S.of(context).exitDeviceProvisioning),
       content: Text(S.of(context).areYouSure),
       actions: [
         TextButton(
@@ -29,7 +29,7 @@ class ExitConfirmationDialog extends StatelessWidget {
           child: Text(
             S.of(context).yes.toUpperCase(),
             style: TbTextStyles.labelLarge.copyWith(
-              color: Colors.black.withOpacity(.87),
+              color: Colors.black.withValues(alpha: .87),
             ),
           ),
         ),
