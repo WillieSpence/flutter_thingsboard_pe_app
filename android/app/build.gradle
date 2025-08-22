@@ -14,6 +14,15 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withReader('UTF-8') { reader ->
+        keystoreProperties.load(reader)
+    }
+}
+
 def getDartDefineValue = { key ->
     def dartDefines = [:]
     if (project.hasProperty('dart-defines')) {
