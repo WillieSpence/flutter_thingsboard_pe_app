@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/modules/device/device_profiles_grid.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
 class DevicesMainPage extends TbContextWidget {
-  DevicesMainPage(TbContext tbContext, {super.key}) : super(tbContext);
+  DevicesMainPage(super.tbContext, {super.key});
 
   @override
   State<StatefulWidget> createState() => _DevicesMainPageState();
@@ -14,7 +13,7 @@ class DevicesMainPage extends TbContextWidget {
 
 class _DevicesMainPageState extends TbContextState<DevicesMainPage>
     with AutomaticKeepAliveClientMixin<DevicesMainPage> {
-  final PageLinkController _pageLinkController = PageLinkController();
+  final PageLinkController _pageLinkController = PageLinkController(pageSize: 10);
 
   @override
   bool get wantKeepAlive {
@@ -24,7 +23,7 @@ class _DevicesMainPageState extends TbContextState<DevicesMainPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var deviceProfilesList = DeviceProfilesGrid(tbContext, _pageLinkController);
+    final deviceProfilesList = DeviceProfilesGrid(tbContext, _pageLinkController);
     return Scaffold(
       appBar: TbAppBar(tbContext, title: Text(deviceProfilesList.title)),
       body: deviceProfilesList,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/bloc/assignee/bloc.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/widgets/alarm_filter_widget.dart';
@@ -22,29 +23,28 @@ class AlarmAssigneeFilterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlarmFilterWidget(
-      filterTitle: 'Assignee',
+      filterTitle: S.of(context).assignee,
       child: InkWell(
         onTap: () async {
           await UiUtils.showModalBottomSheet(
             context: context,
             topControl: const SizedBox.shrink(),
-            builder: (context) => AnimatedSize(
-              curve: Curves.easeInOut,
-              duration: const Duration(milliseconds: 500),
-              child: AssigneeListWidget(
-                tbContext: tbContext,
-                onChanged: onChanged,
-              ),
-            ),
+            builder:
+                (context) => AnimatedSize(
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 500),
+                  child: AssigneeListWidget(
+                    tbContext: tbContext,
+                    onChanged: onChanged,
+                  ),
+                ),
           );
           getIt<AssigneeBloc>().add(const AssigneeResetSearchTextEvent());
         },
         child: Container(
           constraints: const BoxConstraints(minHeight: 38),
           decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black.withOpacity(0.12),
-            ),
+            border: Border.all(color: Colors.black.withValues(alpha: 0.12)),
             borderRadius: BorderRadius.circular(4),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -56,15 +56,15 @@ class AlarmAssigneeFilterWidget extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.account_circle,
-                        color: Colors.black.withOpacity(0.38),
+                        color: Colors.black.withValues(alpha: 0.38),
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'All',
+                        S.of(context).all,
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
-                          color: Colors.black.withOpacity(0.38),
+                          color: Colors.black.withValues(alpha: 0.38),
                         ),
                       ),
                     ],
@@ -74,12 +74,13 @@ class AlarmAssigneeFilterWidget extends StatelessWidget {
                     id: state.assignee.userInfo.id.id ?? '',
                     avatar: UserInfoAvatarWidget(
                       shortName: state.assignee.shortName,
-                      color: HSLColor.fromAHSL(
-                        1,
-                        state.assignee.displayName.hashCode % 360,
-                        40 / 100,
-                        60 / 100,
-                      ).toColor(),
+                      color:
+                          HSLColor.fromAHSL(
+                            1,
+                            state.assignee.displayName.hashCode % 360,
+                            40 / 100,
+                            60 / 100,
+                          ).toColor(),
                     ),
                     name: state.assignee.displayName,
                   );
@@ -87,7 +88,7 @@ class AlarmAssigneeFilterWidget extends StatelessWidget {
                   return UserInfoWidget(
                     avatar: Icon(
                       Icons.account_circle,
-                      color: Colors.black.withOpacity(0.38),
+                      color: Colors.black.withValues(alpha: 0.38),
                     ),
                     name: 'Assigned to me',
                     id: '',

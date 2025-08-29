@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flutter/material.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
+import 'package:thingsboard_app/core/entity/entity_list_card.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-
-import 'entity_list_card.dart';
 
 class EntitiesListWidgetController {
   final List<_EntitiesListWidgetState> states = [];
@@ -35,11 +34,7 @@ class EntitiesListWidgetController {
 
 abstract class EntitiesListPageLinkWidget<T>
     extends EntitiesListWidget<T, PageLink> {
-  EntitiesListPageLinkWidget(
-    TbContext tbContext, {
-    EntitiesListWidgetController? controller,
-    super.key,
-  }) : super(tbContext, controller: controller);
+  EntitiesListPageLinkWidget(super.tbContext, {super.controller, super.key});
 
   @override
   PageKeyController<PageLink> createPageKeyController() =>
@@ -48,17 +43,15 @@ abstract class EntitiesListPageLinkWidget<T>
 
 abstract class EntitiesListWidget<T, P> extends TbContextWidget
     with EntitiesBase<T, P> {
-  final EntitiesListWidgetController? _controller;
-
   EntitiesListWidget(
-    TbContext tbContext, {
-    EntitiesListWidgetController? controller,
+    super.tbContext, {
     super.key,
-  })  : _controller = controller,
-        super(tbContext);
+    this.controller,
+  });
+  final EntitiesListWidgetController? controller;
 
   @override
-  State<StatefulWidget> createState() => _EntitiesListWidgetState(_controller);
+  State<StatefulWidget> createState() => _EntitiesListWidgetState();
 
   PageKeyController<P> createPageKeyController();
 
@@ -67,18 +60,18 @@ abstract class EntitiesListWidget<T, P> extends TbContextWidget
 
 class _EntitiesListWidgetState<T, P>
     extends TbContextState<EntitiesListWidget<T, P>> {
-  final EntitiesListWidgetController? _controller;
+  _EntitiesListWidgetState();
+
+  late final EntitiesListWidgetController? _controller;
 
   late final PageKeyController<P> _pageKeyController;
 
   final StreamController<PageData<T>?> _entitiesStreamController =
       StreamController.broadcast();
 
-  _EntitiesListWidgetState(EntitiesListWidgetController? controller)
-      : _controller = controller;
-
   @override
   void initState() {
+    _controller = widget.controller;
     super.initState();
     _pageKeyController = widget.createPageKeyController();
     if (_controller != null) {
@@ -99,7 +92,9 @@ class _EntitiesListWidgetState<T, P>
 
   Future<void> _refresh() {
     _entitiesStreamController.add(null);
-    var entitiesFuture = widget.fetchEntities(_pageKeyController.value.pageKey);
+    final entitiesFuture = widget.fetchEntities(
+      _pageKeyController.value.pageKey,
+    );
     entitiesFuture.then((value) => _entitiesStreamController.add(value));
     return entitiesFuture;
   }
@@ -125,9 +120,7 @@ class _EntitiesListWidgetState<T, P>
       ),
       child: Card(
         margin: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         elevation: 0,
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -143,7 +136,7 @@ class _EntitiesListWidgetState<T, P>
                       builder: (context, snapshot) {
                         var title = widget.title;
                         if (snapshot.hasData) {
-                          var data = snapshot.data;
+                          final data = snapshot.data;
                           title += ' (${data!.totalElements})';
                         }
                         return Text(
@@ -162,10 +155,8 @@ class _EntitiesListWidgetState<T, P>
                       onPressed: () {
                         widget.onViewAll();
                       },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: const Text('View all'),
+                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                      child: Text(S.of(context).viewAll),
                     ),
                   ],
                 ),
@@ -176,7 +167,7 @@ class _EntitiesListWidgetState<T, P>
                   stream: _entitiesStreamController.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      var data = snapshot.data!;
+                      final data = snapshot.data!;
                       if (data.data.isEmpty) {
                         return _buildNoEntitiesFound(); //return Text('Loaded');
                       } else {
@@ -186,9 +177,9 @@ class _EntitiesListWidgetState<T, P>
                       return Center(
                         child: RefreshProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(
-                            Theme.of(tbContext.currentState!.context)
-                                .colorScheme
-                                .primary,
+                            Theme.of(
+                              tbContext.currentState!.context,
+                            ).colorScheme.primary,
                           ),
                         ),
                       );
@@ -206,20 +197,13 @@ class _EntitiesListWidgetState<T, P>
   Widget _buildNoEntitiesFound() {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color(0xFFDEDEDE),
-          style: BorderStyle.solid,
-          width: 1,
-        ),
+        border: Border.all(color: const Color(0xFFDEDEDE)),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Center(
         child: Text(
           widget.noItemsFoundText,
-          style: const TextStyle(
-            color: Color(0xFFAFAFAF),
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: Color(0xFFAFAFAF), fontSize: 14),
         ),
       ),
     );
@@ -232,16 +216,17 @@ class _EntitiesListWidgetState<T, P>
       child: ListView(
         scrollDirection: Axis.horizontal,
         controller: ScrollController(),
-        children: entities
-            .map(
-              (entity) => EntityListCard<T>(
-                entity,
-                entityCardWidgetBuilder: widget.buildEntityListWidgetCard,
-                onEntityTap: widget.onEntityTap,
-                listWidgetCard: true,
-              ),
-            )
-            .toList(),
+        children:
+            entities
+                .map(
+                  (entity) => EntityListCard<T>(
+                    entity,
+                    entityCardWidgetBuilder: widget.buildEntityListWidgetCard,
+                    onEntityTap: widget.onEntityTap,
+                    listWidgetCard: true,
+                  ),
+                )
+                .toList(),
       ),
     );
   }

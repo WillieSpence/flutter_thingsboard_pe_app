@@ -8,8 +8,8 @@ abstract class ThingsboardImage {
   static final thingsboardCenter = 'assets/images/omnithings_center.svg';
   static final dashboardPlaceholder = 'assets/images/dashboard-placeholder.svg';
   static const deviceProfilePlaceholder =
-      'assets/images/device-profile-placeholder.svg';
-  static const emailVerification = 'assets/images/email-verification.svg';
+      'assets/images/device-placeholder.svg';
+    static const emailVerification = 'assets/images/email-verification.svg';
   static const emailVerified = 'assets/images/email-verified.svg';
   static const dashboardPermissionError =
       'assets/images/dashboard_permission_error.svg';

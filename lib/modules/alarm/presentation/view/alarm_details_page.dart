@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/modules/alarm/di/alarm_details_di.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/bloc/alarm_assignee/alarm_assignee_bloc.dart';
 import 'package:thingsboard_app/modules/alarm/presentation/bloc/alarm_assignee/alarm_assignee_event.dart';
@@ -17,11 +17,7 @@ import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
 class AlarmDetailsPage extends TbContextWidget {
-  AlarmDetailsPage(
-    super.tbContext, {
-    required this.id,
-    super.key,
-  });
+  AlarmDetailsPage(super.tbContext, {required this.id, super.key});
 
   final String id;
 
@@ -35,26 +31,28 @@ class _AlarmDetailsPageState extends TbContextState<AlarmDetailsPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AlarmDetailsBloc>(
-          create: (_) => AlarmDetailsBloc.create()
-            ..add(AlarmDetailsFetchEvent(id: widget.id)),
+          create:
+              (_) =>
+                  AlarmDetailsBloc.create()
+                    ..add(AlarmDetailsFetchEvent(id: widget.id)),
         ),
         BlocProvider<AlarmAssigneeBloc>(
-          create: (_) => AlarmAssigneeBloc.create(id: widget.id)
-            ..add(
-              const AlarmFetchAssigneeEvent(),
-            ),
+          create:
+              (_) =>
+                  AlarmAssigneeBloc.create(id: widget.id)
+                    ..add(const AlarmFetchAssigneeEvent()),
         ),
       ],
       child: BlocBuilder<AlarmDetailsBloc, AlarmDetailsState>(
         builder: (context, state) {
           switch (state) {
             case AlarmDetailsLoadingState():
-              return Scaffold(
+              return  Scaffold(
                 body: SizedBox.expand(
-                  child: Container(
+                  child: ColoredBox(
                     color: const Color(0x99FFFFFF),
                     child: Center(
-                      child: TbProgressIndicator(tbContext, size: 50.0),
+                      child: TbProgressIndicator(tbContext,size: 50.0),
                     ),
                   ),
                 ),
@@ -67,7 +65,7 @@ class _AlarmDetailsPageState extends TbContextState<AlarmDetailsPage> {
                   title: Text(
                     state.alarmInfo.type,
                     style: TbTextStyles.titleXs.copyWith(
-                      color: Colors.black.withOpacity(.87),
+                      color: Colors.black.withValues(alpha: .87),
                     ),
                   ),
                 ),
@@ -87,7 +85,8 @@ class _AlarmDetailsPageState extends TbContextState<AlarmDetailsPage> {
                                 AlarmDetailsWidget(
                                   alarmInfo: state.alarmInfo,
                                   alamDashboardId:
-                                      state.alarmInfo.details?['dashboardId'],
+                                      state.alarmInfo.details?['dashboardId']
+                                          ?.toString(),
                                   tbContext: tbContext,
                                 ),
                                 Padding(
@@ -120,7 +119,7 @@ class _AlarmDetailsPageState extends TbContextState<AlarmDetailsPage> {
                   title: Text(
                     S.of(context).failedToLoadAlarmDetails,
                     style: TbTextStyles.titleXs.copyWith(
-                      color: Colors.black.withOpacity(.87),
+                      color: Colors.black.withValues(alpha: .87),
                     ),
                   ),
                 ),
@@ -139,10 +138,7 @@ class _AlarmDetailsPageState extends TbContextState<AlarmDetailsPage> {
 
   @override
   void initState() {
-    AlarmDetailsDi.init(
-      widget.tbClient,
-      id: AlarmId(widget.id),
-    );
+    AlarmDetailsDi.init(widget.tbClient, id: AlarmId(widget.id));
     super.initState();
   }
 

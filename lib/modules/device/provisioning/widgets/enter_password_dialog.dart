@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/modules/device/provisioning/widgets/help_message_widget.dart';
 import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 
@@ -34,7 +34,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
         title: Text(
           S.of(context).confirmation,
           style: TbTextStyles.titleXs.copyWith(
-            color: Colors.black.withOpacity(.87),
+            color: Colors.black.withValues(alpha: .87),
           ),
         ),
       ),
@@ -71,7 +71,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
                     },
                     icon: Icon(
                       obscureText ? Icons.visibility_off : Icons.visibility,
-                      color: Colors.black.withOpacity(.54),
+                      color: Colors.black.withValues(alpha: .54),
                       size: 24,
                     ),
                   ),
@@ -90,15 +90,17 @@ class _PasswordDialogState extends State<PasswordDialog> {
                       horizontal: 16,
                     ),
                   ),
-                  onPressed: textCtrl.text.isNotEmpty
-                      ? () => Navigator.of(context).pop(textCtrl.text)
-                      : null,
+                  onPressed:
+                      textCtrl.text.isNotEmpty
+                          ? () => Navigator.of(context).pop(textCtrl.text)
+                          : null,
                   child: Text(
                     S.of(context).next,
                     style: TbTextStyles.labelMedium.copyWith(
-                      color: textCtrl.text.isEmpty
-                          ? Colors.black.withOpacity(.38)
-                          : Colors.white,
+                      color:
+                          textCtrl.text.isEmpty
+                              ? Colors.black.withValues(alpha: .38)
+                              : Colors.white,
                     ),
                   ),
                 ),

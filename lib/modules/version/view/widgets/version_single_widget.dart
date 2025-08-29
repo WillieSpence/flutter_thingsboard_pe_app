@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -34,8 +34,6 @@ class _VersionSingleState extends TbContextState<VersionSingleWidget>
       appBar: TbAppBar(
         tbContext,
         title: Text(S.of(context).updateRequired),
-        leading: null,
-        canGoBack: false,
       ),
       body: SafeArea(
         child: Padding(
@@ -53,7 +51,7 @@ class _VersionSingleState extends TbContextState<VersionSingleWidget>
                 child: SingleChildScrollView(
                   child: Html(
                     data: widget.notes,
-                    onLinkTap: (link, _, __) {
+                    onLinkTap: (link, _, _) {
                       if (link != null) {
                         launchUrlString(
                           link,

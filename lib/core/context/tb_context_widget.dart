@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/locator.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 
 abstract class RefreshableWidget extends Widget {
   const RefreshableWidget({super.key});
 
-  refresh();
+  void refresh();
 }
 
 abstract class TbContextStatelessWidget extends StatelessWidget
     with HasTbContext {
-  TbContextStatelessWidget(TbContext tbContext, {Key? key}) : super(key: key) {
+  TbContextStatelessWidget(TbContext tbContext, {super.key}) {
     setTbContext(tbContext);
   }
 }
 
 abstract class TbContextWidget extends StatefulWidget with HasTbContext {
-  TbContextWidget(TbContext tbContext, {Key? key}) : super(key: key) {
+  TbContextWidget(TbContext tbContext, {super.key}) {
     setTbContext(tbContext);
   }
 }
 
 abstract class TbContextState<T extends TbContextWidget> extends State<T>
     with HasTbContext {
-  final bool handleLoading;
-  bool closeMainFirst = false;
 
   TbContextState({this.handleLoading = false});
+  final bool handleLoading;
+  bool closeMainFirst = false;
 
   @override
   void initState() {
@@ -46,19 +48,19 @@ abstract class TbContextState<T extends TbContextWidget> extends State<T>
 mixin TbMainState {
   bool canNavigate(String path);
 
-  navigateToPath(String path);
+ void  navigateToPath(String path);
 
   bool isHomePage();
 }
 
 abstract class TbPageWidget extends TbContextWidget {
-  TbPageWidget(TbContext tbContext, {Key? key}) : super(tbContext, key: key);
+  TbPageWidget(super.tbContext, {super.key});
 }
 
 abstract class TbPageState<W extends TbPageWidget> extends TbContextState<W>
     with RouteAware {
-  TbPageState({bool handleUserLoaded = false}) : super(handleLoading: true);
-
+  TbPageState() : super(handleLoading: true);
+  final IOverlayService overlayService = getIt();
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -78,16 +80,15 @@ abstract class TbPageState<W extends TbPageWidget> extends TbContextState<W>
 
   @override
   void didPopNext() {
-    hideNotification();
+  overlayService.hideNotification();
     setupCurrentState(this);
   }
 }
 
 class TextContextWidget extends TbContextWidget {
-  final String text;
 
-  TextContextWidget(TbContext tbContext, this.text, {super.key})
-      : super(tbContext);
+  TextContextWidget(super.tbContext, this.text, {super.key});
+  final String text;
 
   @override
   State<StatefulWidget> createState() => _TextContextWidgetState();

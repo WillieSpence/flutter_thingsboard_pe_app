@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
 class ChangePasswordPage extends TbContextWidget {
-  ChangePasswordPage(TbContext tbContext, {super.key}) : super(tbContext);
+  ChangePasswordPage(super.tbContext, {super.key});
 
   @override
   State<StatefulWidget> createState() => _ChangePasswordPageState();
@@ -16,7 +18,7 @@ class ChangePasswordPage extends TbContextWidget {
 
 class _ChangePasswordPageState extends TbContextState<ChangePasswordPage> {
   final _isLoadingNotifier = ValueNotifier<bool>(false);
-
+  final IOverlayService overlayService = getIt();
   final _showCurrentPasswordNotifier = ValueNotifier<bool>(false);
   final _showNewPasswordNotifier = ValueNotifier<bool>(false);
   final _showNewPassword2Notifier = ValueNotifier<bool>(false);
@@ -74,7 +76,7 @@ class _ChangePasswordPageState extends TbContextState<ChangePasswordPage> {
                                 },
                               ),
                               border: const OutlineInputBorder(),
-                              labelText: S.of(context).currentPasswordStar,
+                              labelText: "${S.of(context).currentPassword} *",
                             ),
                           );
                         },
@@ -108,7 +110,7 @@ class _ChangePasswordPageState extends TbContextState<ChangePasswordPage> {
                                 },
                               ),
                               border: const OutlineInputBorder(),
-                              labelText: S.of(context).newPasswordStar,
+                              labelText: '${S.of(context).newPassword} *',
                             ),
                           );
                         },
@@ -143,7 +145,7 @@ class _ChangePasswordPageState extends TbContextState<ChangePasswordPage> {
                                 },
                               ),
                               border: const OutlineInputBorder(),
-                              labelText: S.of(context).newPassword2Star,
+                              labelText: '${S.of(context).newPassword2} *',
                             ),
                           );
                         },
@@ -171,12 +173,10 @@ class _ChangePasswordPageState extends TbContextState<ChangePasswordPage> {
             valueListenable: _isLoadingNotifier,
             builder: (BuildContext context, bool loading, child) {
               if (loading) {
-                return SizedBox.expand(
-                  child: Container(
-                    color: const Color(0x99FFFFFF),
-                    child: Center(
-                      child: TbProgressIndicator(tbContext, size: 50.0),
-                    ),
+                return  SizedBox.expand(
+                  child: ColoredBox(
+                    color: const  Color(0x99FFFFFF),
+                    child: Center(child: TbProgressIndicator(tbContext,size: 50.0)),
                   ),
                 );
               } else {
@@ -192,18 +192,21 @@ class _ChangePasswordPageState extends TbContextState<ChangePasswordPage> {
   Future<void> _changePassword() async {
     FocusScope.of(context).unfocus();
     if (_changePasswordFormKey.currentState?.saveAndValidate() ?? false) {
-      var formValue = _changePasswordFormKey.currentState!.value;
-      String currentPassword = formValue['currentPassword'];
-      String newPassword = formValue['newPassword'];
-      String newPassword2 = formValue['newPassword2'];
+      final formValue = _changePasswordFormKey.currentState!.value;
+      final String currentPassword = formValue['currentPassword'].toString();
+      final String newPassword = formValue['newPassword'].toString();
+      final String newPassword2 = formValue['newPassword2'].toString();
       if (newPassword != newPassword2) {
-        showErrorNotification(S.of(context).passwordErrorNotification);
+        overlayService
+            .showErrorNotification((_) => S.of(context).passwordErrorNotification);
       } else {
         _isLoadingNotifier.value = true;
         try {
           await Future.delayed(const Duration(milliseconds: 300));
           await tbClient.changePassword(currentPassword, newPassword);
-          pop(true);
+          if (mounted) {
+            getIt<ThingsboardAppRouter>().pop(true, context);
+          }
         } catch (e) {
           _isLoadingNotifier.value = false;
         }

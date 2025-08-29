@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/modules/device/provisioning/ble/bloc/bloc.dart';
 import 'package:thingsboard_app/modules/device/provisioning/widgets/enter_password_dialog.dart';
 import 'package:thingsboard_app/modules/device/provisioning/widgets/help_message_widget.dart';
@@ -28,7 +28,7 @@ class BleDevicesView extends StatelessWidget {
             devices,
             icon: Icons.bluetooth_outlined,
             onTap: (device) async {
-              final pop = await tbContext.showFullScreenDialog(
+              final String? pop = await tbContext.showFullScreenDialog(
                 PasswordDialog(
                   helpMessage: S.of(context).popTitle(device),
                   textFieldLabel: 'PIN',

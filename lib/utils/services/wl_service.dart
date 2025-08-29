@@ -1,16 +1,24 @@
+// ignore_for_file: parameter_assignments
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:thingsboard_app/config/themes/tb_theme_utils.dart';
 import 'package:thingsboard_app/config/themes/wl_theme_widget.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
-import 'package:thingsboard_app/core/auth/login/region.dart';
+import 'package:thingsboard_app/core/auth/login/select_region/model/region.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
-const DEFAULT_LOGO_URL = 'LOGO-PE';
+const defaultLogoUrl = 'LOGO-PE';
 
 class WlService {
+
+  factory WlService(TbContext tbContext) {
+    return WlService._internal(tbContext);
+  }
+
+  WlService._internal(this._tbContext);
   static final _defaultWLParams = _createDefaultWlParams();
   static final _defaultThemeData =
       TbThemeUtils.createTheme(_defaultWLParams.paletteSettings);
@@ -34,13 +42,13 @@ class WlService {
   );
 
   static WhiteLabelingParams _createDefaultWlParams() => WhiteLabelingParams(
-        logoImageUrl: DEFAULT_LOGO_URL,
+        logoImageUrl: defaultLogoUrl,
         logoImageHeight: 36,
         appTitle: 'ThingsBoard PE',
         favicon: Favicon(url: 'thingsboard.ico'),
         paletteSettings: PaletteSettings(
-          primaryPalette: Palette(type: 'tb-primary'),
-          accentPalette: Palette(type: 'tb-accent'),
+          primaryPalette: Palette(type: 'tb-primary'),// translate-me-ignore
+          accentPalette: Palette(type: 'tb-accent'), // translate-me-ignore
         ),
         helpLinkBaseUrl: 'https://thingsboard.io',
         enableHelpLinks: true,
@@ -50,7 +58,7 @@ class WlService {
       );
 
   static LoginWhiteLabelingParams _createDefaultLoginWlParams() {
-    var loginWlParams =
+    final loginWlParams =
         LoginWhiteLabelingParams.fromJson(_defaultWLParams.toJson());
     loginWlParams.logoImageHeight = 50;
     loginWlParams.pageBackgroundColor = '#eee';
@@ -79,8 +87,8 @@ class WlService {
     }
 
     if (isLogin) {
-      var loginWlParams = wlParams as LoginWhiteLabelingParams;
-      var targetDefaultLoginWlParams =
+      final loginWlParams = wlParams as LoginWhiteLabelingParams;
+      final targetDefaultLoginWlParams =
           targetDefaultWlParams as LoginWhiteLabelingParams;
       if (loginWlParams.pageBackgroundColor == null &&
           targetDefaultLoginWlParams.pageBackgroundColor != null) {
@@ -150,12 +158,6 @@ class WlService {
   Widget? _logo;
   ThemeData? _themeData;
 
-  factory WlService(TbContext tbContext) {
-    return WlService._internal(tbContext);
-  }
-
-  WlService._internal(this._tbContext);
-
   Future<void> updateWhiteLabeling() async {
     if (_tbContext.isAuthenticated) {
       await _loadUserWhiteLabelingParams();
@@ -201,16 +203,16 @@ class WlService {
   String get platformNameAndVersion => '$platformName v.$platformVersion';
 
   bool get isCustomLogo => _isUserWlMode
-      ? _wlParams != null && _wlParams?.logoImageUrl != DEFAULT_LOGO_URL
+      ? _wlParams != null && _wlParams?.logoImageUrl != defaultLogoUrl
       : _loginWlParams != null &&
-          _loginWlParams?.logoImageUrl != DEFAULT_LOGO_URL;
+          _loginWlParams?.logoImageUrl != defaultLogoUrl;
 
   Future<void> _loadLoginWhiteLabelingParams() async {
     var loginWlParams = await _tbContext.tbClient
         .getWhiteLabelingService()
         .getLoginWhiteLabelParams();
     if (loginWlParams.platformVersion == null) {
-      var platformVersion = _tbContext.tbClient.getPlatformVersion();
+      final platformVersion = _tbContext.tbClient.getPlatformVersion();
       if (platformVersion != null) {
         loginWlParams.platformVersion = platformVersion.versionString();
       }
@@ -241,7 +243,7 @@ class WlService {
         .getWhiteLabelingService()
         .getWhiteLabelParams();
     if (userWlParams.platformVersion == null) {
-      var platformVersion = _tbContext.tbClient.getPlatformVersion();
+      final platformVersion = _tbContext.tbClient.getPlatformVersion();
       if (platformVersion != null) {
         userWlParams.platformVersion = platformVersion.versionString();
       }
@@ -274,8 +276,8 @@ class WlService {
     bool isLogin,
   ) async {
     Widget image;
-    double height = wlParams.logoImageHeight!.toDouble() / 3 * 2;
-    if (wlParams.logoImageUrl == DEFAULT_LOGO_URL) {
+    final double height = wlParams.logoImageHeight!.toDouble() / 3 * 2;
+    if (wlParams.logoImageUrl == defaultLogoUrl) {
       Region? region;
 
       image = SvgPicture.asset(
@@ -290,7 +292,7 @@ class WlService {
       image = Utils.imageFromTbImage(
         context,
         tbClient,
-        wlParams.logoImageUrl!,
+        wlParams.logoImageUrl,
         height: height,
         semanticLabel: 'ThingsBoard Logo',
         loginLogo: isLogin,

@@ -63,7 +63,7 @@ class _MainPageState extends TbPageState<MainPage>
                     ),
                     bottomNavigationBar: ValueListenableBuilder<int>(
                       valueListenable: _currentIndexNotifier,
-                      builder: (_, __, ___) => TbNavigationBarWidget(
+                      builder: (_, _, _) => TbNavigationBarWidget(
                         currentIndex: _currentIndexNotifier.value,
                         onTap: (index) => _setIndex(index),
                         customBottomBarItems: state.items,
@@ -87,7 +87,7 @@ class _MainPageState extends TbPageState<MainPage>
 
   void _setIndex(int index) {
     if (_tabController.index != index) {
-      hideNotification();
+     overlayService.hideNotification();
       _tabController.index = index;
       _currentIndexNotifier.value = index;
       tbContext.bottomNavigationTabChangedStream.add(index);

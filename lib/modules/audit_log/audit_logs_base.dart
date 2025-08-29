@@ -1,61 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/modules/audit_log/audit_log_details_page.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-
-const Map<ActionType, String> actionTypeTranslations = {
-  ActionType.ADDED: 'Added',
-  ActionType.DELETED: 'Deleted',
-  ActionType.UPDATED: 'Updated',
-  ActionType.ATTRIBUTES_UPDATED: 'Attributes Updated',
-  ActionType.ATTRIBUTES_DELETED: 'Attributes Deleted',
-  ActionType.RPC_CALL: 'RPC Call',
-  ActionType.CREDENTIALS_UPDATED: 'Credentials Updated',
-  ActionType.ASSIGNED_TO_CUSTOMER: 'Assigned to Customer',
-  ActionType.UNASSIGNED_FROM_CUSTOMER: 'Unassigned from Customer',
-  ActionType.ACTIVATED: 'Activated',
-  ActionType.SUSPENDED: 'Suspended',
-  ActionType.CREDENTIALS_READ: 'Credentials read',
-  ActionType.ATTRIBUTES_READ: 'Attributes read',
-  ActionType.ADDED_TO_ENTITY_GROUP: 'Added to group',
-  ActionType.REMOVED_FROM_ENTITY_GROUP: 'Removed from group',
-  ActionType.RELATION_ADD_OR_UPDATE: 'Relation updated',
-  ActionType.RELATION_DELETED: 'Relation deleted',
-  ActionType.RELATIONS_DELETED: 'All relation deleted',
-  ActionType.ALARM_ACK: 'Acknowledged',
-  ActionType.ALARM_CLEAR: 'Cleared',
-  ActionType.ALARM_DELETE: 'Alarm Deleted',
-  ActionType.ALARM_ASSIGNED: 'Alarm Assigned',
-  ActionType.ALARM_UNASSIGNED: 'Alarm Unassigned',
-  ActionType.REST_API_RULE_ENGINE_CALL: 'Rule engine REST API call',
-  ActionType.MADE_PUBLIC: 'Made public',
-  ActionType.MADE_PRIVATE: 'Made private',
-  ActionType.LOGIN: 'Login',
-  ActionType.LOGOUT: 'Logout',
-  ActionType.LOCKOUT: 'Lockout',
-  ActionType.ASSIGNED_FROM_TENANT: 'Assigned from Tenant',
-  ActionType.ASSIGNED_TO_TENANT: 'Assigned to Tenant',
-  ActionType.PROVISION_SUCCESS: 'Device provisioned',
-  ActionType.PROVISION_FAILURE: 'Device provisioning was failed',
-  ActionType.TIMESERIES_UPDATED: 'Telemetry updated',
-  ActionType.TIMESERIES_DELETED: 'Telemetry deleted',
-  ActionType.CHANGE_OWNER: 'Owner changed',
-  ActionType.ASSIGNED_TO_EDGE: 'Assigned to Edge',
-  ActionType.UNASSIGNED_FROM_EDGE: 'Unassigned from Edge',
-  ActionType.ADDED_COMMENT: 'Added Comment',
-  ActionType.UPDATED_COMMENT: 'Updated Comment',
-  ActionType.DELETED_COMMENT: 'Deleted Comment',
-  ActionType.SMS_SENT: 'SMS Sent',
-};
-
-const Map<ActionStatus, String> actionStatusTranslations = {
-  ActionStatus.SUCCESS: 'Success',
-  ActionStatus.FAILURE: 'Failure',
-};
+import 'package:thingsboard_app/utils/translation_utils.dart';
 
 mixin AuditLogsBase on EntitiesBase<AuditLog, TimePageLink> {
   @override
@@ -65,7 +14,7 @@ mixin AuditLogsBase on EntitiesBase<AuditLog, TimePageLink> {
   String get noItemsFoundText => 'No audit logs found';
 
   @override
-  Future<PageData<AuditLog>> fetchEntities(TimePageLink pageLink) {
+  Future<PageData<AuditLog>> fetchEntities(TimePageLink pageLink, {bool refresh = false}) {
     return tbClient.getAuditLogService().getAuditLogs(pageLink);
   }
 
@@ -83,10 +32,9 @@ mixin AuditLogsBase on EntitiesBase<AuditLog, TimePageLink> {
 }
 
 class AuditLogCard extends TbContextWidget {
-  final AuditLog auditLog;
 
-  AuditLogCard(TbContext tbContext, {super.key, required this.auditLog})
-      : super(tbContext);
+  AuditLogCard(super.tbContext, {super.key, required this.auditLog});
+  final AuditLog auditLog;
 
   @override
   State<StatefulWidget> createState() => _AuditLogCardState();
@@ -122,7 +70,6 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
           ),
         ),
         Row(
-          mainAxisSize: MainAxisSize.max,
           children: [
             const SizedBox(width: 4),
             Flexible(
@@ -131,8 +78,6 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(width: 16),
                       Flexible(
@@ -142,15 +87,15 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
                           children: [
                             const SizedBox(height: 12),
                             Row(
-                              mainAxisSize: MainAxisSize.max,
+                              spacing: 8,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: AutoSizeText(
+                                Expanded(
+                                 
+                                  child: Text(
                                     widget.auditLog.entityName ?? '',
                                     maxLines: 2,
-                                    minFontSize: 8,
+                                   // minFontSize: 8,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       color: Color(0xFF282828),
@@ -182,8 +127,7 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
                                 Flexible(
                                   fit: FlexFit.tight,
                                   child: Text(
-                                    entityTypeTranslations[
-                                        widget.auditLog.entityId.entityType]!,
+                                        widget.auditLog.entityId.entityType.getTranslatedEntityType(context),
                                     style: const TextStyle(
                                       color: Color(0xFFAFAFAF),
                                       fontWeight: FontWeight.normal,
@@ -193,8 +137,8 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
                                   ),
                                 ),
                                 Text(
-                                  actionStatusTranslations[
-                                      widget.auditLog.actionStatus]!,
+                                  
+                                      widget.auditLog.actionStatus.getTranslatedActionStatus(context),
                                   style: TextStyle(
                                     color: widget.auditLog.actionStatus ==
                                             ActionStatus.SUCCESS
@@ -216,13 +160,12 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
                   ),
                   const SizedBox(height: 8),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(width: 16),
                       Flexible(
                         fit: FlexFit.tight,
                         child: Text(
-                          actionTypeTranslations[widget.auditLog.actionType]!,
+                         widget.auditLog.actionType.getTranslatedActionType(context),
                           style: const TextStyle(
                             color: Color(0xFF282828),
                             fontWeight: FontWeight.normal,
@@ -254,7 +197,7 @@ class _AuditLogCardState extends TbContextState<AuditLogCard> {
     );
   }
 
-  _auditLogDetails(AuditLog auditLog) {
+ void _auditLogDetails(AuditLog auditLog) {
     tbContext.showFullScreenDialog(AuditLogDetailsPage(tbContext, auditLog));
   }
 }

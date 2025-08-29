@@ -6,11 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:open_settings_plus/open_settings_plus.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/device/provisioning/bloc/bloc.dart';
 import 'package:thingsboard_app/modules/device/provisioning/view/states/manually_reconnect_to_wifi.dart';
 import 'package:thingsboard_app/modules/device/provisioning/view/states/provision_states.dart';
 import 'package:thingsboard_app/modules/device/provisioning/widgets/return_to_dashboard_button.dart';
 import 'package:thingsboard_app/modules/device/provisioning/widgets/try_again_button.dart';
+import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 
 class DeviceProvisioningView extends TbContextStatelessWidget {
@@ -31,7 +34,7 @@ class DeviceProvisioningView extends TbContextStatelessWidget {
   final bool mustReconnectToWifiBeforeClaiming;
   final String? ssid;
   final String? wifiPassword;
-
+final IOverlayService overlayService = getIt();
   @override
   Widget build(BuildContext context) {
     return BlocProvider<DeviceProvisioningBloc>(
@@ -76,7 +79,7 @@ class DeviceProvisioningView extends TbContextStatelessWidget {
             listener: (context, state) {
               if (state is DeviceProvisioningClaimingErrorState) {
                 if (state.message != null) {
-                  tbContext.showErrorNotification(
+                  overlayService.showErrorNotification( (_) => 
                     state.message!,
                   );
                 }
@@ -123,7 +126,7 @@ class DeviceProvisioningView extends TbContextStatelessWidget {
                 return Column(
                   children: [
                     TryAgainButton(
-                      label: 'Open Wi-Fi settings',
+                      label: S.of(context).openWifiSettings,
                       onTryAgain: () => Platform.isAndroid
                           ? const OpenSettingsPlusAndroid().wifi()
                           : const OpenSettingsPlusIOS().wifi(),
@@ -139,7 +142,7 @@ class DeviceProvisioningView extends TbContextStatelessWidget {
                           ),
                         ),
                         child: Text(
-                          'Ready',
+                          S.of(context).ready,
                           style: TbTextStyles.labelMedium.copyWith(
                             color: Colors.white,
                           ),

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/alarm/alarms_base.dart';
+import 'package:thingsboard_app/modules/notification/usecase/handle_notification_tap_params.dart';
+import 'package:thingsboard_app/modules/notification/usecase/handle_notification_tap_usecase.dart';
 import 'package:thingsboard_app/modules/notification/widgets/notification_icon.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-import 'package:thingsboard_app/utils/services/notification_service.dart';
+import 'package:thingsboard_app/utils/translation_utils.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationWidget extends StatelessWidget {
@@ -33,20 +36,23 @@ class NotificationWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        NotificationService.handleClickOnNotification(
-          notification.additionalConfig?['onClick'] ?? {},
-          tbContext,
-          isOnNotificationsScreenAlready: true,
+        getIt<HandleNotificationTapUsecase>().call(
+          HandleNotificationTapParams(
+            notification: notification,
+            tbContext: tbContext,
+          ),
         );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
-          border: notification.info?.alarmSeverity != null
-              ? Border.all(
-                  color: alarmSeverityColors[notification.info?.alarmSeverity]!,
-                )
-              : null,
+          border:
+              notification.info?.alarmSeverity != null
+                  ? Border.all(
+                    color:
+                       notification.info?.alarmSeverity?.toColor() ?? Colors.transparent,
+                  )
+                  : null,
           borderRadius: BorderRadius.circular(5),
         ),
         child: Column(
@@ -58,9 +64,7 @@ class NotificationWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
-                  children: [
-                    NotificationIcon(notification: notification),
-                  ],
+                  children: [NotificationIcon(notification: notification)],
                 ),
                 Expanded(
                   child: Padding(
@@ -81,11 +85,7 @@ class NotificationWidget extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Flexible(
-                          child: Html(
-                            data: notification.text,
-                          ),
-                        ),
+                        Flexible(child: Html(data: notification.text)),
                       ],
                     ),
                   ),
@@ -103,29 +103,28 @@ class NotificationWidget extends StatelessWidget {
                     Row(
                       children: [
                         Visibility(
-                          visible: notification.status !=
+                          visible:
+                              notification.status !=
                               PushNotificationStatus.READ,
                           child: SizedBox(
                             width: 30,
                             height: 50,
                             child: IconButton(
-                              onPressed: () => onReadNotification(
-                                notification.id!.id!,
-                              ),
+                              onPressed:
+                                  () =>
+                                      onReadNotification(notification.id!.id!),
                               icon: Icon(
                                 Icons.check_circle_outline,
-                                color: Colors.black.withOpacity(0.38),
+                                color: Colors.black.withValues(alpha: 0.38),
                               ),
                             ),
                           ),
                         ),
                         Visibility(
-                          visible: notification.status ==
+                          visible:
+                              notification.status ==
                               PushNotificationStatus.READ,
-                          child: const SizedBox(
-                            width: 30,
-                            height: 50,
-                          ),
+                          child: const SizedBox(width: 30, height: 50),
                         ),
                       ],
                     ),
@@ -133,15 +132,16 @@ class NotificationWidget extends StatelessWidget {
                       visible: severity != null,
                       child: Container(
                         decoration: BoxDecoration(
-                          color:
-                              alarmSeverityColors[severity]?.withOpacity(0.1),
+                          color: severity?.toColor().withValues(
+                            alpha: 0.1,
+                          ),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         padding: const EdgeInsets.all(5),
                         child: Text(
-                          alarmSeverityTranslations[severity] ?? '',
+                         severity?.getTranslatedAlarmSeverity(context) ?? '',
                           style: TextStyle(
-                            color: alarmSeverityColors[AlarmSeverity.CRITICAL]!,
+                            color: AlarmSeverity.CRITICAL.toColor(),
                             fontWeight: FontWeight.w600,
                           ),
                         ),

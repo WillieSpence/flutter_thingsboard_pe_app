@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/messages.dart';
 import 'package:preload_page_view/preload_page_view.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
+import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/alarm/alarms_list.dart';
 import 'package:thingsboard_app/modules/alarm/di/alarms_di.dart';
@@ -15,10 +15,10 @@ import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
 class AlarmsPage extends TbContextWidget {
   AlarmsPage(
-    TbContext tbContext, {
+    super.tbContext, {
     this.searchMode = false,
     super.key,
-  }) : super(tbContext);
+  });
 
   final bool searchMode;
 
@@ -51,7 +51,7 @@ class _AlarmsPageState extends TbContextState<AlarmsPage>
                 appBar: TbAppBar(
                   tbContext,
                   title: Text(
-                    S.of(context).alarms,
+                    S.of(context).alarms(2),
                     style: TbTextStyles.titleXs,
                   ),
                   actions: [
@@ -79,7 +79,6 @@ class _AlarmsPageState extends TbContextState<AlarmsPage>
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: Colors.white,
-                                      width: 1,
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                     color: Theme.of(context).primaryColor,
@@ -96,7 +95,9 @@ class _AlarmsPageState extends TbContextState<AlarmsPage>
                     IconButton(
                       icon: const Icon(Icons.search),
                       onPressed: () {
-                        navigateTo('/alarms?search=true');
+                        getIt<ThingsboardAppRouter>()
+                            // translate-me-ignore-next-line
+                            .navigateTo('/alarms?search=true');
                       },
                     ),
                   ],
