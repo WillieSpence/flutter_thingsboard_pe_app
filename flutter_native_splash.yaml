@@ -1,8 +1,8 @@
 flutter_native_splash:
   color: "##ffffff"
-  image: assets/branding/omnithings_symbol.png
+  image: assets/branding/ot_splash_1152x1152.png
   android_12:
-    image: assets/branding/splash_android_12.png
+    image: assets/branding/ot_splash_1152x1152.png
     color: "#ffffff"
     icon_background_color: "#ffffff"
   android: true
