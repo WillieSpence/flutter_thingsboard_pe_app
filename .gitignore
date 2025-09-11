@@ -52,3 +52,5 @@ GoogleService-Info.plist
 # FVM Version Cache
 .fvm/
 tb_firebase_options.dart
+
+configs.json
