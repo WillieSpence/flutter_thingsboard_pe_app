@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:reactive_forms/reactive_forms.dart';
+import 'package:thingsboard_app/core/auth/login/widgets/text_field.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/thingsboard_client.dart'
     show SignUpField, SignUpFieldsId, SignUpFieldsIdToString;
@@ -23,20 +25,16 @@ class SingUpFieldWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return FormBuilderTextField(
-      autofillHints: getHintsFromId(),
+    return TbTextField(
+      autoFillHints: getHintsFromId(),
       obscureText: obscureText,
-      name: field.id.toShortString(),
-      keyboardType: keyboardTypeFromId(),
-      validator: validator(context),
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 12,
-        ),
-        border: const OutlineInputBorder(),
-        labelText: labelText(context),
-        suffixIcon: suffixIcon,
-      ),
+      formControlName: field.id.toShortString(),
+      type: keyboardTypeFromId(),
+      suffixIcon: suffixIcon,
+     // validator: validator(context),
+     label: labelText(context),
+     hint: labelText(context),
+
     );
   }
 List<String>? getHintsFromId() {
@@ -118,6 +116,6 @@ List<String>? getHintsFromId() {
   }
 
   String labelText(BuildContext context) {
-    return field.required ? '${field.label} *' : field.label;
+    return  field.label;
   }
 }

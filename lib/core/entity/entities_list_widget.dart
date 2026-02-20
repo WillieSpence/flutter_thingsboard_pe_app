@@ -7,7 +7,7 @@ import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/core/entity/entity_list_card.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
-
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 class EntitiesListWidgetController {
   final List<_EntitiesListWidgetState> states = [];
 
@@ -34,24 +34,24 @@ class EntitiesListWidgetController {
 
 abstract class EntitiesListPageLinkWidget<T>
     extends EntitiesListWidget<T, PageLink> {
-  EntitiesListPageLinkWidget(super.tbContext, {super.controller, super.key});
+  EntitiesListPageLinkWidget( {super.controller, super.key});
 
   @override
   PageKeyController<PageLink> createPageKeyController() =>
       PageLinkController(pageSize: 5);
 }
 
-abstract class EntitiesListWidget<T, P> extends TbContextWidget
+abstract class EntitiesListWidget<T, P> extends ConsumerStatefulWidget
     with EntitiesBase<T, P> {
   EntitiesListWidget(
-    super.tbContext, {
+     {
     super.key,
-    this.controller,
-  });
-  final EntitiesListWidgetController? controller;
+    EntitiesListWidgetController? controller,
+  }) : _controller = controller;
+  final EntitiesListWidgetController? _controller;
 
   @override
-  State<StatefulWidget> createState() => _EntitiesListWidgetState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _EntitiesListWidgetState();
 
   PageKeyController<P> createPageKeyController();
 
@@ -59,7 +59,7 @@ abstract class EntitiesListWidget<T, P> extends TbContextWidget
 }
 
 class _EntitiesListWidgetState<T, P>
-    extends TbContextState<EntitiesListWidget<T, P>> {
+    extends ConsumerState<EntitiesListWidget<T, P>> {
   _EntitiesListWidgetState();
 
   late final EntitiesListWidgetController? _controller;
@@ -71,7 +71,7 @@ class _EntitiesListWidgetState<T, P>
 
   @override
   void initState() {
-    _controller = widget.controller;
+    _controller = widget._controller;
     super.initState();
     _pageKeyController = widget.createPageKeyController();
     if (_controller != null) {
@@ -178,7 +178,7 @@ class _EntitiesListWidgetState<T, P>
                         child: RefreshProgressIndicator(
                           valueColor: AlwaysStoppedAnimation(
                             Theme.of(
-                              tbContext.currentState!.context,
+                              context
                             ).colorScheme.primary,
                           ),
                         ),
@@ -222,7 +222,7 @@ class _EntitiesListWidgetState<T, P>
                   (entity) => EntityListCard<T>(
                     entity,
                     entityCardWidgetBuilder: widget.buildEntityListWidgetCard,
-                    onEntityTap: widget.onEntityTap,
+                    onEntityTap: (i) => widget.onEntityTap(i, ref),
                     listWidgetCard: true,
                   ),
                 )

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/dashboard/di/dashboards_di.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/view/dashboard_permission_error_view.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/widgets/dashboard_widget.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/services/permission/i_permission_service.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
-class SingleDashboardView extends TbContextWidget {
-  SingleDashboardView(
-    super.tbContext, {
+class SingleDashboardView extends StatefulWidget {
+  const SingleDashboardView({
     required this.id,
     this.title,
     this.state,
@@ -27,7 +27,7 @@ class SingleDashboardView extends TbContextWidget {
   State<StatefulWidget> createState() => _SingleDashboardViewState();
 }
 
-class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
+class _SingleDashboardViewState extends State<SingleDashboardView>
     with TickerProviderStateMixin {
   final dashboardTitleValue = ValueNotifier<String>('Dashboard');
   final hasRightLayout = ValueNotifier(false);
@@ -42,13 +42,13 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
   @override
   Widget build(BuildContext context) {
     if (!havePermission) {
-      return DashboardPermissionErrorView(tbContext);
+      return DashboardPermissionErrorView();
     }
 
     return Scaffold(
       appBar: TbAppBar(
-        tbContext,
-        leading: BackButton(
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
           onPressed: () async {
             if (_dashboardController?.rightLayoutOpened.value == true) {
               await _dashboardController?.toggleRightLayout();
@@ -70,11 +70,7 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
         title: ValueListenableBuilder<String>(
           valueListenable: dashboardTitleValue,
           builder: (context, title, widget) {
-            return Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            );
+            return Text(title, maxLines: 1, overflow: TextOverflow.ellipsis);
           },
         ),
         actions: [
@@ -99,7 +95,6 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
       ),
       body: SafeArea(
         child: DashboardWidget(
-          tbContext,
           titleCallback: (title) {
             dashboardTitleValue.value = widget.title ?? title;
           },
@@ -137,10 +132,10 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
   void initState() {
     super.initState();
     havePermission = getIt<IPermissionService>()
-        .haveViewDashboardPermission(widget.tbContext);
+        .haveViewDashboardPermission();
 
-     diKey = UniqueKey().toString();
-     DashboardsDi.init(diKey, tbClient: tbClient);
+    diKey = UniqueKey().toString();
+    DashboardsDi.init(diKey, tbClient: getIt<ITbClientService>().client);
     rightLayoutMenuController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -158,9 +153,9 @@ class _SingleDashboardViewState extends TbContextState<SingleDashboardView>
 
   @override
   void dispose() {
-     DashboardsDi.dispose(diKey);
+    DashboardsDi.dispose(diKey);
     rightLayoutMenuController.dispose();
-    _dashboardController?.canGoBack.dispose();
+
     super.dispose();
   }
 }

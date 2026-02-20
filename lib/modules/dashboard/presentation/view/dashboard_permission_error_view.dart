@@ -7,9 +7,9 @@ import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
-class DashboardPermissionErrorView extends TbPageWidget {
-  DashboardPermissionErrorView(
-    super.tbContext, {
+class DashboardPermissionErrorView extends StatefulWidget {
+ const  DashboardPermissionErrorView(
+     {
     this.fullScreen = false,
     this.home = false,
     super.key,
@@ -23,31 +23,35 @@ class DashboardPermissionErrorView extends TbPageWidget {
 }
 
 class _DashboardPermissionErrorViewState
-    extends TbPageState<DashboardPermissionErrorView> {
+    extends State<DashboardPermissionErrorView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TbAppBar(
-        tbContext,
-        leading: !widget.fullScreen && !widget.home
-            ? BackButton(onPressed: () => Navigator.of(context).pop())
-            : null,
+        leading:
+            !widget.fullScreen && !widget.home
+                ? BackButton(onPressed: () => Navigator.of(context).pop())
+                : null,
         elevation: 1,
         shadowColor: Colors.transparent,
-        title:  FittedBox(
+        title: FittedBox(
           fit: BoxFit.fitWidth,
           alignment: Alignment.centerLeft,
           child: Text(S.of(context).dashboards(1)),
         ),
-        actions: widget.fullScreen && !widget.home
-            ? [
-                IconButton(
-                  icon: const Icon(Icons.settings),
-                  // translate-me-ignore-next-line
-                  onPressed: () => getIt<ThingsboardAppRouter>().navigateTo('/profile?fullscreen=true'),
-                ),
-              ]
-            : null,
+        actions:
+            widget.fullScreen && !widget.home
+                ? [
+                  IconButton(
+                    icon: const Icon(Icons.settings),
+                    // translate-me-ignore-next-line
+                    onPressed:
+                        () => getIt<ThingsboardAppRouter>().navigateTo(
+                          '/profile?fullscreen=true',
+                        ),
+                  ),
+                ]
+                : null,
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -61,9 +65,11 @@ class _DashboardPermissionErrorViewState
               height: 82,
             ),
             const SizedBox(height: 16),
-             Center(
+            Center(
               child: Text(
-                S.of(context).itLooksLikeYourPermissionsArentSufficientToCompleteThis,
+                S
+                    .of(context)
+                    .itLooksLikeYourPermissionsArentSufficientToCompleteThis,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,

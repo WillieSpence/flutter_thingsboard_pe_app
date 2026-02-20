@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,9 @@ import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/utils/services/endpoint/i_endpoint_service.dart';
 
-class TbRecaptcha extends TbPageWidget {
-  TbRecaptcha(
-    super.tbContext, {
+class TbRecaptcha extends StatefulWidget {
+  const TbRecaptcha(
+     {
     required this.siteKey,
     required this.version,
     this.logActionName,
@@ -26,7 +27,7 @@ class TbRecaptcha extends TbPageWidget {
   State<StatefulWidget> createState() => _TbRecaptchaState();
 }
 
-class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
+class _TbRecaptchaState extends State<TbRecaptcha> {
   final _webViewController = Completer<InAppWebViewController>();
 
   bool webViewLoading = true;
@@ -98,7 +99,7 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
             );
           },
           onConsoleMessage: (controller, consoleMessage) {
-            log.debug(
+            log(
               // translate-me-ignore-next-line
               '[JavaScript console] ${consoleMessage.messageLevel}: '
               '${consoleMessage.message}',
@@ -106,7 +107,7 @@ class _TbRecaptchaState extends TbPageState<TbRecaptcha> {
           },
           onLoadStop: (controller, url)  {
             // translate-me-ignore-next-line
-            log.debug('onLoadStop: $url');
+            log('onLoadStop: $url');
             if (webViewLoading) {
               webViewLoading = false;
               _webViewController.complete(controller);

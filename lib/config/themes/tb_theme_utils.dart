@@ -1,54 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:thingsboard_app/config/themes/tb_theme.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/transition/page_transitions.dart';
 
 abstract class TbThemeUtils {
-  static final _tbTypography = Typography.material2018();
+  //static final _tbTypography = Typography.material2018();
 
-  static const Color _tbTextColor = Color(0xFF282828);
+ // static const Color _tbTextColor = Color(0xFF282828);
 
   static final tbPrimary =
-      // ignore: deprecated_member_use
-      _mergeColors(Colors.teal, {'500': Colors.teal[800]!.value});
+  // ignore: deprecated_member_use
+  _mergeColors(Colors.teal, {'500': Colors.teal[800]!.value});
   static final tbAccent = _mergeColors(Colors.deepOrange, {});
-
+  static final tbPrimaryColor = tbPrimary[500]!;
+  static final tbAccentColor = tbAccent[500]!;
   static ThemeData createTheme(PaletteSettings? paletteSettings) {
-    final primarySwatch =
-        _materialColorFromPalette(paletteSettings?.primaryPalette, true);
-    final accentColor =
-        _materialColorFromPalette(paletteSettings?.accentPalette, false);
-    final primaryColor = primarySwatch[500]!;
-    final ThemeData theme = ThemeData(primarySwatch: primarySwatch);
-    return ThemeData(
-      useMaterial3: false,
-      primarySwatch: primarySwatch,
-      colorScheme: theme.colorScheme.copyWith(primary: accentColor),
-      scaffoldBackgroundColor: const Color(0xFFFAFAFA),
-      textTheme: _tbTypography.black,
-      primaryTextTheme: _tbTypography.black,
-      typography: _tbTypography,
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.white,
-        foregroundColor: _tbTextColor,
-        iconTheme: IconThemeData(color: _tbTextColor),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Colors.white,
-        selectedItemColor: primaryColor,
-        unselectedItemColor: Colors.black.withValues(alpha:  .38),
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-      ),
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {
-          TargetPlatform.iOS: FadeOpenPageTransitionsBuilder(),
-          TargetPlatform.android: FadeOpenPageTransitionsBuilder(),
-        },
-      ),
+    final primarySwatch = materialColorFromPalette(
+      paletteSettings?.primaryPalette,
+      true,
     );
+    final accentColor = materialColorFromPalette(
+      paletteSettings?.accentPalette,
+      false,
+    );
+    final primaryColor = primarySwatch[500]!;
+    final accent = accentColor[500]!;
+    return tbTheme(primarySwatch, primaryColor, accent);
   }
 
-  static MaterialColor _materialColorFromPalette(
+  static MaterialColor materialColorFromPalette(
     Palette? palette,
     bool primary,
   ) {
@@ -103,6 +83,8 @@ abstract class TbThemeUtils {
         return Colors.grey;
       case 'blue-grey':
         return Colors.blueGrey;
+      case 'tb-accent':
+        return tbAccent;
       default:
         return tbPrimary;
     }
@@ -136,7 +118,7 @@ abstract class TbThemeUtils {
     int? intColor;
     if (rawColor != null) {
       if (rawColor is String && rawColor.isNotEmpty) {
-        String stringColor= rawColor;
+        String stringColor = rawColor;
         if (rawColor.startsWith('#')) {
           stringColor = rawColor.replaceFirst('#', '0xFF');
         }

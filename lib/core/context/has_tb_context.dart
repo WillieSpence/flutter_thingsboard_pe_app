@@ -40,8 +40,6 @@ mixin HasTbContext {
 
   ThingsboardClient get tbClient => _tbContext.tbClient;
 
-  bool hasGenericPermission(Resource resource, Operation operation) =>
-      _tbContext.hasGenericPermission(resource, operation);
 
   Future<void> initTbContext() async {
     await _tbContext.init();

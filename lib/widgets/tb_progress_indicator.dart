@@ -2,54 +2,44 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
-///TODO: Refactor this to avoid merge conflicts
-class TbProgressIndicator extends ProgressIndicator {
-
-  const TbProgressIndicator(
-    this.tbContext, {
-    this.size = 36.0,
-    super.valueColor,
-    super.semanticsLabel,
-    super.semanticsValue,
-  }) : super(
-          value: null,
-        );
+import 'package:thingsboard_app/utils/services/wl_provider.dart';
+class TbProgressIndicator extends ConsumerStatefulWidget {
+  const TbProgressIndicator({this.size = 36.0, this.valueColor});
   final double size;
-  final TbContext tbContext;
-
+  final Color? valueColor;
   @override
-  State<StatefulWidget> createState() => _TbProgressIndicatorState();
-
-  Color _getValueColor(BuildContext context) =>
-      valueColor?.value ?? Theme.of(context).primaryColor;
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _TbProgressIndicatorState();
 }
 
-class _TbProgressIndicatorState extends State<TbProgressIndicator>
+class _TbProgressIndicatorState extends ConsumerState<TbProgressIndicator>
     with TickerProviderStateMixin {
   AnimationController? _controller;
- late  CurvedAnimation? _rotation;
+  late CurvedAnimation? _rotation;
 
   @override
   void initState() {
     super.initState();
-    if (!widget.tbContext.wlService.isCustomLogo) {
       _controller = AnimationController(
         duration: const Duration(milliseconds: 1500),
         vsync: this,
         animationBehavior: AnimationBehavior.preserve,
       );
-      _rotation =
-          CurvedAnimation(parent: _controller!, curve: Curves.easeInOut);
+      _rotation = CurvedAnimation(
+        parent: _controller!,
+        curve: Curves.easeInOut,
+      );
       _controller!.repeat();
-    }
+    
   }
 
   @override
   void didUpdateWidget(TbProgressIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.tbContext.wlService.isCustomLogo) {
+    if (ref.read(wlProvider).isCustomLogo) {
       if (_controller != null) {
         _controller!.dispose();
         _controller = null;
@@ -61,8 +51,10 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
           vsync: this,
           animationBehavior: AnimationBehavior.preserve,
         );
-        _rotation =
-            CurvedAnimation(parent: _controller!, curve: Curves.easeInOut);
+        _rotation = CurvedAnimation(
+          parent: _controller!,
+          curve: Curves.easeInOut,
+        );
         _controller!.repeat();
       } else if (!_controller!.isAnimating) {
         _controller!.repeat();
@@ -80,12 +72,14 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.tbContext.wlService.isCustomLogo) {
+    final wlState = ref.watch(wlProvider);
+    final theme = Theme.of(context);
+    if (wlState.isCustomLogo && wlState.isUserWlMode) {
       return SizedBox(
         width: widget.size,
         height: widget.size,
         child: CircularProgressIndicator(
-          color: widget._getValueColor(context),
+          color: widget.valueColor ?? theme.colorScheme.secondary,
         ),
       );
     } else {
@@ -96,7 +90,7 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
             height: widget.size,
             width: widget.size,
             colorFilter: ColorFilter.mode(
-              widget._getValueColor(context),
+               theme.colorScheme.secondary,
               BlendMode.srcIn,
             ),
           ),*/
@@ -106,8 +100,8 @@ class _TbProgressIndicatorState extends State<TbProgressIndicator>
               ThingsboardImage.thingsboardCenter,
               height: widget.size,
               width: widget.size,
-              /*colorFilter: ColorFilter.mode(
-                widget._getValueColor(context),
+              colorFilter: ColorFilter.mode(
+                widget.valueColor ?? theme.colorScheme.secondary,
                 BlendMode.srcIn,
               ),*/
             ),

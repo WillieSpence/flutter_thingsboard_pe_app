@@ -1,34 +1,78 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
-import 'package:thingsboard_app/core/auth/login/login_page_background.dart';
-import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/core/auth/login/widgets/login_page_background.dart';
+import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
+import 'package:thingsboard_app/utils/services/wl_provider.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
-class EmailVerifiedPage extends TbPageWidget {
+class EmailVerifiedPage extends HookConsumerWidget {
+  const EmailVerifiedPage({required this.emailCode, super.key});
 
-  EmailVerifiedPage(super.tbContext, {super.key, required String emailCode})
-      : _emailCode = emailCode;
-  final String _emailCode;
+  final String emailCode;
+  Future<void> activateAndGetCredentials(ValueNotifier<bool> isActivating, ValueNotifier<LoginResponse?> loginResponse, BuildContext context) async {
+    final tbClient = getIt<ITbClientService>().client;
+    try {
+      final response = await tbClient
+          .getSignupService()
+          .activateUserByEmailCode(
+            emailCode,
+            pkgName: getIt<IDeviceInfoService>().getApplicationId(),
+            platform: getIt<IDeviceInfoService>().getPlatformType(),
+          );
+      loginResponse.value = response;
+      isActivating.value = false;
+    } catch (e) {
+      // tbContext.log.error(
+      //   'EmailVerifiedPage::activateAndGetCredentials() error -> $e',
+      // );
+      if (context.mounted) {
+        if (context.canPop()) {
+         context.pop();
+        } else {
+          getIt<ThingsboardAppRouter>().navigateTo(
+            '/login',
+            replace: true,
+            clearStack: true,
+          );
+        }
+      }
+    }
+  }
+
+  void handleLogin(ValueNotifier<LoginResponse?> loginResponse) {
+    final response = loginResponse.value;
+    if (response != null) {
+      getIt<ITbClientService>().client
+      .setUserFromJwtToken(
+        response.token,
+        response.refreshToken,
+        true,
+      );
+    }
+  }
 
   @override
-  State<StatefulWidget> createState() => _EmailVerifiedPageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final wlState = ref.watch(wlProvider);
+    final isActivating = useState(true);
+    final loginResponse = useState<LoginResponse?>(null);
 
-class _EmailVerifiedPageState extends TbPageState<EmailVerifiedPage> {
-  final _activatingNotifier = ValueNotifier<bool>(true);
-  LoginResponse? _loginResponse;
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _activateAndGetCredentials(context),
-    );
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => activateAndGetCredentials(isActivating, loginResponse, context),
+      );
+      return null;
+    }, []);
 
     return Scaffold(
       body: Stack(
@@ -42,82 +86,76 @@ class _EmailVerifiedPageState extends TbPageState<EmailVerifiedPage> {
                   SizedBox.expand(
                     child: Padding(
                       padding: const EdgeInsets.all(24),
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: _activatingNotifier,
-                        builder: (context, activating, child) {
-                          return Column(
-                            children: [
-                              const SizedBox(height: 36),
-                              Text(
-                                activating
-                                    ? S.of(context).activatingAccount
-                                    : S.of(context).accountActivated,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 24,
-                                  height: 32 / 24,
-                                ),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 36),
+                          Text(
+                            isActivating.value
+                                ? S.of(context).activatingAccount
+                                : S.of(context).accountActivated,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 24,
+                              height: 32 / 24,
+                            ),
+                          ),
+                          const SizedBox(height: 78),
+                          if (isActivating.value)
+                            const TbProgressIndicator(size: 72),
+                          if (!isActivating.value)
+                            SvgPicture.asset(
+                              ThingsboardImage.emailVerified,
+                              height: 85,
+                              colorFilter: ColorFilter.mode(
+                                Theme.of(context).primaryColor,
+                                BlendMode.srcIn,
                               ),
-                              const SizedBox(height: 78),
-                              if (activating)
-                                TbProgressIndicator(tbContext, size: 72),
-                              if (!activating)
-                                SvgPicture.asset(
-                                  ThingsboardImage.emailVerified,
-                                  height: 85,
-                                  colorFilter: ColorFilter.mode(
-                                    Theme.of(context).primaryColor,
-                                    BlendMode.srcIn,
+                              semanticsLabel: S.of(context).emailVerified,
+                            ),
+                          const SizedBox(height: 77),
+                          if (isActivating.value)
+                            Text(
+                              S.of(context).activatingAccountText,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                height: 24 / 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFFAFAFAF),
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          if (!isActivating.value)
+                            Text(
+                              S
+                                  .of(context)
+                                  .accountActivatedText(
+                                    wlState.wlParams.appTitle ?? '',
                                   ),
-                                  semanticsLabel: S.of(context).emailVerified,
-                                ),
-                              const SizedBox(height: 77),
-                              if (activating)
-                                Text(
-                                  S.of(context).activatingAccountText,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    height: 24 / 14,
-                                    fontWeight: FontWeight.normal,
-                                    color: Color(0xFFAFAFAF),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              if (!activating)
-                                Text(
-                                  S.of(context).accountActivatedText(
-                                        tbContext.wlService.wlParams.appTitle!,
-                                      ),
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    height: 24 / 14,
-                                    fontWeight: FontWeight.normal,
-                                    color: Color(0xFFAFAFAF),
-                                  ),
-                                ),
-                              const Spacer(),
-                              if (!activating)
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        _login();
-                                      },
-                                      child: Text(S.of(context).login),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                height: 24 / 14,
+                                fontWeight: FontWeight.normal,
+                                color: Color(0xFFAFAFAF),
+                              ),
+                            ),
+                          const Spacer(),
+                          if (!isActivating.value)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 16,
                                     ),
-                                  ],
+                                  ),
+                                  onPressed: () => handleLogin(loginResponse),
+                                  child: Text(S.of(context).login),
                                 ),
-                            ],
-                          );
-                        },
+                              ],
+                            ),
+                        ],
                       ),
                     ),
                   ),
@@ -127,37 +165,6 @@ class _EmailVerifiedPageState extends TbPageState<EmailVerifiedPage> {
           ),
         ],
       ),
-    );
-  }
-
-    Future<void> _activateAndGetCredentials(BuildContext context) async {
-    try {
-      _loginResponse =
-          await tbClient.getSignupService().activateUserByEmailCode(
-                widget._emailCode,
-                pkgName: getIt<IDeviceInfoService>().getApplicationId(),
-          platform: getIt<IDeviceInfoService>().getPlatformType(),
-              );
-      _activatingNotifier.value = false;
-    } catch (e) {
-      tbContext.log.error(
-        'EmailVerifiedPage::_activateAndGetCredentials() error -> $e',
-      );
-      if (context.mounted) {
-        if (Navigator.of(context).canPop()) {
-          Navigator.of(context).pop();
-        } else {
-          getIt<ThingsboardAppRouter>().navigateTo('/login', replace: true, clearStack: true);
-        }
-      }
-    }
-  }
-
-   void _login() {
-    tbClient.setUserFromJwtToken(
-      _loginResponse!.token,
-      _loginResponse!.refreshToken,
-      true,
     );
   }
 }

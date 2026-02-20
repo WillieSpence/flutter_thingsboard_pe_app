@@ -3,17 +3,17 @@ import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
 class NoAuthLoadingWidget extends StatelessWidget {
-  const NoAuthLoadingWidget({required this.tbContext, super.key});
+  const NoAuthLoadingWidget({super.key});
 
-  final TbContext tbContext;
+
 
   @override
   Widget build(BuildContext context) {
-    return  SizedBox.expand(
+    return  const SizedBox.expand(
       child: ColoredBox(
-        color: const Color(0x99FFFFFF),
+        color: Color(0x99FFFFFF),
         child: Center(
-          child: TbProgressIndicator(tbContext, size: 50.0),
+          child: TbProgressIndicator(size: 50.0),
         ),
       ),
     );

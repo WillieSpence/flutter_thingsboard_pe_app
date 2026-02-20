@@ -6,40 +6,39 @@ import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart' show MobileInfoQuery;
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
-class TermsOfUse extends TbPageWidget {
-  TermsOfUse(super.tbContext, {super.key});
+class TermsOfUse extends StatefulWidget {
+  const TermsOfUse({super.key});
 
   @override
   State<StatefulWidget> createState() => _TermsOfUseState();
 }
 
-class _TermsOfUseState extends TbPageState<TermsOfUse> {
+class _TermsOfUseState extends State<TermsOfUse> {
   late Future<String?> termsOfUseFuture;
 
   @override
   void initState() {
     super.initState();
-    termsOfUseFuture =
-        tbContext.tbClient.getSelfRegistrationService().getTermsOfUse(
-              query: MobileInfoQuery(
-                  packageName: getIt<IDeviceInfoService>().getApplicationId(),
+    termsOfUseFuture = getIt<ITbClientService>().client
+        .getSelfRegistrationService()
+        .getTermsOfUse(
+          query: MobileInfoQuery(
+            packageName: getIt<IDeviceInfoService>().getApplicationId(),
             platformType: getIt<IDeviceInfoService>().getPlatformType(),
-              ),
-            );
+          ),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: TbAppBar(
-        tbContext,
-        title: Text(S.of(context).termsOfUse),
-      ),
+      appBar: TbAppBar(title: Text(S.of(context).termsOfUse)),
       body: SafeArea(
         child: Column(
           children: [
@@ -56,16 +55,11 @@ class _TermsOfUseState extends TbPageState<TermsOfUse> {
                           return const SizedBox.shrink();
                         }
                         return HtmlWidget(
-                         snapshot.data?? '',
-                     onTapUrl: (link)  => Utils.onWebViewLinkPressed(link) 
-                     );
-                      } else {
-                        return Center(
-                          child: TbProgressIndicator(
-                            tbContext,
-                            size: 50.0,
-                          ),
+                          snapshot.data ?? '',
+                          onTapUrl: (link) => Utils.onWebViewLinkPressed(link),
                         );
+                      } else {
+                        return Center(child: TbProgressIndicator(size: 50.0));
                       }
                     },
                   ),
@@ -78,11 +72,13 @@ class _TermsOfUseState extends TbPageState<TermsOfUse> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
-                    onPressed: () => getIt<ThingsboardAppRouter>().pop(false, context),
+                    onPressed:
+                        () => getIt<ThingsboardAppRouter>().pop(false, context),
                     child: Text(S.of(context).cancel),
                   ),
                   ElevatedButton(
-                    onPressed: () => getIt<ThingsboardAppRouter>().pop(true, context),
+                    onPressed:
+                        () => getIt<ThingsboardAppRouter>().pop(true, context),
                     child: Text(S.of(context).accept),
                   ),
                 ],

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
-import 'package:thingsboard_app/core/auth/login/login_page_background.dart';
+import 'package:thingsboard_app/core/auth/login/widgets/login_page_background.dart';
 import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
 import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 
-class EmailVerificationPage extends TbPageWidget {
+class EmailVerificationPage extends StatefulWidget {
 
-  EmailVerificationPage(super.tbContext, {super.key, required String email})
+ const EmailVerificationPage({super.key, required String email})
       : _email = email;
   final String _email;
 
@@ -20,7 +21,7 @@ class EmailVerificationPage extends TbPageWidget {
   State<StatefulWidget> createState() => _EmailVerificationPageState();
 }
 
-class _EmailVerificationPageState extends TbPageState<EmailVerificationPage> {
+class _EmailVerificationPageState extends State<EmailVerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +31,7 @@ class _EmailVerificationPageState extends TbPageState<EmailVerificationPage> {
           SizedBox.expand(
             child: Scaffold(
               backgroundColor: Colors.transparent,
-              appBar: TbAppBar(tbContext),
+              appBar: TbAppBar(),
               body: SafeArea(
                 child: Stack(
                   children: [
@@ -131,14 +132,15 @@ class _EmailVerificationPageState extends TbPageState<EmailVerificationPage> {
   }
 
   Future<void> _resendEmail() async {
-    await tbClient.getSignupService().resendEmailActivation(
+    getIt<ITbClientService>().client
+    .getSignupService().resendEmailActivation(
           widget._email,
           pkgName: getIt<IDeviceInfoService>().getApplicationId(),
           platform: getIt<IDeviceInfoService>().getPlatformType(),
         );
 
    getIt<ThingsboardAppRouter>().navigateTo(
-      '/signup/emailVerification?email=${widget._email}',
+      '/emailVerification?email=${Uri.encodeComponent(widget._email)}',
       replace: true,
     );
     if(mounted) {

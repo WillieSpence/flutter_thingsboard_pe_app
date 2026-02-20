@@ -1,0 +1,31 @@
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:go_router/src/state.dart';
+import 'package:riverpod/src/framework.dart';
+import 'package:thingsboard_app/config/routes/v2/redirects/redirect.dart';
+import 'package:thingsboard_app/config/routes/v2/routes_config/routes/select_region_routes.dart';
+import 'package:thingsboard_app/constants/app_constants.dart';
+import 'package:thingsboard_app/core/select_region/model/region.dart';
+import 'package:thingsboard_app/locator.dart';
+import 'package:thingsboard_app/utils/services/endpoint/i_endpoint_service.dart';
+import 'package:thingsboard_app/utils/services/local_database/i_local_database_service.dart';
+
+class EndpointRedirect extends Redirect {
+  @override
+  Future<String?> redirect(
+    BuildContext context,
+    GoRouterState state,
+    Ref<Object?> ref,
+  ) async {
+    final region = await getIt<ILocalDatabaseService>().getSelectedRegion();
+    if ((region == null) && !ThingsboardAppConstants.ignoreRegionSelection) {
+      return SelectRegionRoutes.selectRegion;
+    }
+    if (ThingsboardAppConstants.ignoreRegionSelection && region == null) {
+      getIt<IEndpointService>().setEndpoint(
+        ThingsboardAppConstants.thingsBoardApiEndpoint,
+      );
+      getIt<IEndpointService>().setRegion(Region.custom);
+    }
+    return null;
+  }
+}

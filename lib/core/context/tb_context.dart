@@ -11,16 +11,13 @@ import 'package:thingsboard_app/core/context/tb_context_widget.dart';
 import 'package:thingsboard_app/core/logger/tb_logger.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
-import 'package:thingsboard_app/modules/version/route/version_route.dart';
-import 'package:thingsboard_app/modules/version/route/version_route_arguments.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
 import 'package:thingsboard_app/utils/services/endpoint/i_endpoint_service.dart';
 import 'package:thingsboard_app/utils/services/firebase/i_firebase_service.dart';
-import 'package:thingsboard_app/utils/services/layouts/i_layout_service.dart';
 import 'package:thingsboard_app/utils/services/notification_service.dart';
 import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
-import 'package:thingsboard_app/utils/services/wl_service.dart';
+import 'package:thingsboard_app/utils/services/wl_provider.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -28,7 +25,7 @@ part 'has_tb_context.dart';
 
 class TbContext implements PopEntry {
   TbContext() {
-    wlService = WlService(this);
+
   }
   bool isUserLoaded = false;
   final _isAuthenticated = ValueNotifier<bool>(false);
@@ -62,7 +59,6 @@ class TbContext implements PopEntry {
   }
 
   late ThingsboardClient tbClient;
-  late final WlService wlService;
 
   final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
@@ -159,7 +155,8 @@ class TbContext implements PopEntry {
     log.debug('TbContext: On load finished.');
     _isLoadingNotifier.value = false;
   }
-Future<bool> checkDasboardAccess(String id) async {
+
+  Future<bool> checkDasboardAccess(String id) async {
     try {
       final dashboard = await tbClient.getDashboardService().getDashboard(id);
       if (dashboard == null) {
@@ -170,6 +167,7 @@ Future<bool> checkDasboardAccess(String id) async {
     }
     return true;
   }
+
   Future<void> onUserLoaded({VoidCallback? onDone}) async {
     try {
       log.debug(
@@ -206,10 +204,6 @@ Future<bool> checkDasboardAccess(String id) async {
                 userDetails?.additionalInfo?['defaultDashboardId'] = null;
               }
             }
-            getIt<ILayoutService>().cachePageLayouts(
-              mobileInfo?.pages,
-              authority: tbClient.getAuthUser()!.authority,
-            );
           } catch (e) {
             log.error('TbContext::onUserLoaded error $e');
             if (!Utils.isConnectionError(e)) {
@@ -239,37 +233,18 @@ Future<bool> checkDasboardAccess(String id) async {
 
       _isAuthenticated.value =
           tbClient.isAuthenticated() && !tbClient.isPreVerificationToken();
-      await wlService.updateWhiteLabeling();
-      if (versionInfo != null && versionInfo?.minVersion != null) {
-        if (_deviceInfoService.getAppVersion().versionInt() <
-            (versionInfo!.minVersion?.versionInt() ?? 0)) {
-          thingsboardAppRouter.navigateTo(
-            VersionRoutes.updateRequiredRoutePath,
-            clearStack: true,
-            replace: true,
-            routeSettings: RouteSettings(
-              arguments: VersionRouteArguments(
-                versionInfo: versionInfo!,
-                storeInfo: storeInfo,
-              ),
-            ),
-          );
-          return;
-        }
-      }
+
 
       if (isAuthenticated) {
         onDone?.call();
       }
-  FlutterNativeSplash.remove();
+      // FlutterNativeSplash.remove();
       if (_handleRootState) {
         await updateRouteState();
       }
 
       if (isAuthenticated) {
-        if (getIt<IFirebaseService>().apps.isNotEmpty) {
-          await NotificationService(tbClient, log, this).init();
-        }
+      
       }
     } catch (e, s) {
       log.error('TbContext.onUserLoaded: $e', e, s);
@@ -307,14 +282,13 @@ Future<bool> checkDasboardAccess(String id) async {
     } finally {
       _appLinkStreamSubscription ??= appLinks.uriLinkStream.listen(
         (link) {
-        
           thingsboardAppRouter.navigateByAppLink(link.toString());
         },
         onError: (err) {
           log.error('linkStream.listen $err');
         },
       );
-        FlutterNativeSplash.remove();
+      FlutterNativeSplash.remove();
     }
   }
 
@@ -326,7 +300,7 @@ Future<bool> checkDasboardAccess(String id) async {
     _handleRootState = true;
 
     if (getIt<IFirebaseService>().apps.isNotEmpty) {
-      await NotificationService(tbClient, log, this).logout();
+      await getIt<NotificationService>().init();
     }
 
     await tbClient.logout(requestConfig: requestConfig, notifyUser: notifyUser);
@@ -335,18 +309,11 @@ Future<bool> checkDasboardAccess(String id) async {
     _appLinkStreamSubscription = null;
   }
 
-  ///TODO: Mergeconflict here
-  bool hasGenericPermission(Resource resource, Operation operation) {
-    if (userPermissions != null) {
-      return userPermissions!.hasGenericPermission(resource, operation);
-    } else {
-      return false;
-    }
-  }
-  Future<void> updateRouteState() async {
+   Future<void> updateRouteState() async {
     log.debug(
       'TbContext:updateRouteState() ${currentState != null && currentState!.mounted}',
     );
+
     if (!tbClient.isAuthenticated() || tbClient.isPreVerificationToken()) {
       thingsboardAppRouter.navigateTo(
         '/login',
@@ -406,13 +373,14 @@ Future<bool> checkDasboardAccess(String id) async {
             userDetails!.additionalInfo!['defaultDashboardFullscreen'] == true);
   }
 
-  String userAgent() {
+  static String userAgent() {
+    final deviceInfoService = getIt<IDeviceInfoService>();
     String userAgent = 'Mozilla/5.0';
     if (UniversalPlatform.isAndroid) {
       userAgent +=
-          ' (Linux; Android ${_deviceInfoService.getSystemVersion()}; ${_deviceInfoService.getDeviceModel()})';
+          ' (Linux; Android ${deviceInfoService.getSystemVersion()}; ${deviceInfoService.getDeviceModel()})';
     } else if (UniversalPlatform.isIOS) {
-      userAgent += ' (${_deviceInfoService.getDeviceModel()})';
+      userAgent += ' (${deviceInfoService.getDeviceModel()})';
     }
     return '$userAgent AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/83.0.4103.106 Mobile Safari/537.36';
   }
@@ -429,6 +397,20 @@ Future<bool> checkDasboardAccess(String id) async {
 
   Future<T?> showFullScreenDialog<T>(Widget dialog, {BuildContext? context}) {
     return Navigator.of(context ?? currentState!.context).push<T>(
+      MaterialPageRoute<T>(
+        builder: (BuildContext context) {
+          return dialog;
+        },
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+  static Future<T?> showFullScreenDialog2<T>(
+    Widget dialog,
+    BuildContext context,
+  ) {
+    return Navigator.of(context).push<T>(
       MaterialPageRoute<T>(
         builder: (BuildContext context) {
           return dialog;

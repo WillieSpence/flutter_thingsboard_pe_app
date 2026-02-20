@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 
 mixin AssetsBase on EntitiesBase<Asset, PageLink> {
   @override
@@ -10,7 +12,7 @@ mixin AssetsBase on EntitiesBase<Asset, PageLink> {
 
   @override
   String get noItemsFoundText => 'No assets found';
-
+  final tbClient = getIt<ITbClientService>().client;
   @override
   Future<PageData<Asset>> fetchEntities(
     PageLink pageLink, {
@@ -23,7 +25,7 @@ mixin AssetsBase on EntitiesBase<Asset, PageLink> {
   }
 
   @override
-  void onEntityTap(Asset asset) {
+  void onEntityTap(Asset asset, WidgetRef ref) {
     if (asset.id?.id != null) {
       getIt<ThingsboardAppRouter>().navigateTo('/asset/${asset.id!.id}');
     }

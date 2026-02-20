@@ -6,25 +6,26 @@ import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart' show MobileInfoQuery;
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
-class PrivacyPolicy extends TbPageWidget {
-  PrivacyPolicy(super.tbContext, {super.key});
+class PrivacyPolicy extends StatefulWidget {
+ const  PrivacyPolicy( {super.key});
 
   @override
   State<StatefulWidget> createState() => _PrivacyPolicyState();
 }
 
-class _PrivacyPolicyState extends TbPageState<PrivacyPolicy> {
+class _PrivacyPolicyState extends State<PrivacyPolicy> {
   late Future<String?> privacyPolicyFuture;
 
   @override
   void initState() {
     super.initState();
-    privacyPolicyFuture =
-        tbContext.tbClient.getSelfRegistrationService().getPrivacyPolicy(
+    privacyPolicyFuture = getIt<ITbClientService>().client
+       .getSelfRegistrationService().getPrivacyPolicy(
               query: MobileInfoQuery(
                 packageName: getIt<IDeviceInfoService>().getApplicationId(),
                 platformType: getIt<IDeviceInfoService>().getPlatformType(),
@@ -37,7 +38,6 @@ class _PrivacyPolicyState extends TbPageState<PrivacyPolicy> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: TbAppBar(
-        tbContext,
         title: Text(S.of(context).privacyPolicy),
       ),
       body: SafeArea(
@@ -58,12 +58,11 @@ class _PrivacyPolicyState extends TbPageState<PrivacyPolicy> {
 
                         return HtmlWidget(
                           snapshot.data ?? '',
-                          onTapUrl: (link) async => Utils.onWebViewLinkPressed(link)
+                          onTapUrl: (link)  => Utils.onWebViewLinkPressed(link)
                         );
                       } else {
-                        return Center(
+                        return const Center(
                           child: TbProgressIndicator(
-                            tbContext,
                             size: 50.0,
                           ),
                         );

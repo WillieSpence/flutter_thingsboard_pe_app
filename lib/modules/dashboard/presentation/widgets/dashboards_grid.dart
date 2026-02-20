@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/core/entity/entity_grid_card.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
@@ -17,13 +16,8 @@ import 'package:thingsboard_app/utils/ui/pagination_widgets/new_page_progress_bu
 import 'package:thingsboard_app/utils/ui/pagination_widgets/pagination_grid_widget.dart';
 
 class DashboardsGridWidget extends StatelessWidget {
-  const DashboardsGridWidget({
-    required this.tbContext,
-    required this.dashboardPageCtrl,
-    super.key,
-  });
+  const DashboardsGridWidget({required this.dashboardPageCtrl, super.key});
 
-  final TbContext tbContext;
   final DashboardPageController dashboardPageCtrl;
 
   @override
@@ -31,7 +25,7 @@ class DashboardsGridWidget extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         getIt<DashboardsPaginationRepository>().refresh();
-       await  dashboardPageCtrl.dashboardController.future.then(
+        await dashboardPageCtrl.dashboardController.future.then(
           (v) async => await v.controller?.reload(),
         );
       },
@@ -40,15 +34,14 @@ class DashboardsGridWidget extends StatelessWidget {
           pagingController:
               getIt<DashboardsPaginationRepository>().pagingController,
           builderDelegate: PagedChildBuilderDelegate(
-            itemBuilder: (context, item, index) => EntityGridCard(
-              item,
-              entityCardWidgetBuilder: (_, dashboard) => DashboardGridCard(
-                tbContext,
-                dashboard: dashboard,
-              ),
-              onEntityTap: (dashboard) {
-                final havePermission = getIt<IPermissionService>()
-                    .haveViewDashboardPermission(tbContext);
+            itemBuilder:
+                (context, item, index) => EntityGridCard(
+                  item,
+                  entityCardWidgetBuilder:
+                      (_, dashboard) => DashboardGridCard(dashboard: dashboard),
+                  onEntityTap: (dashboard) {
+                     final havePermission = getIt<IPermissionService>()
+                    .haveViewDashboardPermission();
 
                 if (havePermission) {
                   dashboardPageCtrl.openDashboard(
@@ -60,23 +53,22 @@ class DashboardsGridWidget extends StatelessWidget {
                     S.of(context).youDontHavePermissionsToPerformThisOperation,
                   );
                 }
-              },
-              settings: EntityCardSettings(),
-            ),
-            firstPageProgressIndicatorBuilder: (_) =>
-                const FirstPageProgressBuilder(),
-            newPageProgressIndicatorBuilder: (_) =>
-                const NewPageProgressBuilder(),
-            noItemsFoundIndicatorBuilder: (context) =>
-                FirstPageExceptionIndicator(
-              title: S.of(context).noDashboardsFound,
-              message: S.of(context).listIsEmptyText,
-              onTryAgain: () {
-                getIt<DashboardsPaginationRepository>()
-                    .pagingController
-                    .refresh();
-              },
-            ),
+                  },
+                  settings: EntityCardSettings(),
+                ),
+            firstPageProgressIndicatorBuilder:
+                (_) => const FirstPageProgressBuilder(),
+            newPageProgressIndicatorBuilder:
+                (_) => const NewPageProgressBuilder(),
+            noItemsFoundIndicatorBuilder:
+                (context) => FirstPageExceptionIndicator(
+                  title: S.of(context).noDashboardsFound,
+                  message: S.of(context).listIsEmptyText,
+                  onTryAgain: () {
+                    getIt<DashboardsPaginationRepository>().pagingController
+                        .refresh();
+                  },
+                ),
           ),
         ),
       ),

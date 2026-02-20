@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/config/themes/tb_text_styles.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/device/provisioning/ble/bloc/bloc.dart';
@@ -13,13 +13,11 @@ import 'package:thingsboard_app/modules/device/provisioning/view/device_provisio
 import 'package:thingsboard_app/modules/device/provisioning/view/device_provisioning_view.dart';
 import 'package:thingsboard_app/modules/device/provisioning/widgets/exit_confirmation_dialog.dart';
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
-import 'package:thingsboard_app/utils/ui/tb_text_styles.dart';
 import 'package:thingsboard_app/widgets/tb_app_bar.dart';
 import 'package:thingsboard_app/widgets/tb_progress_indicator.dart';
 
-class EspBleProvisioningView extends TbContextWidget {
-  EspBleProvisioningView(
-    super.tbContext, {
+class EspBleProvisioningView extends StatefulWidget {
+  const EspBleProvisioningView({
     required this.tbDeviceName,
     required this.tbDeviceSecretKey,
     required this.name,
@@ -36,8 +34,7 @@ class EspBleProvisioningView extends TbContextWidget {
   State<StatefulWidget> createState() => _EspBleProvisioningViewState();
 }
 
-class _EspBleProvisioningViewState
-    extends TbContextState<EspBleProvisioningView> {
+class _EspBleProvisioningViewState extends State<EspBleProvisioningView> {
   final diKey = UniqueKey().toString();
   final IDeviceInfoService deviceInfoService = getIt();
   @override
@@ -61,7 +58,6 @@ class _EspBleProvisioningViewState
               }
 
               return TbAppBar(
-                tbContext,
                 title: Text(
                   () {
                     switch (state) {
@@ -83,7 +79,8 @@ class _EspBleProvisioningViewState
                     color: Colors.black.withValues(alpha: .87),
                   ),
                 ),
-                leading: BackButton(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
                   onPressed:
                       () => showDialog(
                         context: context,
@@ -101,12 +98,10 @@ class _EspBleProvisioningViewState
                 child: () {
                   switch (state) {
                     case EspBleLoadingState():
-                      return  SizedBox.expand(
+                      return SizedBox.expand(
                         child: ColoredBox(
-                          color:const Color(0x99FFFFFF),
-                          child: Center(
-                            child: TbProgressIndicator(tbContext,size: 50.0),
-                          ),
+                          color: const Color(0x99FFFFFF),
+                          child: Center(child: TbProgressIndicator(size: 50.0)),
                         ),
                       );
 
@@ -115,12 +110,10 @@ class _EspBleProvisioningViewState
                         device: state.device,
                         pop: state.pop,
                         networks: state.networks,
-                        tbContext: tbContext,
                       );
 
                     case EspBleProvisioningInProgressState():
                       return DeviceProvisioningView(
-                        tbContext,
                         deviceName: widget.tbDeviceName,
                         deviceSecretKey: widget.tbDeviceSecretKey,
                         onProvisioningTryAgain: () {

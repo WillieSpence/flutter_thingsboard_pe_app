@@ -4,14 +4,14 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>$(IOSAPPLICATIONNAME)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(IOSAPPLICATIONNAME)</string>
 	<key>CFBundleName</key>
 	<string>$(IOSAPPLICATIONNAME)</string>
 	<key>CFBundlePackageType</key>
@@ -20,26 +20,11 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>$(REGISTRATIONREDIRECTURLHOST)</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>$(REGISTRATIONREDIRECTURLSCHEME)</string>
-			</array>
-		</dict>
-	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 	<key>FirebaseMessagingAutoInitEnabled</key>
-	<false/>
-	<key>FlutterDeepLinkingEnabled</key>
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
@@ -53,6 +38,8 @@
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Our app uses bluetooth to find, connect and transfer data between different devices</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record video with sound.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Our app uses bluetooth to provision devices</string>
 	<key>NSCameraUsageDescription</key>
@@ -65,8 +52,6 @@
 	<string>Get location to place the device on a map.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Get location to place the device on a map.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Record video with sound.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Access photo library to take existing photos.</string>
 	<key>UIBackgroundModes</key>
@@ -78,8 +63,6 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>UIStatusBarHidden</key>
-	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -94,6 +77,8 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UIStatusBarHidden</key>
 	<false/>
 </dict>
 </plist>

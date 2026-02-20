@@ -4,10 +4,11 @@ import 'package:thingsboard_app/utils/services/permission/i_permission_service.d
 
 class PermissionService implements IPermissionService {
   @override
-  bool haveViewDashboardPermission(TbContext context) {
-    return context.hasGenericPermission(
-      Resource.DASHBOARD,
-      Operation.READ,
-    );
+  bool haveViewDashboardPermission() {
+    return true;
+    //  hasGenericPermission(
+    //   Resource.DASHBOARD,
+    //   Operation.READ,
+    // );
   }
 }

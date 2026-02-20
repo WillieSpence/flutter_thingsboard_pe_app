@@ -2,18 +2,23 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:thingsboard_app/config/routes/router.dart';
+import 'package:thingsboard_app/config/routes/v2/router_2.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
-import 'package:thingsboard_app/core/context/tb_context_widget.dart';
+import 'package:thingsboard_app/core/auth/login/provider/login_provider.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
+import 'package:thingsboard_app/modules/dashboard/domain/entites/dashboard_arguments.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/services/device_profile/device_profile_cache.dart';
 import 'package:thingsboard_app/utils/services/device_profile/model/cached_device_profile.dart';
 import 'package:thingsboard_app/utils/services/entity_query_api.dart';
 import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
+import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
 mixin DevicesBase on EntitiesBase<EntityData, EntityDataQuery> {
@@ -23,43 +28,60 @@ mixin DevicesBase on EntitiesBase<EntityData, EntityDataQuery> {
 
   @override
   String get noItemsFoundText => 'No devices found';
-
+  final tbClient = getIt<ITbClientService>().client;
   @override
-  Future<PageData<EntityData>> fetchEntities(EntityDataQuery dataQuery, {bool refresh = false}) {
+  Future<PageData<EntityData>> fetchEntities(
+    EntityDataQuery dataQuery, {
+    bool refresh = false,
+  }) {
     return tbClient.getEntityQueryService().findEntityDataByQuery(dataQuery);
   }
 
   @override
-  Future<void> onEntityTap(EntityData device) async {
+  Future<void> onEntityTap(EntityData device, WidgetRef ref) async {
     final profile = await DeviceProfileCache.getDeviceProfileInfo(
       tbClient,
       device.field('type')!,
       device.entityId.id!,
     );
-    if (profile.info .defaultDashboardId != null) {
-  //TODO: Merge conflict here
-      if (hasGenericPermission(Resource.WIDGETS_BUNDLE, Operation.READ) &&
-          hasGenericPermission(Resource.WIDGET_TYPE, Operation.READ)) {
+    final loginInfo = ref.read(loginProvider);
+    if (profile.info.defaultDashboardId != null &&
+        loginInfo.isFullyAuthenticated()) {
+      if (loginInfo.hasGenericPermission(
+            Resource.WIDGETS_BUNDLE,
+            Operation.READ,
+          ) &&
+          loginInfo.hasGenericPermission(
+            Resource.WIDGET_TYPE,
+            Operation.READ,
+          )) {
         final dashboardId = profile.info.defaultDashboardId!.id!;
         final state = Utils.createDashboardEntityState(
           device.entityId,
           entityName: device.field('name'),
           entityLabel: device.field('label'),
         );
-        getIt<ThingsboardAppRouter>().navigateToDashboard(
-          dashboardId,
-          dashboardTitle: device.field('name'),
-          state: state,
+        globalNavigatorKey.currentContext?.pushReplacement(
+          '/dashboard',
+          extra: DashboardArgumentsEntity(
+            id: dashboardId,
+            title: device.field('name'),
+            state: state,
+            hideToolbar: false,
+            animate: false,
+          ),
         );
       } else {
-       getIt<IOverlayService>().showErrorNotification((context) =>
-                    S.of(context).youDontHavePermissionsToPerformThisOperation
+        getIt<IOverlayService>().showErrorNotification(
+          (context) =>
+              S.of(context).youDontHavePermissionsToPerformThisOperation,
         );
       }
     } else {
       if (tbClient.isTenantAdmin()) {
-        overlayService.showWarnNotification( (context) => 
-          S.of(context).mobileDashboardShouldBeConfiguredInDeviceProfile,
+        overlayService.showWarnNotification(
+          (context) =>
+              S.of(context).mobileDashboardShouldBeConfiguredInDeviceProfile,
         );
       }
     }
@@ -88,7 +110,6 @@ mixin DevicesBase on EntitiesBase<EntityData, EntityDataQuery> {
     bool listWidgetCard,
   ) {
     return DeviceCard(
-      tbContext,
       device: device,
       listWidgetCard: listWidgetCard,
       displayImage: displayCardImage(listWidgetCard),
@@ -103,13 +124,13 @@ class DeviceQueryController extends PageKeyController<EntityDataQuery> {
     String? deviceType,
     bool? active,
   }) : super(
-          EntityQueryApi.createDefaultDeviceQuery(
-            pageSize: pageSize,
-            searchText: searchText,
-            deviceType: deviceType,
-            active: active,
-          ),
-        );
+         EntityQueryApi.createDefaultDeviceQuery(
+           pageSize: pageSize,
+           searchText: searchText,
+           deviceType: deviceType,
+           active: active,
+         ),
+       );
 
   @override
   EntityDataQuery nextPageKey(EntityDataQuery pageKey) => pageKey.next();
@@ -121,9 +142,8 @@ class DeviceQueryController extends PageKeyController<EntityDataQuery> {
   }
 }
 
-class DeviceCard extends TbContextWidget {
-  DeviceCard(
-    super.tbContext, {
+class DeviceCard extends StatefulWidget {
+  const DeviceCard({
     super.key,
     required this.device,
     this.listWidgetCard = false,
@@ -137,11 +157,11 @@ class DeviceCard extends TbContextWidget {
   State<StatefulWidget> createState() => _DeviceCardState();
 }
 
-class _DeviceCardState extends TbContextState<DeviceCard> {
+class _DeviceCardState extends State<DeviceCard> {
   final entityDateFormat = DateFormat('yyyy-MM-dd');
 
   late Future<CachedDeviceProfileInfo> deviceProfileFuture;
-
+  final tbClient = getIt<ITbClientService>().client;
   @override
   void initState() {
     super.initState();
@@ -188,9 +208,10 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
             child: Container(
               width: 4,
               decoration: BoxDecoration(
-                color: widget.device.attribute('active') == 'true'
-                    ? const Color(0xFF008A00)
-                    : const Color(0xFFAFAFAF),
+                color:
+                    widget.device.attribute('active') == 'true'
+                        ? const Color(0xFF008A00)
+                        : const Color(0xFFAFAFAF),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(4),
                   bottomLeft: Radius.circular(4),
@@ -209,13 +230,16 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
               Widget image;
               BoxFit imageFit;
               if (profile.info.image != null) {
-                image =
-                    Utils.imageFromTbImage(context, tbClient, profile.info.image);
+                image = Utils.imageFromTbImage(
+                  context,
+                  tbClient,
+                  profile.info.image,
+                );
                 imageFit = BoxFit.contain;
               } else {
                 image = SvgPicture.asset(
                   ThingsboardImage.deviceProfilePlaceholder,
-                 
+
                   semanticsLabel: 'Device',
                 );
                 imageFit = BoxFit.contain;
@@ -273,9 +297,7 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                                           child: Text(
                                             widget.device.field('name')!,
                                             style: const TextStyle(
-                                              color: Color(
-                                                0xFF282828,
-                                              ),
+                                              color: Color(0xFF282828),
                                               fontSize: 14,
                                               fontWeight: FontWeight.w500,
                                               height: 20 / 14,
@@ -314,19 +336,18 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                                         ),
                                       ),
                                       Text(
-                                        widget.device.attribute(
-                                                  'active',
-                                                ) ==
+                                        widget.device.attribute('active') ==
                                                 'true'
                                             ? S.of(context).active
                                             : S.of(context).inactive,
                                         style: TextStyle(
-                                          color: widget.device.attribute(
-                                                    'active',
-                                                  ) ==
-                                                  'true'
-                                              ? const Color(0xFF008A00)
-                                              : const Color(0xFFAFAFAF),
+                                          color:
+                                              widget.device.attribute(
+                                                        'active',
+                                                      ) ==
+                                                      'true'
+                                                  ? const Color(0xFF008A00)
+                                                  : const Color(0xFFAFAFAF),
                                           fontSize: 12,
                                           height: 16 / 12,
                                           fontWeight: FontWeight.normal,
@@ -358,9 +379,7 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                 child: Center(
                   child: RefreshProgressIndicator(
                     valueColor: AlwaysStoppedAnimation(
-                      Theme.of(tbContext.currentState!.context)
-                          .colorScheme
-                          .primary,
+                      Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
@@ -411,15 +430,13 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                     imageFit = BoxFit.cover;
                   }
                   return ClipRRect(
-                    borderRadius:
-                        const BorderRadius.horizontal(left: Radius.circular(4)),
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(4),
+                    ),
                     child: Stack(
                       children: [
                         Positioned.fill(
-                          child: FittedBox(
-                            fit: imageFit,
-                            child: image,
-                          ),
+                          child: FittedBox(fit: imageFit, child: image),
                         ),
                       ],
                     ),
@@ -428,9 +445,7 @@ class _DeviceCardState extends TbContextState<DeviceCard> {
                   return Center(
                     child: RefreshProgressIndicator(
                       valueColor: AlwaysStoppedAnimation(
-                        Theme.of(tbContext.currentState!.context)
-                            .colorScheme
-                            .primary,
+                        Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   );
