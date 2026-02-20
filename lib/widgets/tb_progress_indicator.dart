@@ -103,7 +103,7 @@ class _TbProgressIndicatorState extends ConsumerState<TbProgressIndicator>
               colorFilter: ColorFilter.mode(
                 widget.valueColor ?? theme.colorScheme.secondary,
                 BlendMode.srcIn,
-              ),*/
+              ),
             ),
             builder: (BuildContext context, Widget? child) {
               return Transform.rotate(
