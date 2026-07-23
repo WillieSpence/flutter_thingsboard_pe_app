@@ -11,6 +11,7 @@ import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/services/communication/events/user_loaded_event.dart';
 import 'package:thingsboard_app/utils/services/communication/i_communication_service.dart';
+import 'package:thingsboard_app/utils/services/custom_translation/i_custom_translation_service.dart';
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
 import 'package:thingsboard_app/utils/services/firebase/i_firebase_service.dart';
 import 'package:thingsboard_app/utils/services/notification_service.dart';
@@ -42,6 +43,7 @@ class Login extends _$Login {
         state.isFullyAuthenticated()) {
       await getIt<NotificationService>().logout();
     }
+    getIt<ICustomTranslationService>().clear();
     await _tbClient.logout(requestConfig: RequestConfig(ignoreErrors: true));
   }
 
@@ -69,7 +71,7 @@ class Login extends _$Login {
       final res = await _tbClient.login(LoginRequest(email, password));
       final user = _tbClient.getAuthUser();
       if (user != null &&
-          (user.isMfaConfigurationToken() || user.isMfaConfigurationToken())) {
+          (user.isMfaConfigurationToken() || user.isPreVerificationToken())) {
         return false;
       }
     } catch (e) {
@@ -88,11 +90,15 @@ class Login extends _$Login {
 
     final userInfo = await _tbClient.getUserService().getUser();
     final lang = userInfo.additionalInfo?['lang'];
+    final langStr = lang?.toString();
     final locale = S.delegate.supportedLocales.firstWhereOrNull(
-      (l) => l.toString() == lang.toString().split('_')[0],
+      (l) => l.toString() == langStr || l.languageCode == langStr,
     );
 
     await S.load(locale ?? const Locale('en'));
+    await getIt<ICustomTranslationService>().load(
+      localeCode: (langStr != null && langStr.isNotEmpty) ? langStr : 'en_US',
+    );
     final userPermissions =
         await _tbClient.getUserPermissionsService().getAllowedPermissions();
     state = state.copyWith(

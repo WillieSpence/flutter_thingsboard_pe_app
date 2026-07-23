@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:thingsboard_app/constants/assets_path.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
+import 'package:thingsboard_app/utils/services/custom_translation/i_custom_translation_service.dart';
 import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/utils.dart';
 
@@ -64,7 +65,8 @@ class _DashboardGridCardState extends State<DashboardGridCard> {
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Center(
                 child: AutoSizeText(
-                  widget.dashboard.title,
+                  getIt<ICustomTranslationService>()
+                      .translate(widget.dashboard.title),
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

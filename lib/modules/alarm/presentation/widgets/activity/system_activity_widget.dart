@@ -24,7 +24,7 @@ class SystemActivityWidget extends StatelessWidget {
           ),
         ),
         Text(
-          activity.comment.toString(),
+          (activity.comment as AlarmCommentJsonNode).text,
           style: TbTextStyles.bodyLarge.copyWith(
             color: Colors.black.withValues(alpha: .54),
           ),

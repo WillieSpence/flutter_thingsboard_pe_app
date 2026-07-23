@@ -9,6 +9,7 @@ import 'package:thingsboard_app/core/usecases/user_details_usecase.dart';
 import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/main/model/main_navigation_item.dart';
+import 'package:thingsboard_app/modules/main/providers/navigation_helper.dart';
 import 'package:thingsboard_app/modules/main/providers/navigation_provider.dart';
 import 'package:thingsboard_app/modules/more/more_menu_item_widget.dart';
 import 'package:thingsboard_app/modules/more/profle_widget.dart';
@@ -58,7 +59,12 @@ class MorePage extends HookConsumerWidget {
                                 .map(
                                   (e) => MoreMenuItemWidget(
                                     TbMainNavigationItem(
-                                      title: e.title,
+                                      title: NavigationHelper.getLocalizedTitle(
+                                        context,
+                                        e.id,
+                                        e.path,
+                                        e.title,
+                                      ),
                                       icon: e.icon,
                                       path: e.path,
                                       showAdditionalIcon: e.showNotificationBadge,

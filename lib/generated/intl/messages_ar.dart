@@ -24,70 +24,82 @@ class MessageLookup extends MessageLookupByLibrary {
       "تهانينا!\nتم تنشيط حساب ${appTitle} الخاص بك.\nيمكنك الآن تسجيل الدخول إلى مساحة ${appTitle} الخاصة بك.";
 
   static String m1(authority) =>
-      "Are you sure? You are going to delete your ${authority} account.";
+      "هل أنت متأكد؟ ستقوم بحذف حساب ${authority} الخاص بك.";
 
   static String m2(count) =>
-      "${Intl.plural(count, one: 'Alarm', other: 'Alarms')}";
+      "${Intl.plural(count, one: 'تنبيه', other: 'تنبيهات')}";
 
   static String m3(providerName) =>
-      "Are you sure you want to deactivate ${providerName}?";
+      "هل أنت متأكد أنك تريد تعطيل ${providerName}؟";
 
   static String m4(deviceName) =>
       "لا يمكن إنشاء جلسة مع الجهاز ${deviceName}. يرجى المحاولة مرة أخرى";
 
-  static String m5(link) => "Can\'t launch url: ${link}";
+  static String m5(link) => "لا يمكن فتح الرابط: ${link}";
 
-  static String m6(wifiName) => "Connect to Wi-Fi similar to ${wifiName}";
+  static String m6(wifiName) => "اتصل بشبكة Wi-Fi مشابهة لـ ${wifiName}";
 
   static String m7(name) =>
-      "Connection to the ${name} Wi-Fi network failed.\nPlease ensure that your phone is connected to the device Wi-Fi network and that Local Network access is enabled for this app in your device settings.";
+      "فشل الاتصال بشبكة Wi-Fi ${name}.\nيرجى التأكد من أن هاتفك متصل بشبكة Wi-Fi الخاصة بالجهاز وأن الوصول إلى الشبكة المحلية مفعّل لهذا التطبيق.";
 
   static String m8(count) =>
-      "${Intl.plural(count, one: 'Dashboard', other: 'Dashboards')}";
+      "${Intl.plural(count, one: 'لوحة معلومات', other: 'لوحات معلومات')}";
 
   static String m9(count) =>
-      "${Intl.plural(count, one: 'Device', other: 'Devices')}";
+      "${Intl.plural(count, one: 'حذف إشعار واحد؟', other: 'حذف ${count} إشعارات؟')}";
 
   static String m10(count) =>
-      "${count}-${Intl.plural(count, one: 'digit', other: 'digits')} code";
+      "${Intl.plural(count, one: 'جهاز', other: 'أجهزة')}";
 
-  static String m11(contact) =>
+  static String m11(count) => "رمز من ${count} أرقام";
+
+  static String m12(contact) =>
       "تم إرسال رمز أمني إلى بريدك الإلكتروني على العنوان ${contact}.";
 
-  static String m12(e) => "Error occured: ${e}";
+  static String m13(e) => "حدث خطأ: ${e}";
 
-  static String m13(count) =>
-      "${Intl.plural(count, one: 'Notification', other: 'Notifications')}";
+  static String m14(error) => "خطأ في إرسال الرمز: ${error}";
 
-  static String m14(permissions) =>
+  static String m15(count) =>
+      "${Intl.plural(count, one: 'فشلت عملية واحدة', other: 'فشلت ${count} عمليات')}";
+
+  static String m16(count) =>
+      "${Intl.plural(count, one: 'وضع علامة مقروء لإشعار واحد؟', other: 'وضع علامة مقروء لـ ${count} إشعارات؟')}";
+
+  static String m17(count) => "${count} محدد";
+
+  static String m18(count) =>
+      "${Intl.plural(count, one: 'إشعار', other: 'إشعارات')}";
+
+  static String m19(permissions) =>
       "ليس لديك أذونات كافية لـ \"${permissions}\" للمتابعة. يرجى فتح إعدادات التطبيق ومنح الأذونات والضغط على \"حاول مرة أخرى\".";
 
-  static String m15(permissions) =>
+  static String m20(permissions) =>
       "ليس لديك أذونات كافية لـ \"${permissions}\" للمتابعة. يرجى منح الأذونات المطلوبة والضغط على \"حاول مرة أخرى\".";
 
-  static String m16(deviceName) =>
+  static String m21(deviceName) =>
       "أدخل رقم PIN الخاص بـ ${deviceName} لتأكيد إثبات الحيازة";
 
-  static String m17(time) =>
+  static String m22(time) =>
       "إعادة إرسال الرمز في ${Intl.plural(time, one: 'ثانية واحدة', other: '${time} ثواني')}";
 
-  static String m18(name) => "المسار غير محدد: ${name}";
+  static String m23(name) => "المسار غير محدد: ${name}";
 
-  static String m19(count) =>
+  static String m24(count) =>
       "${Intl.plural(count, one: 'البحث عن مستخدم', other: 'البحث عن مستخدمين')}";
 
-  static String m20(contact) =>
+  static String m25(contact) =>
       "تم إرسال رمز أمني إلى هاتفك على الرقم ${contact}.";
 
-  static String m21(name) =>
-      "Unable connect to Wi-Fi because networks wasn\'t found by device ${name}";
+  static String m26(name) =>
+      "تعذر الاتصال بـ Wi-Fi لأن الجهاز ${name} لم يجد شبكات";
 
-  static String m22(version) => "تحديث إلى ${version}";
+  static String m27(version) => "تحديث إلى ${version}";
 
-  static String m23(deviceName) =>
+  static String m28(deviceName) =>
       "لمتابعة إعداد جهازك ${deviceName}، يرجى تقديم بيانات اعتماد الشبكة الخاصة بك.";
 
-  static String m24(network) => "أدخل كلمة المرور لـ ${network}";
+  static String m29(network) => "أدخل كلمة المرور لـ ${network}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -106,107 +118,109 @@ class MessageLookup extends MessageLookupByLibrary {
     "acknowledge": MessageLookupByLibrary.simpleMessage("إقرار"),
     "acknowledged": MessageLookupByLibrary.simpleMessage("مُقر"),
     "actionData": MessageLookupByLibrary.simpleMessage("بيانات الإجراء"),
-    "actionStatusFailure": MessageLookupByLibrary.simpleMessage("Failure"),
-    "actionStatusSuccess": MessageLookupByLibrary.simpleMessage("Success"),
-    "actionTypeActivated": MessageLookupByLibrary.simpleMessage("Activated"),
-    "actionTypeAdded": MessageLookupByLibrary.simpleMessage("Added"),
+    "actionStatusFailure": MessageLookupByLibrary.simpleMessage("فشل"),
+    "actionStatusSuccess": MessageLookupByLibrary.simpleMessage("نجاح"),
+    "actionTypeActivated": MessageLookupByLibrary.simpleMessage("تم التفعيل"),
+    "actionTypeAdded": MessageLookupByLibrary.simpleMessage("تمت الإضافة"),
     "actionTypeAddedComment": MessageLookupByLibrary.simpleMessage(
-      "Added Comment",
+      "تمت إضافة تعليق",
     ),
     "actionTypeAddedToEntityGroup": MessageLookupByLibrary.simpleMessage(
-      "Added to Entity Group",
+      "تمت الإضافة إلى مجموعة الكيانات",
     ),
-    "actionTypeAlarmAck": MessageLookupByLibrary.simpleMessage("Acknowledged"),
+    "actionTypeAlarmAck": MessageLookupByLibrary.simpleMessage("تم الإقرار"),
     "actionTypeAlarmAssigned": MessageLookupByLibrary.simpleMessage(
-      "Alarm Assigned",
+      "تم تعيين التنبيه",
     ),
-    "actionTypeAlarmClear": MessageLookupByLibrary.simpleMessage("Cleared"),
+    "actionTypeAlarmClear": MessageLookupByLibrary.simpleMessage("تم المسح"),
     "actionTypeAlarmDelete": MessageLookupByLibrary.simpleMessage(
-      "Alarm Deleted",
+      "تم حذف التنبيه",
     ),
     "actionTypeAlarmUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Alarm Unassigned",
+      "تم إلغاء تعيين التنبيه",
     ),
     "actionTypeAssignedFromTenant": MessageLookupByLibrary.simpleMessage(
-      "Assigned from Tenant",
+      "تم التعيين من المستأجر",
     ),
     "actionTypeAssignedToCustomer": MessageLookupByLibrary.simpleMessage(
-      "Assigned to Customer",
+      "تم التعيين للعميل",
     ),
     "actionTypeAssignedToEdge": MessageLookupByLibrary.simpleMessage(
-      "Assigned to Edge",
+      "تم التعيين لـ Edge",
     ),
     "actionTypeAssignedToTenant": MessageLookupByLibrary.simpleMessage(
-      "Assigned to Tenant",
+      "تم التعيين للمستأجر",
     ),
     "actionTypeAttributesDeleted": MessageLookupByLibrary.simpleMessage(
-      "Attributes Deleted",
+      "تم حذف السمات",
     ),
     "actionTypeAttributesRead": MessageLookupByLibrary.simpleMessage(
-      "Attributes read",
+      "تم قراءة السمات",
     ),
     "actionTypeAttributesUpdated": MessageLookupByLibrary.simpleMessage(
-      "Attributes Updated",
+      "تم تحديث السمات",
     ),
     "actionTypeChangeOwner": MessageLookupByLibrary.simpleMessage(
-      "Owner Changed",
+      "تم تغيير المالك",
     ),
     "actionTypeCredentialsRead": MessageLookupByLibrary.simpleMessage(
-      "Credentials read",
+      "تم قراءة بيانات الاعتماد",
     ),
     "actionTypeCredentialsUpdated": MessageLookupByLibrary.simpleMessage(
-      "Credentials Updated",
+      "تم تحديث بيانات الاعتماد",
     ),
-    "actionTypeDeleted": MessageLookupByLibrary.simpleMessage("Deleted"),
+    "actionTypeDeleted": MessageLookupByLibrary.simpleMessage("تم الحذف"),
     "actionTypeDeletedComment": MessageLookupByLibrary.simpleMessage(
-      "Deleted Comment",
+      "تم حذف التعليق",
     ),
-    "actionTypeLockout": MessageLookupByLibrary.simpleMessage("Lockout"),
-    "actionTypeLogin": MessageLookupByLibrary.simpleMessage("Login"),
-    "actionTypeLogout": MessageLookupByLibrary.simpleMessage("Logout"),
+    "actionTypeLockout": MessageLookupByLibrary.simpleMessage("تم القفل"),
+    "actionTypeLogin": MessageLookupByLibrary.simpleMessage("تسجيل دخول"),
+    "actionTypeLogout": MessageLookupByLibrary.simpleMessage("تسجيل خروج"),
     "actionTypeMadePrivate": MessageLookupByLibrary.simpleMessage(
-      "Made Private",
+      "تم جعله خاصاً",
     ),
-    "actionTypeMadePublic": MessageLookupByLibrary.simpleMessage("Made Public"),
+    "actionTypeMadePublic": MessageLookupByLibrary.simpleMessage(
+      "تم جعله عاماً",
+    ),
     "actionTypeProvisionFailure": MessageLookupByLibrary.simpleMessage(
-      "Device provisioning was failed",
+      "فشلت تهيئة الجهاز",
     ),
     "actionTypeProvisionSuccess": MessageLookupByLibrary.simpleMessage(
-      "Device provisioned",
+      "تم تهيئة الجهاز",
     ),
     "actionTypeRelationAddOrUpdate": MessageLookupByLibrary.simpleMessage(
-      "Relation updated",
+      "تم تحديث العلاقة",
     ),
     "actionTypeRelationDeleted": MessageLookupByLibrary.simpleMessage(
-      "Relation deleted",
+      "تم حذف العلاقة",
     ),
     "actionTypeRelationsDeleted": MessageLookupByLibrary.simpleMessage(
-      "All relation deleted",
+      "تم حذف جميع العلاقات",
     ),
     "actionTypeRemovedFromEntityGroup": MessageLookupByLibrary.simpleMessage(
-      "Removed from Entity Group",
+      "تمت الإزالة من مجموعة الكيانات",
     ),
     "actionTypeRestApiRuleEngineCall": MessageLookupByLibrary.simpleMessage(
-      "REST API Rule Engine Call",
+      "استدعاء محرك القواعد عبر REST API",
     ),
-    "actionTypeRpcCall": MessageLookupByLibrary.simpleMessage("RPC Call"),
-    "actionTypeSmsSent": MessageLookupByLibrary.simpleMessage("SMS Sent"),
-    "actionTypeSuspended": MessageLookupByLibrary.simpleMessage("Suspended"),
+    "actionTypeRpcCall": MessageLookupByLibrary.simpleMessage("استدعاء RPC"),
+    "actionTypeSmsSent": MessageLookupByLibrary.simpleMessage("تم إرسال SMS"),
+    "actionTypeSuspended": MessageLookupByLibrary.simpleMessage("تم التعليق"),
     "actionTypeTimeseriesDeleted": MessageLookupByLibrary.simpleMessage(
-      "Telemetry deleted",
+      "تم حذف القياس عن بعد",
     ),
     "actionTypeTimeseriesUpdated": MessageLookupByLibrary.simpleMessage(
-      "Telemetry updated",
+      "تم تحديث القياس عن بعد",
     ),
     "actionTypeUnassignedFromCustomer": MessageLookupByLibrary.simpleMessage(
-      "Unassigned from Customer",
+      "تم إلغاء التعيين من العميل",
     ),
     "actionTypeUnassignedFromEdge": MessageLookupByLibrary.simpleMessage(
-      "Unassigned from Edge",
+      "تم إلغاء التعيين من Edge",
     ),
-    "actionTypeUpdated": MessageLookupByLibrary.simpleMessage("Updated"),
+    "actionTypeUpdated": MessageLookupByLibrary.simpleMessage("تم التحديث"),
     "actionTypeUpdatedComment": MessageLookupByLibrary.simpleMessage(
-      "Updated Comment",
+      "تم تحديث التعليق",
     ),
     "activatingAccount": MessageLookupByLibrary.simpleMessage(
       "تنشيط الحساب...",
@@ -218,12 +232,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "activity": MessageLookupByLibrary.simpleMessage("النشاط"),
     "addCommentMessage": MessageLookupByLibrary.simpleMessage("إضافة تعليق..."),
     "addVerificationMethod": MessageLookupByLibrary.simpleMessage(
-      "Add verification method",
+      "إضافة طريقة تحقق",
     ),
     "address": MessageLookupByLibrary.simpleMessage("العنوان"),
     "address2": MessageLookupByLibrary.simpleMessage("العنوان 2"),
-    "adminSettings": MessageLookupByLibrary.simpleMessage("Admin settings"),
-    "aiModel": MessageLookupByLibrary.simpleMessage("Ai model"),
+    "adminSettings": MessageLookupByLibrary.simpleMessage("إعدادات المسؤول"),
+    "aiModel": MessageLookupByLibrary.simpleMessage("نموذج ذكاء اصطناعي"),
     "alarmAcknowledgeText": MessageLookupByLibrary.simpleMessage(
       "هل أنت متأكد أنك تريد الإقرار بالتنبيه؟",
     ),
@@ -240,10 +254,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "alarmStatusList": MessageLookupByLibrary.simpleMessage(
       "قائمة حالة التنبيه",
     ),
-    "alarmTypeList": MessageLookupByLibrary.simpleMessage("Alarm type list"),
+    "alarmTypeList": MessageLookupByLibrary.simpleMessage(
+      "قائمة أنواع التنبيهات",
+    ),
     "alarmTypes": MessageLookupByLibrary.simpleMessage("أنواع التنبيهات"),
     "alarms": m2,
-    "all": MessageLookupByLibrary.simpleMessage("All"),
+    "all": MessageLookupByLibrary.simpleMessage("الكل"),
     "allDevices": MessageLookupByLibrary.simpleMessage("جميع الأجهزة"),
     "allowAccess": MessageLookupByLibrary.simpleMessage("السماح بالوصول"),
     "alreadyHaveAnAccount": MessageLookupByLibrary.simpleMessage(
@@ -252,19 +268,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "anEmptyRequestDataReceived": MessageLookupByLibrary.simpleMessage(
       "تم استلام بيانات طلب فارغة.",
     ),
-    "anyType": MessageLookupByLibrary.simpleMessage("Any type"),
-    "apiKey": MessageLookupByLibrary.simpleMessage("Api key"),
-    "apiUsageState": MessageLookupByLibrary.simpleMessage("API Usage State"),
+    "anyType": MessageLookupByLibrary.simpleMessage("أي نوع"),
+    "apiKey": MessageLookupByLibrary.simpleMessage("مفتاح API"),
+    "apiUsageState": MessageLookupByLibrary.simpleMessage("حالة استخدام API"),
     "appTitle": MessageLookupByLibrary.simpleMessage("ThingsBoard"),
-    "applyChanges": MessageLookupByLibrary.simpleMessage("Apply changes"),
+    "applyChanges": MessageLookupByLibrary.simpleMessage("تطبيق التغييرات"),
     "areYouSure": MessageLookupByLibrary.simpleMessage("هل أنت متأكد؟"),
     "areYouSureYouWantToDeactivate": m3,
     "areYouSureYouWantToExit": MessageLookupByLibrary.simpleMessage(
-      "Are you sure you want to exit?",
+      "هل أنت متأكد أنك تريد الخروج؟",
     ),
-    "asset": MessageLookupByLibrary.simpleMessage("Asset"),
+    "asset": MessageLookupByLibrary.simpleMessage("الأصل"),
     "assetName": MessageLookupByLibrary.simpleMessage("اسم الأصل"),
-    "assetProfile": MessageLookupByLibrary.simpleMessage("Asset profile"),
+    "assetProfile": MessageLookupByLibrary.simpleMessage("ملف تعريف الأصل"),
     "assets": MessageLookupByLibrary.simpleMessage("الأصول"),
     "assignedToCustomer": MessageLookupByLibrary.simpleMessage("معين للعميل"),
     "assignedToMe": MessageLookupByLibrary.simpleMessage("معين لي"),
@@ -273,7 +289,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "تفاصيل سجل التدقيق",
     ),
     "auditLogs": MessageLookupByLibrary.simpleMessage("سجلات التدقيق"),
-    "autoUnitSystem": MessageLookupByLibrary.simpleMessage("Auto"),
+    "autoUnitSystem": MessageLookupByLibrary.simpleMessage("تلقائي"),
     "backupCodeAuthDescription": MessageLookupByLibrary.simpleMessage(
       "يرجى إدخال أحد الرموز الاحتياطية الخاصة بك.",
     ),
@@ -281,17 +297,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "الرمز الاحتياطي",
     ),
     "backupCodeSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will be able to use backup codes to pass two factor authentification",
+      "في المرة القادمة التي تسجل فيها الدخول، يمكنك استخدام الرموز الاحتياطية للمصادقة الثنائية",
     ),
     "bleHelpMessage": MessageLookupByLibrary.simpleMessage(
       "لتزويد جهازك الجديد، يرجى التأكد من تشغيل البلوتوث في هاتفك وأنه ضمن نطاق جهازك الجديد",
     ),
-    "blobEntity": MessageLookupByLibrary.simpleMessage("Blob Entity"),
-    "calculatedField": MessageLookupByLibrary.simpleMessage("Calculated field"),
+    "blobEntity": MessageLookupByLibrary.simpleMessage("كيان Blob"),
+    "calculatedField": MessageLookupByLibrary.simpleMessage("حقل محسوب"),
     "cancel": MessageLookupByLibrary.simpleMessage("إلغاء"),
     "cannotEstablishSession": m4,
     "cantDeleteUserAccount": MessageLookupByLibrary.simpleMessage(
-      "Can\\\'t delete user account",
+      "لا يمكن حذف حساب المستخدم",
     ),
     "cantLaunchUrlLink": m5,
     "changePassword": MessageLookupByLibrary.simpleMessage("تغيير كلمة المرور"),
@@ -306,41 +322,39 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "clear": MessageLookupByLibrary.simpleMessage("مسح"),
     "cleared": MessageLookupByLibrary.simpleMessage("تم المسح"),
-    "close": MessageLookupByLibrary.simpleMessage("Close"),
+    "close": MessageLookupByLibrary.simpleMessage("إغلاق"),
     "codeVerificationFailed": MessageLookupByLibrary.simpleMessage(
-      "Code verification failed!",
+      "فشل التحقق من الرمز!",
     ),
     "confirmNotRobotMessage": MessageLookupByLibrary.simpleMessage(
       "يجب أن تؤكد أنك لست روبوت",
     ),
     "confirmToCloseTheApp": MessageLookupByLibrary.simpleMessage(
-      "Confirm to close the app",
+      "تأكيد لإغلاق التطبيق",
     ),
     "confirmation": MessageLookupByLibrary.simpleMessage("التأكيد"),
     "confirmingWifiConnection": MessageLookupByLibrary.simpleMessage(
       "تأكيد اتصال Wi-Fi",
     ),
-    "connectToDevice": MessageLookupByLibrary.simpleMessage(
-      "Connect to device",
-    ),
+    "connectToDevice": MessageLookupByLibrary.simpleMessage("الاتصال بالجهاز"),
     "connectToTheWifiYouUsuallyUse": MessageLookupByLibrary.simpleMessage(
-      "Connect to the Wi-Fi you usually use",
+      "اتصل بشبكة Wi-Fi التي تستخدمها عادة",
     ),
     "connectToWifiSimilarToWifiname": m6,
     "connectingToDevice": MessageLookupByLibrary.simpleMessage(
-      "Connecting to device",
+      "جاري الاتصال بالجهاز",
     ),
-    "connectionError": MessageLookupByLibrary.simpleMessage("Connection error"),
+    "connectionError": MessageLookupByLibrary.simpleMessage("خطأ في الاتصال"),
     "connectionToTheWifiNetworkFailednpleaseEnsureThatYour": m7,
     "continueText": MessageLookupByLibrary.simpleMessage("استمرار"),
-    "converter": MessageLookupByLibrary.simpleMessage("Converter"),
+    "converter": MessageLookupByLibrary.simpleMessage("محول"),
     "copiedToClipboard": MessageLookupByLibrary.simpleMessage(
-      "Copied to clipboard",
+      "تم النسخ إلى الحافظة",
     ),
-    "copy": MessageLookupByLibrary.simpleMessage("Copy"),
+    "copy": MessageLookupByLibrary.simpleMessage("نسخ"),
     "copy32digitsKeyToYourAuthenticationAppOrScanQrcode":
         MessageLookupByLibrary.simpleMessage(
-          "Copy 32-digits key to your authentication app or scan QR-code below",
+          "انسخ المفتاح المكون من 32 رقماً إلى تطبيق المصادقة أو امسح رمز QR أدناه",
         ),
     "country": MessageLookupByLibrary.simpleMessage("البلد"),
     "createAccount": MessageLookupByLibrary.simpleMessage("إنشاء حساب"),
@@ -357,31 +371,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "dashboards": m8,
     "days": MessageLookupByLibrary.simpleMessage("أيام"),
     "delete": MessageLookupByLibrary.simpleMessage("حذف"),
-    "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete account"),
+    "deleteAccount": MessageLookupByLibrary.simpleMessage("حذف الحساب"),
     "deleteComment": MessageLookupByLibrary.simpleMessage("حذف التعليق"),
+    "deleteSelectedNotifications": m9,
     "details": MessageLookupByLibrary.simpleMessage("التفاصيل"),
     "deviceList": MessageLookupByLibrary.simpleMessage("قائمة الأجهزة"),
     "deviceNotAbleToFindWifiNearby": MessageLookupByLibrary.simpleMessage(
-      "Device not able to find Wi-Fi nearby",
+      "لا يمكن للجهاز العثور على Wi-Fi قريب",
     ),
     "deviceNotFoundMessage": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على الأجهزة. يرجى التأكد من تشغيل البلوتوث في هاتفك وأنه ضمن نطاق جهازك الجديد.",
     ),
-    "deviceProfile": MessageLookupByLibrary.simpleMessage("Device profile"),
-    "deviceProvisioning": MessageLookupByLibrary.simpleMessage(
-      "Device provisioning",
-    ),
-    "devices": m9,
-    "digitsCode": m10,
-    "discardChanges": MessageLookupByLibrary.simpleMessage("Discard changes"),
-    "domain": MessageLookupByLibrary.simpleMessage("Domain"),
-    "done": MessageLookupByLibrary.simpleMessage("Done"),
+    "deviceProfile": MessageLookupByLibrary.simpleMessage("ملف تعريف الجهاز"),
+    "deviceProvisioning": MessageLookupByLibrary.simpleMessage("تهيئة الجهاز"),
+    "devices": m10,
+    "digitsCode": m11,
+    "discardChanges": MessageLookupByLibrary.simpleMessage("تجاهل التغييرات"),
+    "domain": MessageLookupByLibrary.simpleMessage("النطاق"),
+    "done": MessageLookupByLibrary.simpleMessage("تم"),
     "duration": MessageLookupByLibrary.simpleMessage("المدة"),
     "edge": MessageLookupByLibrary.simpleMessage("Edge"),
     "edit": MessageLookupByLibrary.simpleMessage("تحرير"),
     "edited": MessageLookupByLibrary.simpleMessage("محرر"),
     "email": MessageLookupByLibrary.simpleMessage("البريد الإلكتروني"),
-    "emailAuthDescription": m11,
+    "emailAuthDescription": m12,
     "emailAuthPlaceholder": MessageLookupByLibrary.simpleMessage(
       "رمز البريد الإلكتروني",
     ),
@@ -392,7 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "البريد الإلكتروني مطلوب.",
     ),
     "emailSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will be prompted to enter the security code that will be sent to your email address",
+      "في المرة القادمة التي تسجل فيها الدخول، سيُطلب منك إدخال رمز الأمان المرسل إلى بريدك الإلكتروني",
     ),
     "emailVerification": MessageLookupByLibrary.simpleMessage(
       "تأكيد البريد الإلكتروني",
@@ -408,26 +421,29 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "emailVersificationSuccessfullySentNotification":
         MessageLookupByLibrary.simpleMessage(
-          "Email verification link was successfully sent!",
+          "تم إرسال رابط التحقق من البريد الإلكتروني بنجاح!",
         ),
     "enter6digitsKeyFromYourAppHere": MessageLookupByLibrary.simpleMessage(
-      "Enter 6-digits key from your app here:",
+      "أدخل المفتاح المكون من 6 أرقام من تطبيقك هنا:",
     ),
+    "enterAPhoneNumberToUseAsYourAuthenticator":
+        MessageLookupByLibrary.simpleMessage("أدخل رقم هاتف لاستخدامه كمصادق"),
     "enterAnEmailToUseAsYourAuthenticator":
         MessageLookupByLibrary.simpleMessage(
-          "Enter an email to use as your authenticator.",
+          "أدخل بريداً إلكترونياً لاستخدامه كمصادق.",
         ),
-    "entityGroup": MessageLookupByLibrary.simpleMessage("Entity Group"),
+    "entityGroup": MessageLookupByLibrary.simpleMessage("مجموعة الكيانات"),
     "entityType": MessageLookupByLibrary.simpleMessage("نوع الكيان"),
-    "entityView": MessageLookupByLibrary.simpleMessage("Entity view"),
-    "errorOccured": m12,
+    "entityView": MessageLookupByLibrary.simpleMessage("عرض الكيان"),
+    "errorOccured": m13,
+    "errorSendingCode": m14,
     "europe": MessageLookupByLibrary.simpleMessage("أوروبا"),
     "europeRegionShort": MessageLookupByLibrary.simpleMessage("فرانكفورت"),
     "exitDeviceProvisioning": MessageLookupByLibrary.simpleMessage(
-      "Exit device provisioning",
+      "الخروج من تهيئة الجهاز",
     ),
     "failedToConnectToServer": MessageLookupByLibrary.simpleMessage(
-      "Failed to connect to server",
+      "فشل الاتصال بالخادم",
     ),
     "failedToLoadAlarmDetails": MessageLookupByLibrary.simpleMessage(
       "فشل في تحميل تفاصيل التنبيه",
@@ -435,32 +451,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToLoadTheList": MessageLookupByLibrary.simpleMessage(
       "فشل في تحميل القائمة",
     ),
+    "failedToPerformOperation": m15,
+    "failedToSaveImage": MessageLookupByLibrary.simpleMessage(
+      "فشل في حفظ الصورة",
+    ),
     "failureDetails": MessageLookupByLibrary.simpleMessage("تفاصيل الفشل"),
     "fatalApplicationErrorOccurred": MessageLookupByLibrary.simpleMessage(
-      "Fatal application error occurred:",
+      "حدث خطأ فادح في التطبيق:",
     ),
-    "fatalError": MessageLookupByLibrary.simpleMessage("Fatal error"),
+    "fatalError": MessageLookupByLibrary.simpleMessage("خطأ فادح"),
     "filters": MessageLookupByLibrary.simpleMessage("المرشحات"),
     "firebaseIsNotConfiguredPleaseReferToTheOfficialFirebase":
         MessageLookupByLibrary.simpleMessage(
-          "Firebase is not configured.\n Please refer to the official Firebase documentation for\n guidance on how to do so.",
+          "Firebase غير مكوّن.\nيرجى الرجوع إلى وثائق Firebase الرسمية\nللحصول على الإرشادات.",
         ),
     "firstName": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
     "firstNameRequireText": MessageLookupByLibrary.simpleMessage(
       "الاسم الأول مطلوب.",
     ),
     "firstNameUpper": MessageLookupByLibrary.simpleMessage("الاسم الأول"),
-    "goBack": MessageLookupByLibrary.simpleMessage("Go back"),
-    "groupPermission": MessageLookupByLibrary.simpleMessage("Group Permission"),
+    "goBack": MessageLookupByLibrary.simpleMessage("رجوع"),
+    "groupPermission": MessageLookupByLibrary.simpleMessage("إذن المجموعة"),
     "hideHomeDashboardToolbar": MessageLookupByLibrary.simpleMessage(
-      "Hide home dashboard toolbar",
+      "إخفاء شريط أدوات لوحة المعلومات الرئيسية",
     ),
     "home": MessageLookupByLibrary.simpleMessage("الرئيسية"),
-    "homeDashboard": MessageLookupByLibrary.simpleMessage("Home dashboard"),
+    "homeDashboard": MessageLookupByLibrary.simpleMessage(
+      "لوحة المعلومات الرئيسية",
+    ),
     "hours": MessageLookupByLibrary.simpleMessage("ساعات"),
-    "hybridUnitSystem": MessageLookupByLibrary.simpleMessage("Hybrid"),
+    "hybridUnitSystem": MessageLookupByLibrary.simpleMessage("هجين"),
     "imNotARobot": MessageLookupByLibrary.simpleMessage("لست روبوت"),
-    "imperialUnitSystem": MessageLookupByLibrary.simpleMessage("Imperial"),
+    "imageSavedToGallery": MessageLookupByLibrary.simpleMessage(
+      "تم الحفظ في \'معرض الصور\'",
+    ),
+    "imperialUnitSystem": MessageLookupByLibrary.simpleMessage("إمبراطوري"),
     "inactive": MessageLookupByLibrary.simpleMessage("غير نشط"),
     "inactiveUserAlreadyExists": MessageLookupByLibrary.simpleMessage(
       "يوجد مستخدم غير نشط بالفعل",
@@ -469,18 +494,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "يوجد مستخدم مسجل بالفعل بعنوان بريد إلكتروني غير مؤكد.\nانقر على زر \'إعادة إرسال\' إذا كنت تريد إعادة إرسال بريد التحقق الإلكتروني.",
     ),
     "indeterminate": MessageLookupByLibrary.simpleMessage("غير محدد"),
-    "integration": MessageLookupByLibrary.simpleMessage("Integration"),
+    "integration": MessageLookupByLibrary.simpleMessage("تكامل"),
     "invalidPasswordLengthMessage": MessageLookupByLibrary.simpleMessage(
       "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
     ),
-    "isRequiredText": MessageLookupByLibrary.simpleMessage("is required."),
+    "isRequiredText": MessageLookupByLibrary.simpleMessage("مطلوب."),
     "itLooksLikeYourPermissionsArentSufficientToCompleteThis":
         MessageLookupByLibrary.simpleMessage(
-          "It looks like your permissions aren\'t sufficient to complete this operation",
+          "يبدو أن صلاحياتك غير كافية لإكمال هذه العملية",
         ),
-    "job": MessageLookupByLibrary.simpleMessage("Job"),
+    "job": MessageLookupByLibrary.simpleMessage("مهمة"),
     "label": MessageLookupByLibrary.simpleMessage("التسمية"),
-    "language": MessageLookupByLibrary.simpleMessage("Language"),
+    "language": MessageLookupByLibrary.simpleMessage("اللغة"),
     "lastName": MessageLookupByLibrary.simpleMessage("الاسم الأخير"),
     "lastNameRequireText": MessageLookupByLibrary.simpleMessage(
       "الاسم الأخير مطلوب.",
@@ -490,7 +515,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "القائمة فارغة حالياً.",
     ),
     "login": MessageLookupByLibrary.simpleMessage("تسجيل دخول"),
-    "loginToApp": MessageLookupByLibrary.simpleMessage("Login to app"),
+    "loginToApp": MessageLookupByLibrary.simpleMessage(
+      "تسجيل الدخول إلى التطبيق",
+    ),
     "loginToYourAccount": MessageLookupByLibrary.simpleMessage(
       "تسجيل الدخول إلى حسابك",
     ),
@@ -498,9 +525,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "logoDefaultValue": MessageLookupByLibrary.simpleMessage("شعار ثينغز بورد"),
     "logout": MessageLookupByLibrary.simpleMessage("تسجيل خروج"),
     "major": MessageLookupByLibrary.simpleMessage("رئيسي"),
-    "markAllAsRead": MessageLookupByLibrary.simpleMessage("Mark all as read"),
-    "markAsRead": MessageLookupByLibrary.simpleMessage("Mark as read"),
-    "metricUnitSystem": MessageLookupByLibrary.simpleMessage("Metric"),
+    "markAllAsRead": MessageLookupByLibrary.simpleMessage("تحديد الكل كمقروء"),
+    "markAsRead": MessageLookupByLibrary.simpleMessage("تحديد كمقروء"),
+    "markSelectedNotificationsAsRead": m16,
+    "metricUnitSystem": MessageLookupByLibrary.simpleMessage("متري"),
     "mfaProviderBackupCode": MessageLookupByLibrary.simpleMessage(
       "الرمز الاحتياطي",
     ),
@@ -511,15 +539,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "mfaProviderTopt": MessageLookupByLibrary.simpleMessage("تطبيق المصادقة"),
     "minor": MessageLookupByLibrary.simpleMessage("ثانوي"),
     "minutes": MessageLookupByLibrary.simpleMessage("دقائق"),
-    "mobileApp": MessageLookupByLibrary.simpleMessage("Mobile app"),
+    "mobileApp": MessageLookupByLibrary.simpleMessage("تطبيق الجوال"),
     "mobileAppBundle": MessageLookupByLibrary.simpleMessage(
-      "Mobile app bundle",
+      "حزمة تطبيق الجوال",
     ),
     "mobileDashboardShouldBeConfiguredInDeviceProfile":
         MessageLookupByLibrary.simpleMessage(
-          "Mobile dashboard should be configured in device profile!",
+          "يجب تكوين لوحة المعلومات المحمولة في ملف تعريف الجهاز!",
         ),
     "more": MessageLookupByLibrary.simpleMessage("المزيد"),
+    "nSelected": m17,
     "newPassword": MessageLookupByLibrary.simpleMessage("كلمة المرور الجديدة"),
     "newPassword2": MessageLookupByLibrary.simpleMessage(
       "تأكيد كلمة المرور الجديدة",
@@ -534,16 +563,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "next": MessageLookupByLibrary.simpleMessage("التالي"),
     "no": MessageLookupByLibrary.simpleMessage("لا"),
     "no2faProvidersFound": MessageLookupByLibrary.simpleMessage(
-      "No 2FA providers found",
+      "لم يتم العثور على مزودي المصادقة الثنائية",
     ),
     "noAlarmsFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على تنبيهات",
     ),
     "noDashboardsFound": MessageLookupByLibrary.simpleMessage(
-      "No dashboards found",
+      "لم يتم العثور على لوحات معلومات",
     ),
     "noNotificationsFound": MessageLookupByLibrary.simpleMessage(
-      "No notifications found",
+      "لم يتم العثور على إشعارات",
     ),
     "noResultsFound": MessageLookupByLibrary.simpleMessage(
       "لم يتم العثور على نتائج",
@@ -554,34 +583,28 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "notFound": MessageLookupByLibrary.simpleMessage("غير موجود"),
     "notImplemented": MessageLookupByLibrary.simpleMessage("لم يتم التنفيذ!"),
-    "notificationRequest": MessageLookupByLibrary.simpleMessage(
-      "Notification request",
-    ),
-    "notificationRule": MessageLookupByLibrary.simpleMessage(
-      "Notification rule",
-    ),
-    "notificationTarget": MessageLookupByLibrary.simpleMessage(
-      "Notification target",
-    ),
+    "notificationRequest": MessageLookupByLibrary.simpleMessage("طلب الإشعار"),
+    "notificationRule": MessageLookupByLibrary.simpleMessage("قاعدة الإشعار"),
+    "notificationTarget": MessageLookupByLibrary.simpleMessage("هدف الإشعار"),
     "notificationTemplate": MessageLookupByLibrary.simpleMessage(
-      "Notification template",
+      "قالب الإشعار",
     ),
-    "notifications": m13,
-    "oauth2Client": MessageLookupByLibrary.simpleMessage("Oauth2 client"),
+    "notifications": m18,
+    "oauth2Client": MessageLookupByLibrary.simpleMessage("عميل OAuth2"),
     "openAppSettings": MessageLookupByLibrary.simpleMessage(
-      "Open app settings",
+      "فتح إعدادات التطبيق",
     ),
-    "openAppSettingsToGrantPermissionMessage": m14,
+    "openAppSettingsToGrantPermissionMessage": m19,
     "openSettingsAndGrantAccessToCameraToContinue":
         MessageLookupByLibrary.simpleMessage(
           "افتح الإعدادات ومنح الوصول للكاميرا للمتابعة",
         ),
     "openWifiSettings": MessageLookupByLibrary.simpleMessage(
-      "Open Wi-Fi settings",
+      "فتح إعدادات Wi-Fi",
     ),
     "or": MessageLookupByLibrary.simpleMessage("أو"),
     "originator": MessageLookupByLibrary.simpleMessage("المصدر"),
-    "otaPackage": MessageLookupByLibrary.simpleMessage("OTA package"),
+    "otaPackage": MessageLookupByLibrary.simpleMessage("حزمة OTA"),
     "password": MessageLookupByLibrary.simpleMessage("كلمة المرور"),
     "passwordErrorNotification": MessageLookupByLibrary.simpleMessage(
       "كلمات المرور المدخلة يجب أن تكون متطابقة!",
@@ -605,36 +628,34 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordSuccessNotification": MessageLookupByLibrary.simpleMessage(
       "تم تغيير كلمة المرور بنجاح",
     ),
-    "permissions": MessageLookupByLibrary.simpleMessage("Permissions"),
-    "permissionsNotEnoughMessage": m15,
+    "permissions": MessageLookupByLibrary.simpleMessage("الأذونات"),
+    "permissionsNotEnoughMessage": m20,
     "phone": MessageLookupByLibrary.simpleMessage("الهاتف"),
-    "phoneIsInvalid": MessageLookupByLibrary.simpleMessage("Phone is invalid"),
-    "phoneIsRequired": MessageLookupByLibrary.simpleMessage(
-      "Phone is required",
+    "phoneIsInvalid": MessageLookupByLibrary.simpleMessage(
+      "رقم الهاتف غير صالح",
     ),
+    "phoneIsRequired": MessageLookupByLibrary.simpleMessage("رقم الهاتف مطلوب"),
     "phoneNumberHelperText": MessageLookupByLibrary.simpleMessage(
-      "Phone Number in E.164 format, ex. +1201550123",
+      "رقم الهاتف بصيغة E.164، مثال: +1201550123",
     ),
     "pleaseContactYourSystemAdministrator":
-        MessageLookupByLibrary.simpleMessage(
-          "Please contact your system administrator",
-        ),
+        MessageLookupByLibrary.simpleMessage("يرجى الاتصال بمسؤول النظام"),
     "pleaseFollowTheNextStepsToConnectYourPhoneTo":
         MessageLookupByLibrary.simpleMessage(
-          "Please follow the next steps to connect your phone to device",
+          "يرجى اتباع الخطوات التالية لتوصيل هاتفك بالجهاز",
         ),
     "pleaseFollowTheNextStepsToReconnectnyourPhoneToYour":
         MessageLookupByLibrary.simpleMessage(
-          "Please follow the next steps to reconnect\nyour phone to your regular Wi-Fi",
+          "يرجى اتباع الخطوات التالية لإعادة توصيل\nهاتفك بشبكة Wi-Fi المعتادة",
         ),
     "pleaseScanQrCodeOnYourDevice": MessageLookupByLibrary.simpleMessage(
-      "Please scan QR code on your device",
+      "يرجى مسح رمز QR على جهازك",
     ),
-    "plusAlarmType": MessageLookupByLibrary.simpleMessage("+ Alarm type"),
-    "popTitle": m16,
+    "plusAlarmType": MessageLookupByLibrary.simpleMessage("+ نوع تنبيه"),
+    "popTitle": m21,
     "postalCode": MessageLookupByLibrary.simpleMessage("الرمز البريدي"),
     "privacyPolicy": MessageLookupByLibrary.simpleMessage("سياسة الخصوصية"),
-    "profile": MessageLookupByLibrary.simpleMessage("Profile"),
+    "profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
     "profileSuccessNotification": MessageLookupByLibrary.simpleMessage(
       "تم تحديث الملف الشخصي بنجاح",
     ),
@@ -643,11 +664,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "pushNotificationsAreNotConfiguredpleaseContactYourSystemAdministrator":
         MessageLookupByLibrary.simpleMessage(
-          "Push notifications are not configured.\nPlease contact your system administrator.",
+          "الإشعارات الفورية غير مكوّنة.\nيرجى الاتصال بمسؤول النظام.",
         ),
-    "queue": MessageLookupByLibrary.simpleMessage("Queue"),
-    "queueStats": MessageLookupByLibrary.simpleMessage("Queue stats"),
-    "ready": MessageLookupByLibrary.simpleMessage("Ready"),
+    "queue": MessageLookupByLibrary.simpleMessage("قائمة الانتظار"),
+    "queueStats": MessageLookupByLibrary.simpleMessage(
+      "إحصائيات قائمة الانتظار",
+    ),
+    "ready": MessageLookupByLibrary.simpleMessage("جاهز"),
     "refresh": MessageLookupByLibrary.simpleMessage("تحديث"),
     "repeatPassword": MessageLookupByLibrary.simpleMessage("كرر كلمة المرور"),
     "requestPasswordReset": MessageLookupByLibrary.simpleMessage(
@@ -658,55 +681,56 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "resend": MessageLookupByLibrary.simpleMessage("إعادة إرسال"),
     "resendCode": MessageLookupByLibrary.simpleMessage("إعادة إرسال الرمز"),
-    "resendCodeWait": m17,
-    "reset": MessageLookupByLibrary.simpleMessage("Reset"),
-    "retry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "resendCodeWait": m22,
+    "reset": MessageLookupByLibrary.simpleMessage("إعادة تعيين"),
+    "retry": MessageLookupByLibrary.simpleMessage("إعادة المحاولة"),
     "returnToDashboard": MessageLookupByLibrary.simpleMessage(
       "العودة إلى اللوحة",
     ),
     "returnToTheAppAndTapReadyButton": MessageLookupByLibrary.simpleMessage(
-      "Return to the app and tap Ready button",
+      "عد إلى التطبيق واضغط على زر جاهز",
     ),
-    "role": MessageLookupByLibrary.simpleMessage("Role"),
-    "routeNotDefined": m18,
+    "role": MessageLookupByLibrary.simpleMessage("دور"),
+    "routeNotDefined": m23,
     "rpc": MessageLookupByLibrary.simpleMessage("RPC"),
-    "ruleChain": MessageLookupByLibrary.simpleMessage("Rule chain"),
-    "ruleNode": MessageLookupByLibrary.simpleMessage("Rule node"),
+    "ruleChain": MessageLookupByLibrary.simpleMessage("سلسلة القواعد"),
+    "ruleNode": MessageLookupByLibrary.simpleMessage("عقدة القواعد"),
     "scanACode": MessageLookupByLibrary.simpleMessage("مسح الرمز"),
     "scanQrCode": MessageLookupByLibrary.simpleMessage("مسح رمز QR"),
-    "schedulerEvent": MessageLookupByLibrary.simpleMessage("Scheduler Event"),
-    "search": MessageLookupByLibrary.simpleMessage("Search"),
+    "schedulerEvent": MessageLookupByLibrary.simpleMessage("حدث المجدول"),
+    "search": MessageLookupByLibrary.simpleMessage("بحث"),
     "searchResults": MessageLookupByLibrary.simpleMessage("نتائج البحث"),
-    "searchUsers": m19,
+    "searchUsers": m24,
     "seconds": MessageLookupByLibrary.simpleMessage("ثواني"),
-    "security": MessageLookupByLibrary.simpleMessage("Security"),
-    "selectCountry": MessageLookupByLibrary.simpleMessage("Select country"),
+    "security": MessageLookupByLibrary.simpleMessage("الأمان"),
+    "selectAll": MessageLookupByLibrary.simpleMessage("تحديد الكل المحمّل"),
+    "selectCountry": MessageLookupByLibrary.simpleMessage("اختيار البلد"),
     "selectRegion": MessageLookupByLibrary.simpleMessage("حدد المنطقة"),
     "selectUser": MessageLookupByLibrary.simpleMessage("اختيار المستخدمين"),
     "selectWayToVerify": MessageLookupByLibrary.simpleMessage(
       "اختر طريقة للتحقق",
     ),
     "selectWifiNetwork": MessageLookupByLibrary.simpleMessage(
-      "Select Wi-Fi network",
+      "اختيار شبكة Wi-Fi",
     ),
-    "sendCode": MessageLookupByLibrary.simpleMessage("Send code"),
+    "sendCode": MessageLookupByLibrary.simpleMessage("إرسال الرمز"),
     "sendingWifiCredentials": MessageLookupByLibrary.simpleMessage(
       "إرسال بيانات اعتماد Wi-Fi",
     ),
     "setUpAVerificationMethod": MessageLookupByLibrary.simpleMessage(
-      "Set up a verification method",
+      "إعداد طريقة تحقق",
     ),
     "setUpAVerificationMethodToContinueWithYourLogin":
         MessageLookupByLibrary.simpleMessage(
-          "Set up a verification method to continue with your login",
+          "قم بإعداد طريقة تحقق لمتابعة تسجيل الدخول",
         ),
     "severity": MessageLookupByLibrary.simpleMessage("الخطورة"),
     "signIn": MessageLookupByLibrary.simpleMessage("تسجيل الدخول"),
     "signUp": MessageLookupByLibrary.simpleMessage("التسجيل"),
-    "smsAuthDescription": m20,
+    "smsAuthDescription": m25,
     "smsAuthPlaceholder": MessageLookupByLibrary.simpleMessage("رمز SMS"),
     "smsSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will be prompted to enter the security code that will be sent to the phone number",
+      "في المرة القادمة التي تسجل فيها الدخول، سيُطلب منك إدخال رمز الأمان المرسل إلى رقم الهاتف",
     ),
     "somethingWentWrong": MessageLookupByLibrary.simpleMessage("حدث خطأ ما"),
     "somethingWentWrongRollback": MessageLookupByLibrary.simpleMessage(
@@ -718,18 +742,18 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "status": MessageLookupByLibrary.simpleMessage("الحالة"),
     "systemAdministrator": MessageLookupByLibrary.simpleMessage("مسؤول النظام"),
-    "tbResource": MessageLookupByLibrary.simpleMessage("Resource"),
-    "tenant": MessageLookupByLibrary.simpleMessage("Tenant"),
+    "tbResource": MessageLookupByLibrary.simpleMessage("المورد"),
+    "tenant": MessageLookupByLibrary.simpleMessage("المستأجر"),
     "tenantAdministrator": MessageLookupByLibrary.simpleMessage(
       "مسؤول المستأجر",
     ),
-    "tenantProfile": MessageLookupByLibrary.simpleMessage("Tenant profile"),
+    "tenantProfile": MessageLookupByLibrary.simpleMessage("ملف تعريف المستأجر"),
     "termsOfUse": MessageLookupByLibrary.simpleMessage("شروط الاستخدام"),
     "thisActionCannotBeUndone": MessageLookupByLibrary.simpleMessage(
-      "This action cannot be undone",
+      "لا يمكن التراجع عن هذا الإجراء",
     ),
     "thisWillMakeYourAccountLessSecure": MessageLookupByLibrary.simpleMessage(
-      "This will make your account less secure",
+      "سيجعل هذا حسابك أقل أماناً",
     ),
     "title": MessageLookupByLibrary.simpleMessage("العنوان"),
     "toggleCamera": MessageLookupByLibrary.simpleMessage("تبديل الكاميرا"),
@@ -739,7 +763,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "يرجى إدخال الرمز الأمني من تطبيق المصادقة الخاص بك.",
     ),
     "totpSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will need to provide a two-factor authentication code",
+      "في المرة القادمة التي تسجل فيها الدخول، ستحتاج إلى تقديم رمز المصادقة الثنائية",
     ),
     "tryAgain": MessageLookupByLibrary.simpleMessage("حاول مرة أخرى"),
     "tryAnotherWay": MessageLookupByLibrary.simpleMessage("حاول بطريقة أخرى"),
@@ -750,34 +774,36 @@ class MessageLookup extends MessageLookupByLibrary {
       "يرجى محاولة التحديث",
     ),
     "twofactorAuthentication": MessageLookupByLibrary.simpleMessage(
-      "Two-factor authentication",
+      "المصادقة الثنائية",
     ),
     "twofactorAuthenticationIsRequired": MessageLookupByLibrary.simpleMessage(
-      "Two-factor authentication is required",
+      "المصادقة الثنائية مطلوبة",
     ),
     "twofactorAuthenticationProtectsYourAccountFromUnauthorizedAccessAllYou":
         MessageLookupByLibrary.simpleMessage(
-          "Two-factor authentication protects your account from unauthorized access. All you have to do is enter a security code when you log in.",
+          "المصادقة الثنائية تحمي حسابك من الوصول غير المصرح به. كل ما عليك فعله هو إدخال رمز أمان عند تسجيل الدخول.",
         ),
     "type": MessageLookupByLibrary.simpleMessage("النوع"),
     "unableConnectToDevice": MessageLookupByLibrary.simpleMessage(
-      "Unable connect to device",
+      "تعذر الاتصال بالجهاز",
     ),
-    "unableConnectToWifiBecauseNetworksWasntFoundByDevice": m21,
+    "unableConnectToWifiBecauseNetworksWasntFoundByDevice": m26,
     "unableToUseCamera": MessageLookupByLibrary.simpleMessage(
       "غير قادر على استخدام الكاميرا",
     ),
     "unacknowledged": MessageLookupByLibrary.simpleMessage("غير مُقر"),
     "unassigned": MessageLookupByLibrary.simpleMessage("غير معين"),
-    "unitSystem": MessageLookupByLibrary.simpleMessage("Unit system"),
-    "unknownError": MessageLookupByLibrary.simpleMessage("Unknown error."),
-    "unread": MessageLookupByLibrary.simpleMessage("Unread"),
-    "unsavedChanges": MessageLookupByLibrary.simpleMessage("Unsaved changes"),
-    "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "unitSystem": MessageLookupByLibrary.simpleMessage("نظام الوحدات"),
+    "unknownError": MessageLookupByLibrary.simpleMessage("خطأ غير معروف."),
+    "unread": MessageLookupByLibrary.simpleMessage("غير مقروء"),
+    "unsavedChanges": MessageLookupByLibrary.simpleMessage(
+      "تغييرات غير محفوظة",
+    ),
+    "update": MessageLookupByLibrary.simpleMessage("تحديث"),
     "updateRequired": MessageLookupByLibrary.simpleMessage("تحديث مطلوب"),
-    "updateTo": m22,
-    "url": MessageLookupByLibrary.simpleMessage("Url"),
-    "user": MessageLookupByLibrary.simpleMessage("User"),
+    "updateTo": m27,
+    "url": MessageLookupByLibrary.simpleMessage("رابط"),
+    "user": MessageLookupByLibrary.simpleMessage("المستخدم"),
     "username": MessageLookupByLibrary.simpleMessage("اسم المستخدم"),
     "users": MessageLookupByLibrary.simpleMessage("المستخدمين"),
     "verificationCodeIncorrect": MessageLookupByLibrary.simpleMessage(
@@ -790,27 +816,27 @@ class MessageLookup extends MessageLookupByLibrary {
       "طلبات كثيرة للتحقق من الرمز",
     ),
     "verificationRequired": MessageLookupByLibrary.simpleMessage(
-      "Verification required",
+      "التحقق مطلوب",
     ),
     "verifyYourIdentity": MessageLookupByLibrary.simpleMessage("تحقق من هويتك"),
     "viewAll": MessageLookupByLibrary.simpleMessage("عرض الكل"),
     "viewDashboard": MessageLookupByLibrary.simpleMessage("عرض اللوحة"),
     "warning": MessageLookupByLibrary.simpleMessage("تحذير"),
-    "widgetType": MessageLookupByLibrary.simpleMessage("Widget type"),
-    "widgetsBundle": MessageLookupByLibrary.simpleMessage("Widgets bundle"),
-    "wifiHelpMessage": m23,
+    "widgetType": MessageLookupByLibrary.simpleMessage("نوع الأداة"),
+    "widgetsBundle": MessageLookupByLibrary.simpleMessage("حزمة الأدوات"),
+    "wifiHelpMessage": m28,
     "wifiPassword": MessageLookupByLibrary.simpleMessage("كلمة مرور Wi-Fi"),
-    "wifiPasswordMessage": m24,
+    "wifiPasswordMessage": m29,
     "yes": MessageLookupByLibrary.simpleMessage("نعم"),
-    "yesDeactivate": MessageLookupByLibrary.simpleMessage("Yes, deactivate"),
-    "yesDiscard": MessageLookupByLibrary.simpleMessage("Yes, discard"),
+    "yesDeactivate": MessageLookupByLibrary.simpleMessage("نعم، تعطيل"),
+    "yesDiscard": MessageLookupByLibrary.simpleMessage("نعم، تجاهل"),
     "youDontHavePermissionsToPerformThisOperation":
         MessageLookupByLibrary.simpleMessage(
-          "You don\'t have permissions to perform this operation!",
+          "ليس لديك صلاحيات لتنفيذ هذه العملية!",
         ),
     "youHaveUnsavedChangesAreYouSureYouWantTo":
         MessageLookupByLibrary.simpleMessage(
-          "You have unsaved changes. Are you sure you want to leave this page?",
+          "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد مغادرة هذه الصفحة؟",
         ),
   };
 }

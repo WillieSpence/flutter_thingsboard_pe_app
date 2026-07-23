@@ -30,7 +30,7 @@ class _DevicesMainPageState extends State<DevicesMainPage>
     );
 
     return Scaffold(
-      appBar: TbAppBar(title: Text(deviceProfilesList.title),),
+      appBar: TbAppBar(title: Text(deviceProfilesList.title(context)),),
       body: deviceProfilesList,
     );
   }

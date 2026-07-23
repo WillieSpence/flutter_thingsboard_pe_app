@@ -6,7 +6,7 @@ part of 'wl_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$wlHash() => r'f4485eb450f423b47fd2600b6a64473f068cece6';
+String _$wlHash() => r'1ea1f55deb3ba54d4d45c2a0b0fcda201737e9c2';
 
 /// See also [Wl].
 @ProviderFor(Wl)

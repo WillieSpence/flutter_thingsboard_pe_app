@@ -23,64 +23,71 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(appTitle) =>
       "恭喜！\n您的 ${appTitle} 账户已激活。\n现在您可以登录到您的 ${appTitle} 空间。";
 
-  static String m1(authority) =>
-      "Are you sure? You are going to delete your ${authority} account.";
+  static String m1(authority) => "您确定吗？您将删除您的 ${authority} 账户。";
 
   static String m2(count) => "${Intl.plural(count, one: '告警', other: '告警')}";
 
-  static String m3(providerName) =>
-      "Are you sure you want to deactivate ${providerName}?";
+  static String m3(providerName) => "您确定要停用 ${providerName} 吗？";
 
   static String m4(deviceName) => "无法与设备 ${deviceName} 建立会话。请重试";
 
-  static String m5(link) => "Can\'t launch url: ${link}";
+  static String m5(link) => "无法打开链接：${link}";
 
-  static String m6(wifiName) => "Connect to Wi-Fi similar to ${wifiName}";
+  static String m6(wifiName) => "连接到类似 ${wifiName} 的 Wi-Fi";
 
   static String m7(name) =>
-      "Connection to the ${name} Wi-Fi network failed.\nPlease ensure that your phone is connected to the device Wi-Fi network and that Local Network access is enabled for this app in your device settings.";
+      "连接 Wi-Fi 网络 ${name} 失败。\n请确保您的手机已连接到设备的 Wi-Fi 网络，并且已在设备设置中为此应用启用本地网络访问。";
 
-  static String m8(count) =>
-      "${Intl.plural(count, one: 'Dashboard', other: 'Dashboards')}";
+  static String m8(count) => "${Intl.plural(count, one: '仪表板', other: '仪表板')}";
 
   static String m9(count) =>
-      "${Intl.plural(count, one: 'Device', other: 'Devices')}";
+      "${Intl.plural(count, one: '删除 1 条通知？', other: '删除 ${count} 条通知？')}";
 
-  static String m10(count) =>
-      "${count}-${Intl.plural(count, one: 'digit', other: 'digits')} code";
+  static String m10(count) => "${Intl.plural(count, one: '设备', other: '设备')}";
 
-  static String m11(contact) => "安全码已发送到您的邮箱 ${contact}。";
+  static String m11(count) => "${count}位数验证码";
 
-  static String m12(e) => "Error occured: ${e}";
+  static String m12(contact) => "安全码已发送到您的邮箱 ${contact}。";
 
-  static String m13(count) => "${Intl.plural(count, one: '通知', other: '通知')}";
+  static String m13(e) => "发生错误：${e}";
 
-  static String m14(permissions) =>
+  static String m14(error) => "发送验证码错误：${error}";
+
+  static String m15(count) =>
+      "${Intl.plural(count, one: '1 项操作失败', other: '${count} 项操作失败')}";
+
+  static String m16(count) =>
+      "${Intl.plural(count, one: '将 1 条通知标记为已读？', other: '将 ${count} 条通知标记为已读？')}";
+
+  static String m17(count) => "已选择 ${count} 项";
+
+  static String m18(count) => "${Intl.plural(count, one: '通知', other: '通知')}";
+
+  static String m19(permissions) =>
       "您没有足够的\"${permissions}\"权限以继续。请打开应用设置，授予权限并点击\"再试一次\"。";
 
-  static String m15(permissions) =>
+  static String m20(permissions) =>
       "您没有足够的\"${permissions}\"权限以继续。请授予所需权限并点击\"再试一次\"。";
 
-  static String m16(deviceName) => "输入 ${deviceName} 的PIN码以确认拥有权证明";
+  static String m21(deviceName) => "输入 ${deviceName} 的PIN码以确认拥有权证明";
 
-  static String m17(time) =>
+  static String m22(time) =>
       "在 ${Intl.plural(time, one: '1 秒', other: '${time} 秒')}内重新发送验证码";
 
-  static String m18(name) => "路由未定义: ${name}";
+  static String m23(name) => "路由未定义: ${name}";
 
-  static String m19(count) =>
+  static String m24(count) =>
       "${Intl.plural(count, one: '搜索用户', other: '搜索用户')}";
 
-  static String m20(contact) => "安全码已发送到您的手机 ${contact}。";
+  static String m25(contact) => "安全码已发送到您的手机 ${contact}。";
 
-  static String m21(name) =>
-      "Unable connect to Wi-Fi because networks wasn\'t found by device ${name}";
+  static String m26(name) => "无法连接 Wi-Fi，因为设备 ${name} 未找到网络";
 
-  static String m22(version) => "更新到 ${version}";
+  static String m27(version) => "更新到 ${version}";
 
-  static String m23(deviceName) => "要继续设置您的设备 ${deviceName}，请提供您网络的凭据。";
+  static String m28(deviceName) => "要继续设置您的设备 ${deviceName}，请提供您网络的凭据。";
 
-  static String m24(network) => "输入 ${network} 的密码";
+  static String m29(network) => "输入 ${network} 的密码";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -97,108 +104,82 @@ class MessageLookup extends MessageLookupByLibrary {
     "acknowledge": MessageLookupByLibrary.simpleMessage("确认"),
     "acknowledged": MessageLookupByLibrary.simpleMessage("已确认"),
     "actionData": MessageLookupByLibrary.simpleMessage("动作数据"),
-    "actionStatusFailure": MessageLookupByLibrary.simpleMessage("Failure"),
-    "actionStatusSuccess": MessageLookupByLibrary.simpleMessage("Success"),
-    "actionTypeActivated": MessageLookupByLibrary.simpleMessage("Activated"),
-    "actionTypeAdded": MessageLookupByLibrary.simpleMessage("Added"),
-    "actionTypeAddedComment": MessageLookupByLibrary.simpleMessage(
-      "Added Comment",
-    ),
+    "actionStatusFailure": MessageLookupByLibrary.simpleMessage("失败"),
+    "actionStatusSuccess": MessageLookupByLibrary.simpleMessage("成功"),
+    "actionTypeActivated": MessageLookupByLibrary.simpleMessage("已激活"),
+    "actionTypeAdded": MessageLookupByLibrary.simpleMessage("已添加"),
+    "actionTypeAddedComment": MessageLookupByLibrary.simpleMessage("已添加评论"),
     "actionTypeAddedToEntityGroup": MessageLookupByLibrary.simpleMessage(
-      "Added to Entity Group",
+      "已添加到实体组",
     ),
-    "actionTypeAlarmAck": MessageLookupByLibrary.simpleMessage("Acknowledged"),
-    "actionTypeAlarmAssigned": MessageLookupByLibrary.simpleMessage(
-      "Alarm Assigned",
-    ),
-    "actionTypeAlarmClear": MessageLookupByLibrary.simpleMessage("Cleared"),
-    "actionTypeAlarmDelete": MessageLookupByLibrary.simpleMessage(
-      "Alarm Deleted",
-    ),
+    "actionTypeAlarmAck": MessageLookupByLibrary.simpleMessage("已确认"),
+    "actionTypeAlarmAssigned": MessageLookupByLibrary.simpleMessage("告警已分配"),
+    "actionTypeAlarmClear": MessageLookupByLibrary.simpleMessage("已清除"),
+    "actionTypeAlarmDelete": MessageLookupByLibrary.simpleMessage("告警已删除"),
     "actionTypeAlarmUnassigned": MessageLookupByLibrary.simpleMessage(
-      "Alarm Unassigned",
+      "告警已取消分配",
     ),
     "actionTypeAssignedFromTenant": MessageLookupByLibrary.simpleMessage(
-      "Assigned from Tenant",
+      "从租户分配",
     ),
     "actionTypeAssignedToCustomer": MessageLookupByLibrary.simpleMessage(
-      "Assigned to Customer",
+      "已分配给客户",
     ),
-    "actionTypeAssignedToEdge": MessageLookupByLibrary.simpleMessage(
-      "Assigned to Edge",
-    ),
-    "actionTypeAssignedToTenant": MessageLookupByLibrary.simpleMessage(
-      "Assigned to Tenant",
-    ),
+    "actionTypeAssignedToEdge": MessageLookupByLibrary.simpleMessage("已分配给边缘"),
+    "actionTypeAssignedToTenant": MessageLookupByLibrary.simpleMessage("分配给租户"),
     "actionTypeAttributesDeleted": MessageLookupByLibrary.simpleMessage(
-      "Attributes Deleted",
+      "属性已删除",
     ),
-    "actionTypeAttributesRead": MessageLookupByLibrary.simpleMessage(
-      "Attributes read",
-    ),
+    "actionTypeAttributesRead": MessageLookupByLibrary.simpleMessage("属性已读取"),
     "actionTypeAttributesUpdated": MessageLookupByLibrary.simpleMessage(
-      "Attributes Updated",
+      "属性已更新",
     ),
-    "actionTypeChangeOwner": MessageLookupByLibrary.simpleMessage(
-      "Owner Changed",
-    ),
-    "actionTypeCredentialsRead": MessageLookupByLibrary.simpleMessage(
-      "Credentials read",
-    ),
+    "actionTypeChangeOwner": MessageLookupByLibrary.simpleMessage("所有者已更改"),
+    "actionTypeCredentialsRead": MessageLookupByLibrary.simpleMessage("凭证已读取"),
     "actionTypeCredentialsUpdated": MessageLookupByLibrary.simpleMessage(
-      "Credentials Updated",
+      "凭证已更新",
     ),
-    "actionTypeDeleted": MessageLookupByLibrary.simpleMessage("Deleted"),
-    "actionTypeDeletedComment": MessageLookupByLibrary.simpleMessage(
-      "Deleted Comment",
-    ),
-    "actionTypeLockout": MessageLookupByLibrary.simpleMessage("Lockout"),
-    "actionTypeLogin": MessageLookupByLibrary.simpleMessage("Login"),
-    "actionTypeLogout": MessageLookupByLibrary.simpleMessage("Logout"),
-    "actionTypeMadePrivate": MessageLookupByLibrary.simpleMessage(
-      "Made Private",
-    ),
-    "actionTypeMadePublic": MessageLookupByLibrary.simpleMessage("Made Public"),
+    "actionTypeDeleted": MessageLookupByLibrary.simpleMessage("已删除"),
+    "actionTypeDeletedComment": MessageLookupByLibrary.simpleMessage("已删除评论"),
+    "actionTypeLockout": MessageLookupByLibrary.simpleMessage("已锁定"),
+    "actionTypeLogin": MessageLookupByLibrary.simpleMessage("登录"),
+    "actionTypeLogout": MessageLookupByLibrary.simpleMessage("登出"),
+    "actionTypeMadePrivate": MessageLookupByLibrary.simpleMessage("已设为私有"),
+    "actionTypeMadePublic": MessageLookupByLibrary.simpleMessage("已设为公开"),
     "actionTypeProvisionFailure": MessageLookupByLibrary.simpleMessage(
-      "Device provisioning was failed",
+      "设备配置失败",
     ),
-    "actionTypeProvisionSuccess": MessageLookupByLibrary.simpleMessage(
-      "Device provisioned",
-    ),
+    "actionTypeProvisionSuccess": MessageLookupByLibrary.simpleMessage("设备已配置"),
     "actionTypeRelationAddOrUpdate": MessageLookupByLibrary.simpleMessage(
-      "Relation updated",
+      "关系已更新",
     ),
-    "actionTypeRelationDeleted": MessageLookupByLibrary.simpleMessage(
-      "Relation deleted",
-    ),
+    "actionTypeRelationDeleted": MessageLookupByLibrary.simpleMessage("关系已删除"),
     "actionTypeRelationsDeleted": MessageLookupByLibrary.simpleMessage(
-      "All relation deleted",
+      "所有关系已删除",
     ),
     "actionTypeRemovedFromEntityGroup": MessageLookupByLibrary.simpleMessage(
-      "Removed from Entity Group",
+      "已从实体组移除",
     ),
     "actionTypeRestApiRuleEngineCall": MessageLookupByLibrary.simpleMessage(
-      "REST API Rule Engine Call",
+      "REST API 规则引擎调用",
     ),
-    "actionTypeRpcCall": MessageLookupByLibrary.simpleMessage("RPC Call"),
-    "actionTypeSmsSent": MessageLookupByLibrary.simpleMessage("SMS Sent"),
-    "actionTypeSuspended": MessageLookupByLibrary.simpleMessage("Suspended"),
+    "actionTypeRpcCall": MessageLookupByLibrary.simpleMessage("RPC 调用"),
+    "actionTypeSmsSent": MessageLookupByLibrary.simpleMessage("短信已发送"),
+    "actionTypeSuspended": MessageLookupByLibrary.simpleMessage("已暂停"),
     "actionTypeTimeseriesDeleted": MessageLookupByLibrary.simpleMessage(
-      "Telemetry deleted",
+      "遥测数据已删除",
     ),
     "actionTypeTimeseriesUpdated": MessageLookupByLibrary.simpleMessage(
-      "Telemetry updated",
+      "遥测数据已更新",
     ),
     "actionTypeUnassignedFromCustomer": MessageLookupByLibrary.simpleMessage(
-      "Unassigned from Customer",
+      "已从客户取消分配",
     ),
     "actionTypeUnassignedFromEdge": MessageLookupByLibrary.simpleMessage(
-      "Unassigned from Edge",
+      "已从边缘取消分配",
     ),
-    "actionTypeUpdated": MessageLookupByLibrary.simpleMessage("Updated"),
-    "actionTypeUpdatedComment": MessageLookupByLibrary.simpleMessage(
-      "Updated Comment",
-    ),
+    "actionTypeUpdated": MessageLookupByLibrary.simpleMessage("已更新"),
+    "actionTypeUpdatedComment": MessageLookupByLibrary.simpleMessage("已更新评论"),
     "activatingAccount": MessageLookupByLibrary.simpleMessage("正在激活账户..."),
     "activatingAccountText": MessageLookupByLibrary.simpleMessage(
       "您的账户正在激活中。\n请稍等...",
@@ -206,40 +187,36 @@ class MessageLookup extends MessageLookupByLibrary {
     "active": MessageLookupByLibrary.simpleMessage("激活"),
     "activity": MessageLookupByLibrary.simpleMessage("活动"),
     "addCommentMessage": MessageLookupByLibrary.simpleMessage("添加评论..."),
-    "addVerificationMethod": MessageLookupByLibrary.simpleMessage(
-      "Add verification method",
-    ),
+    "addVerificationMethod": MessageLookupByLibrary.simpleMessage("添加验证方式"),
     "address": MessageLookupByLibrary.simpleMessage("地址"),
     "address2": MessageLookupByLibrary.simpleMessage("地址 2"),
-    "adminSettings": MessageLookupByLibrary.simpleMessage("Admin settings"),
-    "aiModel": MessageLookupByLibrary.simpleMessage("Ai model"),
+    "adminSettings": MessageLookupByLibrary.simpleMessage("管理员设置"),
+    "aiModel": MessageLookupByLibrary.simpleMessage("AI 模型"),
     "alarmAcknowledgeText": MessageLookupByLibrary.simpleMessage("你确定要确认告警吗?"),
     "alarmAcknowledgeTitle": MessageLookupByLibrary.simpleMessage("确认告警"),
     "alarmClearText": MessageLookupByLibrary.simpleMessage("你确定要清除告警吗?"),
     "alarmClearTitle": MessageLookupByLibrary.simpleMessage("清除告警"),
     "alarmSeverityList": MessageLookupByLibrary.simpleMessage("告警严重程度列表"),
     "alarmStatusList": MessageLookupByLibrary.simpleMessage("告警状态列表"),
-    "alarmTypeList": MessageLookupByLibrary.simpleMessage("Alarm type list"),
+    "alarmTypeList": MessageLookupByLibrary.simpleMessage("告警类型列表"),
     "alarmTypes": MessageLookupByLibrary.simpleMessage("告警类型"),
     "alarms": m2,
-    "all": MessageLookupByLibrary.simpleMessage("All"),
+    "all": MessageLookupByLibrary.simpleMessage("全部"),
     "allDevices": MessageLookupByLibrary.simpleMessage("所有设备"),
     "allowAccess": MessageLookupByLibrary.simpleMessage("允许访问"),
     "alreadyHaveAnAccount": MessageLookupByLibrary.simpleMessage("已有账户?"),
     "anEmptyRequestDataReceived": MessageLookupByLibrary.simpleMessage(
       "收到空的请求数据。",
     ),
-    "anyType": MessageLookupByLibrary.simpleMessage("Any type"),
-    "apiKey": MessageLookupByLibrary.simpleMessage("Api key"),
+    "anyType": MessageLookupByLibrary.simpleMessage("任何类型"),
+    "apiKey": MessageLookupByLibrary.simpleMessage("API 密钥"),
     "apiUsageState": MessageLookupByLibrary.simpleMessage("API使用状态"),
     "appTitle": MessageLookupByLibrary.simpleMessage("Thingsboard"),
-    "applyChanges": MessageLookupByLibrary.simpleMessage("Apply changes"),
+    "applyChanges": MessageLookupByLibrary.simpleMessage("应用更改"),
     "areYouSure": MessageLookupByLibrary.simpleMessage("您确定吗?"),
     "areYouSureYouWantToDeactivate": m3,
-    "areYouSureYouWantToExit": MessageLookupByLibrary.simpleMessage(
-      "Are you sure you want to exit?",
-    ),
-    "asset": MessageLookupByLibrary.simpleMessage("Asset"),
+    "areYouSureYouWantToExit": MessageLookupByLibrary.simpleMessage("您确定要退出吗？"),
+    "asset": MessageLookupByLibrary.simpleMessage("资产"),
     "assetName": MessageLookupByLibrary.simpleMessage("资产名"),
     "assetProfile": MessageLookupByLibrary.simpleMessage("资产配置文件"),
     "assets": MessageLookupByLibrary.simpleMessage("资产"),
@@ -248,24 +225,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "assignee": MessageLookupByLibrary.simpleMessage("被分配人"),
     "auditLogDetails": MessageLookupByLibrary.simpleMessage("审计日志详情"),
     "auditLogs": MessageLookupByLibrary.simpleMessage("审计报告"),
-    "autoUnitSystem": MessageLookupByLibrary.simpleMessage("Auto"),
+    "autoUnitSystem": MessageLookupByLibrary.simpleMessage("自动"),
     "backupCodeAuthDescription": MessageLookupByLibrary.simpleMessage(
       "请输入您的备份码之一。",
     ),
     "backupCodeAuthPlaceholder": MessageLookupByLibrary.simpleMessage("备份码"),
     "backupCodeSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will be able to use backup codes to pass two factor authentification",
+      "下次登录时，您可以使用备份码进行双因素认证",
     ),
     "bleHelpMessage": MessageLookupByLibrary.simpleMessage(
       "要配置您的新设备，请确保您手机的蓝牙已打开且在新设备的信号范围内",
     ),
-    "blobEntity": MessageLookupByLibrary.simpleMessage("Blob Entity"),
-    "calculatedField": MessageLookupByLibrary.simpleMessage("Calculated field"),
+    "blobEntity": MessageLookupByLibrary.simpleMessage("Blob 实体"),
+    "calculatedField": MessageLookupByLibrary.simpleMessage("计算字段"),
     "cancel": MessageLookupByLibrary.simpleMessage("取消"),
     "cannotEstablishSession": m4,
-    "cantDeleteUserAccount": MessageLookupByLibrary.simpleMessage(
-      "Can\\\'t delete user account",
-    ),
+    "cantDeleteUserAccount": MessageLookupByLibrary.simpleMessage("无法删除用户账户"),
     "cantLaunchUrlLink": m5,
     "changePassword": MessageLookupByLibrary.simpleMessage("修改密码"),
     "chooseRegion": MessageLookupByLibrary.simpleMessage("选择地区"),
@@ -275,42 +250,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "claimingMessageSuccess": MessageLookupByLibrary.simpleMessage("设备\n声明成功"),
     "clear": MessageLookupByLibrary.simpleMessage("清除"),
     "cleared": MessageLookupByLibrary.simpleMessage("已清除"),
-    "close": MessageLookupByLibrary.simpleMessage("Close"),
-    "codeVerificationFailed": MessageLookupByLibrary.simpleMessage(
-      "Code verification failed!",
-    ),
+    "close": MessageLookupByLibrary.simpleMessage("关闭"),
+    "codeVerificationFailed": MessageLookupByLibrary.simpleMessage("验证码验证失败！"),
     "confirmNotRobotMessage": MessageLookupByLibrary.simpleMessage(
       "您必须确认您不是机器人",
     ),
-    "confirmToCloseTheApp": MessageLookupByLibrary.simpleMessage(
-      "Confirm to close the app",
-    ),
+    "confirmToCloseTheApp": MessageLookupByLibrary.simpleMessage("确认关闭应用"),
     "confirmation": MessageLookupByLibrary.simpleMessage("确认"),
     "confirmingWifiConnection": MessageLookupByLibrary.simpleMessage(
       "确认 Wi-Fi 连接",
     ),
-    "connectToDevice": MessageLookupByLibrary.simpleMessage(
-      "Connect to device",
-    ),
+    "connectToDevice": MessageLookupByLibrary.simpleMessage("连接设备"),
     "connectToTheWifiYouUsuallyUse": MessageLookupByLibrary.simpleMessage(
-      "Connect to the Wi-Fi you usually use",
+      "连接到您常用的 Wi-Fi",
     ),
     "connectToWifiSimilarToWifiname": m6,
-    "connectingToDevice": MessageLookupByLibrary.simpleMessage(
-      "Connecting to device",
-    ),
-    "connectionError": MessageLookupByLibrary.simpleMessage("Connection error"),
+    "connectingToDevice": MessageLookupByLibrary.simpleMessage("正在连接设备"),
+    "connectionError": MessageLookupByLibrary.simpleMessage("连接错误"),
     "connectionToTheWifiNetworkFailednpleaseEnsureThatYour": m7,
     "continueText": MessageLookupByLibrary.simpleMessage("继续"),
-    "converter": MessageLookupByLibrary.simpleMessage("Converter"),
-    "copiedToClipboard": MessageLookupByLibrary.simpleMessage(
-      "Copied to clipboard",
-    ),
-    "copy": MessageLookupByLibrary.simpleMessage("Copy"),
+    "converter": MessageLookupByLibrary.simpleMessage("转换器"),
+    "copiedToClipboard": MessageLookupByLibrary.simpleMessage("已复制到剪贴板"),
+    "copy": MessageLookupByLibrary.simpleMessage("复制"),
     "copy32digitsKeyToYourAuthenticationAppOrScanQrcode":
-        MessageLookupByLibrary.simpleMessage(
-          "Copy 32-digits key to your authentication app or scan QR-code below",
-        ),
+        MessageLookupByLibrary.simpleMessage("将32位密钥复制到您的验证器应用或扫描下方二维码"),
     "country": MessageLookupByLibrary.simpleMessage("国家"),
     "createAccount": MessageLookupByLibrary.simpleMessage("创建账户"),
     "createPassword": MessageLookupByLibrary.simpleMessage("创建密码"),
@@ -324,36 +287,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "dashboards": m8,
     "days": MessageLookupByLibrary.simpleMessage("天"),
     "delete": MessageLookupByLibrary.simpleMessage("删除"),
-    "deleteAccount": MessageLookupByLibrary.simpleMessage("Delete account"),
+    "deleteAccount": MessageLookupByLibrary.simpleMessage("删除账户"),
     "deleteComment": MessageLookupByLibrary.simpleMessage("删除评论"),
+    "deleteSelectedNotifications": m9,
     "details": MessageLookupByLibrary.simpleMessage("详情"),
     "deviceList": MessageLookupByLibrary.simpleMessage("设备列表"),
     "deviceNotAbleToFindWifiNearby": MessageLookupByLibrary.simpleMessage(
-      "Device not able to find Wi-Fi nearby",
+      "设备无法找到附近的 Wi-Fi",
     ),
     "deviceNotFoundMessage": MessageLookupByLibrary.simpleMessage(
       "未找到设备。请确保您手机的蓝牙已打开且在新设备的信号范围内。",
     ),
     "deviceProfile": MessageLookupByLibrary.simpleMessage("设备配置文件"),
-    "deviceProvisioning": MessageLookupByLibrary.simpleMessage(
-      "Device provisioning",
-    ),
-    "devices": m9,
-    "digitsCode": m10,
-    "discardChanges": MessageLookupByLibrary.simpleMessage("Discard changes"),
-    "domain": MessageLookupByLibrary.simpleMessage("Domain"),
-    "done": MessageLookupByLibrary.simpleMessage("Done"),
+    "deviceProvisioning": MessageLookupByLibrary.simpleMessage("设备配置"),
+    "devices": m10,
+    "digitsCode": m11,
+    "discardChanges": MessageLookupByLibrary.simpleMessage("放弃更改"),
+    "domain": MessageLookupByLibrary.simpleMessage("域名"),
+    "done": MessageLookupByLibrary.simpleMessage("完成"),
     "duration": MessageLookupByLibrary.simpleMessage("持续时间"),
     "edge": MessageLookupByLibrary.simpleMessage("边缘"),
     "edit": MessageLookupByLibrary.simpleMessage("编辑"),
     "edited": MessageLookupByLibrary.simpleMessage("已编辑"),
     "email": MessageLookupByLibrary.simpleMessage("邮箱"),
-    "emailAuthDescription": m11,
+    "emailAuthDescription": m12,
     "emailAuthPlaceholder": MessageLookupByLibrary.simpleMessage("邮箱验证码"),
     "emailInvalidText": MessageLookupByLibrary.simpleMessage("邮箱格式无效"),
     "emailRequireText": MessageLookupByLibrary.simpleMessage("邮箱是必填项"),
     "emailSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will be prompted to enter the security code that will be sent to your email address",
+      "下次登录时，您将需要输入发送到电子邮箱的安全码",
     ),
     "emailVerification": MessageLookupByLibrary.simpleMessage("邮箱验证"),
     "emailVerificationInstructionsText": MessageLookupByLibrary.simpleMessage(
@@ -364,56 +326,54 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "emailVerified": MessageLookupByLibrary.simpleMessage("邮箱验证成功"),
     "emailVersificationSuccessfullySentNotification":
-        MessageLookupByLibrary.simpleMessage(
-          "Email verification link was successfully sent!",
-        ),
+        MessageLookupByLibrary.simpleMessage("邮箱验证链接已成功发送！"),
     "enter6digitsKeyFromYourAppHere": MessageLookupByLibrary.simpleMessage(
-      "Enter 6-digits key from your app here:",
+      "在此输入您应用中的6位数密钥：",
     ),
+    "enterAPhoneNumberToUseAsYourAuthenticator":
+        MessageLookupByLibrary.simpleMessage("输入用于验证的手机号码"),
     "enterAnEmailToUseAsYourAuthenticator":
-        MessageLookupByLibrary.simpleMessage(
-          "Enter an email to use as your authenticator.",
-        ),
-    "entityGroup": MessageLookupByLibrary.simpleMessage("Entity Group"),
+        MessageLookupByLibrary.simpleMessage("输入用于验证的电子邮箱。"),
+    "entityGroup": MessageLookupByLibrary.simpleMessage("实体组"),
     "entityType": MessageLookupByLibrary.simpleMessage("实体类型"),
     "entityView": MessageLookupByLibrary.simpleMessage("实体视图"),
-    "errorOccured": m12,
+    "errorOccured": m13,
+    "errorSendingCode": m14,
     "europe": MessageLookupByLibrary.simpleMessage("欧洲"),
     "europeRegionShort": MessageLookupByLibrary.simpleMessage("法兰克福"),
-    "exitDeviceProvisioning": MessageLookupByLibrary.simpleMessage(
-      "Exit device provisioning",
-    ),
-    "failedToConnectToServer": MessageLookupByLibrary.simpleMessage(
-      "Failed to connect to server",
-    ),
+    "exitDeviceProvisioning": MessageLookupByLibrary.simpleMessage("退出设备配置"),
+    "failedToConnectToServer": MessageLookupByLibrary.simpleMessage("无法连接到服务器"),
     "failedToLoadAlarmDetails": MessageLookupByLibrary.simpleMessage(
       "加载告警详情失败",
     ),
     "failedToLoadTheList": MessageLookupByLibrary.simpleMessage("加载列表失败"),
+    "failedToPerformOperation": m15,
+    "failedToSaveImage": MessageLookupByLibrary.simpleMessage("保存图片失败"),
     "failureDetails": MessageLookupByLibrary.simpleMessage("失败详情"),
     "fatalApplicationErrorOccurred": MessageLookupByLibrary.simpleMessage(
-      "Fatal application error occurred:",
+      "发生致命应用程序错误：",
     ),
-    "fatalError": MessageLookupByLibrary.simpleMessage("Fatal error"),
+    "fatalError": MessageLookupByLibrary.simpleMessage("致命错误"),
     "filters": MessageLookupByLibrary.simpleMessage("过滤器"),
     "firebaseIsNotConfiguredPleaseReferToTheOfficialFirebase":
         MessageLookupByLibrary.simpleMessage(
-          "Firebase is not configured.\n Please refer to the official Firebase documentation for\n guidance on how to do so.",
+          "Firebase 未配置。\n请参考官方 Firebase 文档\n了解如何配置。",
         ),
     "firstName": MessageLookupByLibrary.simpleMessage("名"),
     "firstNameRequireText": MessageLookupByLibrary.simpleMessage("名是必填项"),
     "firstNameUpper": MessageLookupByLibrary.simpleMessage("名"),
-    "goBack": MessageLookupByLibrary.simpleMessage("Go back"),
-    "groupPermission": MessageLookupByLibrary.simpleMessage("Group Permission"),
+    "goBack": MessageLookupByLibrary.simpleMessage("返回"),
+    "groupPermission": MessageLookupByLibrary.simpleMessage("组权限"),
     "hideHomeDashboardToolbar": MessageLookupByLibrary.simpleMessage(
-      "Hide home dashboard toolbar",
+      "隐藏首页仪表板工具栏",
     ),
     "home": MessageLookupByLibrary.simpleMessage("主页"),
-    "homeDashboard": MessageLookupByLibrary.simpleMessage("Home dashboard"),
+    "homeDashboard": MessageLookupByLibrary.simpleMessage("首页仪表板"),
     "hours": MessageLookupByLibrary.simpleMessage("小时"),
-    "hybridUnitSystem": MessageLookupByLibrary.simpleMessage("Hybrid"),
+    "hybridUnitSystem": MessageLookupByLibrary.simpleMessage("混合"),
     "imNotARobot": MessageLookupByLibrary.simpleMessage("我不是机器人"),
-    "imperialUnitSystem": MessageLookupByLibrary.simpleMessage("Imperial"),
+    "imageSavedToGallery": MessageLookupByLibrary.simpleMessage("已保存到“图片库”"),
+    "imperialUnitSystem": MessageLookupByLibrary.simpleMessage("英制"),
     "inactive": MessageLookupByLibrary.simpleMessage("失活"),
     "inactiveUserAlreadyExists": MessageLookupByLibrary.simpleMessage(
       "未激活用户已存在",
@@ -422,24 +382,22 @@ class MessageLookup extends MessageLookupByLibrary {
       "已注册但邮箱未验证的用户。\n如果您希望重新发送验证邮件，请点击\"重新发送\"按钮。",
     ),
     "indeterminate": MessageLookupByLibrary.simpleMessage("不确定"),
-    "integration": MessageLookupByLibrary.simpleMessage("Integration"),
+    "integration": MessageLookupByLibrary.simpleMessage("集成"),
     "invalidPasswordLengthMessage": MessageLookupByLibrary.simpleMessage(
       "密码长度至少为6个字符",
     ),
-    "isRequiredText": MessageLookupByLibrary.simpleMessage("is required."),
+    "isRequiredText": MessageLookupByLibrary.simpleMessage("是必填项。"),
     "itLooksLikeYourPermissionsArentSufficientToCompleteThis":
-        MessageLookupByLibrary.simpleMessage(
-          "It looks like your permissions aren\'t sufficient to complete this operation",
-        ),
-    "job": MessageLookupByLibrary.simpleMessage("Job"),
+        MessageLookupByLibrary.simpleMessage("您的权限似乎不足以完成此操作"),
+    "job": MessageLookupByLibrary.simpleMessage("任务"),
     "label": MessageLookupByLibrary.simpleMessage("标签"),
-    "language": MessageLookupByLibrary.simpleMessage("Language"),
+    "language": MessageLookupByLibrary.simpleMessage("语言"),
     "lastName": MessageLookupByLibrary.simpleMessage("姓"),
     "lastNameRequireText": MessageLookupByLibrary.simpleMessage("姓是必填项"),
     "lastNameUpper": MessageLookupByLibrary.simpleMessage("姓"),
     "listIsEmptyText": MessageLookupByLibrary.simpleMessage("列表当前为空"),
     "login": MessageLookupByLibrary.simpleMessage("登录"),
-    "loginToApp": MessageLookupByLibrary.simpleMessage("Login to app"),
+    "loginToApp": MessageLookupByLibrary.simpleMessage("登录应用"),
     "loginToYourAccount": MessageLookupByLibrary.simpleMessage("登录你的账号"),
     "loginWith": MessageLookupByLibrary.simpleMessage("登录方式"),
     "logoDefaultValue": MessageLookupByLibrary.simpleMessage(
@@ -447,24 +405,22 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "logout": MessageLookupByLibrary.simpleMessage("登出"),
     "major": MessageLookupByLibrary.simpleMessage("重要"),
-    "markAllAsRead": MessageLookupByLibrary.simpleMessage("Mark all as read"),
-    "markAsRead": MessageLookupByLibrary.simpleMessage("Mark as read"),
-    "metricUnitSystem": MessageLookupByLibrary.simpleMessage("Metric"),
+    "markAllAsRead": MessageLookupByLibrary.simpleMessage("全部标记为已读"),
+    "markAsRead": MessageLookupByLibrary.simpleMessage("标记为已读"),
+    "markSelectedNotificationsAsRead": m16,
+    "metricUnitSystem": MessageLookupByLibrary.simpleMessage("公制"),
     "mfaProviderBackupCode": MessageLookupByLibrary.simpleMessage("备份码"),
     "mfaProviderEmail": MessageLookupByLibrary.simpleMessage("邮箱"),
     "mfaProviderSms": MessageLookupByLibrary.simpleMessage("短信"),
     "mfaProviderTopt": MessageLookupByLibrary.simpleMessage("身份验证器应用"),
     "minor": MessageLookupByLibrary.simpleMessage("次要"),
     "minutes": MessageLookupByLibrary.simpleMessage("分钟"),
-    "mobileApp": MessageLookupByLibrary.simpleMessage("Mobile app"),
-    "mobileAppBundle": MessageLookupByLibrary.simpleMessage(
-      "Mobile app bundle",
-    ),
+    "mobileApp": MessageLookupByLibrary.simpleMessage("移动应用"),
+    "mobileAppBundle": MessageLookupByLibrary.simpleMessage("移动应用包"),
     "mobileDashboardShouldBeConfiguredInDeviceProfile":
-        MessageLookupByLibrary.simpleMessage(
-          "Mobile dashboard should be configured in device profile!",
-        ),
+        MessageLookupByLibrary.simpleMessage("需要在设备配置文件中配置移动仪表板！"),
     "more": MessageLookupByLibrary.simpleMessage("更多"),
+    "nSelected": m17,
     "newPassword": MessageLookupByLibrary.simpleMessage("新密码"),
     "newPassword2": MessageLookupByLibrary.simpleMessage("确认新密码"),
     "newPassword2RequireText": MessageLookupByLibrary.simpleMessage("请再次输入新密码"),
@@ -472,16 +428,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "newUserText": MessageLookupByLibrary.simpleMessage("新用户?"),
     "next": MessageLookupByLibrary.simpleMessage("下一步"),
     "no": MessageLookupByLibrary.simpleMessage("否"),
-    "no2faProvidersFound": MessageLookupByLibrary.simpleMessage(
-      "No 2FA providers found",
-    ),
+    "no2faProvidersFound": MessageLookupByLibrary.simpleMessage("未找到双因素认证提供者"),
     "noAlarmsFound": MessageLookupByLibrary.simpleMessage("未找到告警"),
-    "noDashboardsFound": MessageLookupByLibrary.simpleMessage(
-      "No dashboards found",
-    ),
-    "noNotificationsFound": MessageLookupByLibrary.simpleMessage(
-      "No notifications found",
-    ),
+    "noDashboardsFound": MessageLookupByLibrary.simpleMessage("未找到仪表板"),
+    "noNotificationsFound": MessageLookupByLibrary.simpleMessage("未找到通知"),
     "noResultsFound": MessageLookupByLibrary.simpleMessage("未找到结果"),
     "northAmerica": MessageLookupByLibrary.simpleMessage("北美"),
     "northAmericaRegionShort": MessageLookupByLibrary.simpleMessage("北弗吉尼亚"),
@@ -491,17 +441,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "notificationRule": MessageLookupByLibrary.simpleMessage("通知规则"),
     "notificationTarget": MessageLookupByLibrary.simpleMessage("通知目标"),
     "notificationTemplate": MessageLookupByLibrary.simpleMessage("通知模板"),
-    "notifications": m13,
-    "oauth2Client": MessageLookupByLibrary.simpleMessage("Oauth2 client"),
-    "openAppSettings": MessageLookupByLibrary.simpleMessage(
-      "Open app settings",
-    ),
-    "openAppSettingsToGrantPermissionMessage": m14,
+    "notifications": m18,
+    "oauth2Client": MessageLookupByLibrary.simpleMessage("OAuth2 客户端"),
+    "openAppSettings": MessageLookupByLibrary.simpleMessage("打开应用设置"),
+    "openAppSettingsToGrantPermissionMessage": m19,
     "openSettingsAndGrantAccessToCameraToContinue":
         MessageLookupByLibrary.simpleMessage("打开设置并授予摄像头访问权限以继续"),
-    "openWifiSettings": MessageLookupByLibrary.simpleMessage(
-      "Open Wi-Fi settings",
-    ),
+    "openWifiSettings": MessageLookupByLibrary.simpleMessage("打开 Wi-Fi 设置"),
     "or": MessageLookupByLibrary.simpleMessage("或"),
     "originator": MessageLookupByLibrary.simpleMessage("发起者"),
     "otaPackage": MessageLookupByLibrary.simpleMessage("OTA包"),
@@ -520,47 +466,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "passwordSuccessNotification": MessageLookupByLibrary.simpleMessage(
       "密码修改成功",
     ),
-    "permissions": MessageLookupByLibrary.simpleMessage("Permissions"),
-    "permissionsNotEnoughMessage": m15,
+    "permissions": MessageLookupByLibrary.simpleMessage("权限"),
+    "permissionsNotEnoughMessage": m20,
     "phone": MessageLookupByLibrary.simpleMessage("电话"),
-    "phoneIsInvalid": MessageLookupByLibrary.simpleMessage("Phone is invalid"),
-    "phoneIsRequired": MessageLookupByLibrary.simpleMessage(
-      "Phone is required",
-    ),
+    "phoneIsInvalid": MessageLookupByLibrary.simpleMessage("手机号码无效"),
+    "phoneIsRequired": MessageLookupByLibrary.simpleMessage("手机号码是必填项"),
     "phoneNumberHelperText": MessageLookupByLibrary.simpleMessage(
-      "Phone Number in E.164 format, ex. +1201550123",
+      "E.164格式的电话号码，例如 +1201550123",
     ),
     "pleaseContactYourSystemAdministrator":
-        MessageLookupByLibrary.simpleMessage(
-          "Please contact your system administrator",
-        ),
+        MessageLookupByLibrary.simpleMessage("请联系您的系统管理员"),
     "pleaseFollowTheNextStepsToConnectYourPhoneTo":
-        MessageLookupByLibrary.simpleMessage(
-          "Please follow the next steps to connect your phone to device",
-        ),
+        MessageLookupByLibrary.simpleMessage("请按照以下步骤将您的手机连接到设备"),
     "pleaseFollowTheNextStepsToReconnectnyourPhoneToYour":
-        MessageLookupByLibrary.simpleMessage(
-          "Please follow the next steps to reconnect\nyour phone to your regular Wi-Fi",
-        ),
+        MessageLookupByLibrary.simpleMessage("请按照以下步骤重新将\n您的手机连接到常用 Wi-Fi"),
     "pleaseScanQrCodeOnYourDevice": MessageLookupByLibrary.simpleMessage(
-      "Please scan QR code on your device",
+      "请扫描您设备上的二维码",
     ),
-    "plusAlarmType": MessageLookupByLibrary.simpleMessage("+ Alarm type"),
-    "popTitle": m16,
+    "plusAlarmType": MessageLookupByLibrary.simpleMessage("+ 告警类型"),
+    "popTitle": m21,
     "postalCode": MessageLookupByLibrary.simpleMessage("邮编"),
     "privacyPolicy": MessageLookupByLibrary.simpleMessage("隐私政策"),
-    "profile": MessageLookupByLibrary.simpleMessage("Profile"),
+    "profile": MessageLookupByLibrary.simpleMessage("个人资料"),
     "profileSuccessNotification": MessageLookupByLibrary.simpleMessage(
       "个人资料更新成功",
     ),
     "provisionedSuccessfully": MessageLookupByLibrary.simpleMessage("设备配置成功"),
     "pushNotificationsAreNotConfiguredpleaseContactYourSystemAdministrator":
-        MessageLookupByLibrary.simpleMessage(
-          "Push notifications are not configured.\nPlease contact your system administrator.",
-        ),
+        MessageLookupByLibrary.simpleMessage("推送通知未配置。\n请联系您的系统管理员。"),
     "queue": MessageLookupByLibrary.simpleMessage("队列"),
-    "queueStats": MessageLookupByLibrary.simpleMessage("Queue stats"),
-    "ready": MessageLookupByLibrary.simpleMessage("Ready"),
+    "queueStats": MessageLookupByLibrary.simpleMessage("队列统计"),
+    "ready": MessageLookupByLibrary.simpleMessage("准备好"),
     "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
     "repeatPassword": MessageLookupByLibrary.simpleMessage("重复输入密码"),
     "requestPasswordReset": MessageLookupByLibrary.simpleMessage("请求重置密码"),
@@ -569,51 +505,46 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "resend": MessageLookupByLibrary.simpleMessage("重新发送"),
     "resendCode": MessageLookupByLibrary.simpleMessage("重新发送验证码"),
-    "resendCodeWait": m17,
-    "reset": MessageLookupByLibrary.simpleMessage("Reset"),
-    "retry": MessageLookupByLibrary.simpleMessage("Retry"),
+    "resendCodeWait": m22,
+    "reset": MessageLookupByLibrary.simpleMessage("重置"),
+    "retry": MessageLookupByLibrary.simpleMessage("重试"),
     "returnToDashboard": MessageLookupByLibrary.simpleMessage("返回仪表板"),
     "returnToTheAppAndTapReadyButton": MessageLookupByLibrary.simpleMessage(
-      "Return to the app and tap Ready button",
+      "返回应用并点击准备好按钮",
     ),
-    "role": MessageLookupByLibrary.simpleMessage("Role"),
-    "routeNotDefined": m18,
+    "role": MessageLookupByLibrary.simpleMessage("角色"),
+    "routeNotDefined": m23,
     "rpc": MessageLookupByLibrary.simpleMessage("RPC"),
     "ruleChain": MessageLookupByLibrary.simpleMessage("规则链"),
     "ruleNode": MessageLookupByLibrary.simpleMessage("规则节点"),
     "scanACode": MessageLookupByLibrary.simpleMessage("扫描代码"),
     "scanQrCode": MessageLookupByLibrary.simpleMessage("扫描二维码"),
-    "schedulerEvent": MessageLookupByLibrary.simpleMessage("Scheduler Event"),
-    "search": MessageLookupByLibrary.simpleMessage("Search"),
+    "schedulerEvent": MessageLookupByLibrary.simpleMessage("调度事件"),
+    "search": MessageLookupByLibrary.simpleMessage("搜索"),
     "searchResults": MessageLookupByLibrary.simpleMessage("搜索结果"),
-    "searchUsers": m19,
+    "searchUsers": m24,
     "seconds": MessageLookupByLibrary.simpleMessage("秒"),
-    "security": MessageLookupByLibrary.simpleMessage("Security"),
-    "selectCountry": MessageLookupByLibrary.simpleMessage("Select country"),
+    "security": MessageLookupByLibrary.simpleMessage("安全"),
+    "selectAll": MessageLookupByLibrary.simpleMessage("全选已加载"),
+    "selectCountry": MessageLookupByLibrary.simpleMessage("选择国家"),
     "selectRegion": MessageLookupByLibrary.simpleMessage("选择地区"),
     "selectUser": MessageLookupByLibrary.simpleMessage("选择用户"),
     "selectWayToVerify": MessageLookupByLibrary.simpleMessage("选择验证方式"),
-    "selectWifiNetwork": MessageLookupByLibrary.simpleMessage(
-      "Select Wi-Fi network",
-    ),
-    "sendCode": MessageLookupByLibrary.simpleMessage("Send code"),
+    "selectWifiNetwork": MessageLookupByLibrary.simpleMessage("选择 Wi-Fi 网络"),
+    "sendCode": MessageLookupByLibrary.simpleMessage("发送验证码"),
     "sendingWifiCredentials": MessageLookupByLibrary.simpleMessage(
       "发送 Wi-Fi 凭据",
     ),
-    "setUpAVerificationMethod": MessageLookupByLibrary.simpleMessage(
-      "Set up a verification method",
-    ),
+    "setUpAVerificationMethod": MessageLookupByLibrary.simpleMessage("设置验证方式"),
     "setUpAVerificationMethodToContinueWithYourLogin":
-        MessageLookupByLibrary.simpleMessage(
-          "Set up a verification method to continue with your login",
-        ),
+        MessageLookupByLibrary.simpleMessage("设置验证方式以继续登录"),
     "severity": MessageLookupByLibrary.simpleMessage("严重程度"),
     "signIn": MessageLookupByLibrary.simpleMessage("登录"),
     "signUp": MessageLookupByLibrary.simpleMessage("注册"),
-    "smsAuthDescription": m20,
+    "smsAuthDescription": m25,
     "smsAuthPlaceholder": MessageLookupByLibrary.simpleMessage("短信验证码"),
     "smsSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will be prompted to enter the security code that will be sent to the phone number",
+      "下次登录时，您将需要输入发送到手机号码的安全码",
     ),
     "somethingWentWrong": MessageLookupByLibrary.simpleMessage("出现问题"),
     "somethingWentWrongRollback": MessageLookupByLibrary.simpleMessage(
@@ -624,15 +555,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "status": MessageLookupByLibrary.simpleMessage("状态"),
     "systemAdministrator": MessageLookupByLibrary.simpleMessage("系统管理员"),
     "tbResource": MessageLookupByLibrary.simpleMessage("资源"),
-    "tenant": MessageLookupByLibrary.simpleMessage("Tenant"),
+    "tenant": MessageLookupByLibrary.simpleMessage("租户"),
     "tenantAdministrator": MessageLookupByLibrary.simpleMessage("租户管理员"),
-    "tenantProfile": MessageLookupByLibrary.simpleMessage("Tenant profile"),
+    "tenantProfile": MessageLookupByLibrary.simpleMessage("租户配置文件"),
     "termsOfUse": MessageLookupByLibrary.simpleMessage("使用条款"),
-    "thisActionCannotBeUndone": MessageLookupByLibrary.simpleMessage(
-      "This action cannot be undone",
-    ),
+    "thisActionCannotBeUndone": MessageLookupByLibrary.simpleMessage("此操作无法撤消"),
     "thisWillMakeYourAccountLessSecure": MessageLookupByLibrary.simpleMessage(
-      "This will make your account less secure",
+      "这将降低您账户的安全性",
     ),
     "title": MessageLookupByLibrary.simpleMessage("标题"),
     "toggleCamera": MessageLookupByLibrary.simpleMessage("切换摄像头"),
@@ -642,39 +571,35 @@ class MessageLookup extends MessageLookupByLibrary {
       "请输入来自您身份验证器应用的安全码。",
     ),
     "totpSetupSuccessDescription": MessageLookupByLibrary.simpleMessage(
-      "The next time you log in, you will need to provide a two-factor authentication code",
+      "下次登录时，您需要提供双因素认证码",
     ),
     "tryAgain": MessageLookupByLibrary.simpleMessage("再试一次"),
     "tryAnotherWay": MessageLookupByLibrary.simpleMessage("尝试其他方式"),
     "tryRefiningYourQuery": MessageLookupByLibrary.simpleMessage("请尝试优化您的查询"),
     "tryRefreshing": MessageLookupByLibrary.simpleMessage("请尝试刷新"),
-    "twofactorAuthentication": MessageLookupByLibrary.simpleMessage(
-      "Two-factor authentication",
-    ),
+    "twofactorAuthentication": MessageLookupByLibrary.simpleMessage("双因素认证"),
     "twofactorAuthenticationIsRequired": MessageLookupByLibrary.simpleMessage(
-      "Two-factor authentication is required",
+      "需要双因素认证",
     ),
     "twofactorAuthenticationProtectsYourAccountFromUnauthorizedAccessAllYou":
         MessageLookupByLibrary.simpleMessage(
-          "Two-factor authentication protects your account from unauthorized access. All you have to do is enter a security code when you log in.",
+          "双因素认证保护您的账户免受未授权访问。您只需在登录时输入安全码。",
         ),
     "type": MessageLookupByLibrary.simpleMessage("类型"),
-    "unableConnectToDevice": MessageLookupByLibrary.simpleMessage(
-      "Unable connect to device",
-    ),
-    "unableConnectToWifiBecauseNetworksWasntFoundByDevice": m21,
+    "unableConnectToDevice": MessageLookupByLibrary.simpleMessage("无法连接到设备"),
+    "unableConnectToWifiBecauseNetworksWasntFoundByDevice": m26,
     "unableToUseCamera": MessageLookupByLibrary.simpleMessage("无法使用摄像头"),
     "unacknowledged": MessageLookupByLibrary.simpleMessage("未确认"),
     "unassigned": MessageLookupByLibrary.simpleMessage("未分配"),
-    "unitSystem": MessageLookupByLibrary.simpleMessage("Unit system"),
-    "unknownError": MessageLookupByLibrary.simpleMessage("Unknown error."),
-    "unread": MessageLookupByLibrary.simpleMessage("Unread"),
-    "unsavedChanges": MessageLookupByLibrary.simpleMessage("Unsaved changes"),
-    "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "unitSystem": MessageLookupByLibrary.simpleMessage("单位制"),
+    "unknownError": MessageLookupByLibrary.simpleMessage("未知错误。"),
+    "unread": MessageLookupByLibrary.simpleMessage("未读"),
+    "unsavedChanges": MessageLookupByLibrary.simpleMessage("未保存的更改"),
+    "update": MessageLookupByLibrary.simpleMessage("更新"),
     "updateRequired": MessageLookupByLibrary.simpleMessage("需要更新"),
-    "updateTo": m22,
-    "url": MessageLookupByLibrary.simpleMessage("Url"),
-    "user": MessageLookupByLibrary.simpleMessage("User"),
+    "updateTo": m27,
+    "url": MessageLookupByLibrary.simpleMessage("链接"),
+    "user": MessageLookupByLibrary.simpleMessage("用户"),
     "username": MessageLookupByLibrary.simpleMessage("用户名"),
     "users": MessageLookupByLibrary.simpleMessage("用户"),
     "verificationCodeIncorrect": MessageLookupByLibrary.simpleMessage("验证码不正确"),
@@ -682,28 +607,22 @@ class MessageLookup extends MessageLookupByLibrary {
     "verificationCodeManyRequest": MessageLookupByLibrary.simpleMessage(
       "验证码请求过于频繁",
     ),
-    "verificationRequired": MessageLookupByLibrary.simpleMessage(
-      "Verification required",
-    ),
+    "verificationRequired": MessageLookupByLibrary.simpleMessage("需要验证"),
     "verifyYourIdentity": MessageLookupByLibrary.simpleMessage("验证您的身份"),
     "viewAll": MessageLookupByLibrary.simpleMessage("查看全部"),
     "viewDashboard": MessageLookupByLibrary.simpleMessage("查看仪表板"),
     "warning": MessageLookupByLibrary.simpleMessage("警告"),
     "widgetType": MessageLookupByLibrary.simpleMessage("组件类型"),
     "widgetsBundle": MessageLookupByLibrary.simpleMessage("组件包"),
-    "wifiHelpMessage": m23,
+    "wifiHelpMessage": m28,
     "wifiPassword": MessageLookupByLibrary.simpleMessage("Wi-Fi 密码"),
-    "wifiPasswordMessage": m24,
+    "wifiPasswordMessage": m29,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
-    "yesDeactivate": MessageLookupByLibrary.simpleMessage("Yes, deactivate"),
-    "yesDiscard": MessageLookupByLibrary.simpleMessage("Yes, discard"),
+    "yesDeactivate": MessageLookupByLibrary.simpleMessage("是的，停用"),
+    "yesDiscard": MessageLookupByLibrary.simpleMessage("是的，放弃"),
     "youDontHavePermissionsToPerformThisOperation":
-        MessageLookupByLibrary.simpleMessage(
-          "You don\'t have permissions to perform this operation!",
-        ),
+        MessageLookupByLibrary.simpleMessage("您没有执行此操作的权限！"),
     "youHaveUnsavedChangesAreYouSureYouWantTo":
-        MessageLookupByLibrary.simpleMessage(
-          "You have unsaved changes. Are you sure you want to leave this page?",
-        ),
+        MessageLookupByLibrary.simpleMessage("您有未保存的更改。确定要离开此页面吗？"),
   };
 }

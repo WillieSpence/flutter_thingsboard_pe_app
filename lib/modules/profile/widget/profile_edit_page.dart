@@ -20,6 +20,7 @@ import 'package:thingsboard_app/modules/profile/widget/tb_bottom_sheet_builder.d
 import 'package:thingsboard_app/modules/profile/widget/tb_country_picker.dart';
 import 'package:thingsboard_app/modules/profile/widget/tb_drop_down_text_field.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
+import 'package:thingsboard_app/utils/services/custom_translation/i_custom_translation_service.dart';
 import 'package:thingsboard_app/utils/services/overlay_service/i_overlay_service.dart';
 import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/ui/visibility_widget.dart';
@@ -35,6 +36,9 @@ class ProfileEditPage extends HookConsumerWidget {
     final loading = useState(false);
     final allLanguages = useMemoized(() => getAllLanguages(context));
     final canPop = useState(true);
+
+    final initialLocale = useMemoized(() => getCurrentLocale(context, user));
+    final selectedLocale = useState<Locale>(initialLocale);
 
     final form = useMemoized(
       () => FormGroup({
@@ -97,7 +101,16 @@ class ProfileEditPage extends HookConsumerWidget {
         initialValue: PhoneNumber(isoCode: IsoCode.fromJson('US'), nsn: ''),
       ),
     );
-    return Scaffold(
+    return PopScope(
+      canPop: canPop.value,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final cancel = await onCancelEditing(context);
+        if (cancel && context.mounted) {
+          await _setLanguageAndNavigate(context, initialLocale, context.pop);
+        }
+      },
+      child: Scaffold(
       appBar: TbAppBar(
         title: Text(
           '${S.of(context).edit} ${S.of(context).profile.toLowerCase()}',
@@ -107,7 +120,7 @@ class ProfileEditPage extends HookConsumerWidget {
             if (!canPop.value) {
               final cancel = await onCancelEditing(context);
               if (cancel && context.mounted) {
-                context.pop();
+                await _setLanguageAndNavigate(context, initialLocale, context.pop);
               }
             } else {
               if (context.mounted) {
@@ -253,7 +266,12 @@ class ProfileEditPage extends HookConsumerWidget {
                                     child: TbDropDownTextField<Locale>(
                                       formControlName: 'additionalInfo.lang',
                                       label: S.of(context).language,
-                                      onSelected: (val) => S.load(val!),
+                                      onSelected: (val) async {
+                                        await S.load(val!);
+                                        if (context.mounted) {
+                                          selectedLocale.value = val;
+                                        }
+                                      },
                                       selectedItemBuilder:
                                           (val) => getLocalizedLanguageName(
                                             val!,
@@ -320,7 +338,9 @@ class ProfileEditPage extends HookConsumerWidget {
                                     child: TbDropDownTextField<DashboardInfo>(
                                       formControlName:
                                           'additionalInfo.homeDashboardId',
-                                      selectedItemBuilder: (val) => val?.title,
+                                      selectedItemBuilder: (val) =>
+                                          getIt<ICustomTranslationService>()
+                                              .translate(val?.title),
                                       hint: S.of(context).homeDashboard,
 
                                       bottomSheetBuilder:
@@ -336,7 +356,10 @@ class ProfileEditPage extends HookConsumerWidget {
                                                 >(),
                                             title: S.of(context).homeDashboard,
                                             listTitleBuilder:
-                                                (context, item) => item.title,
+                                                (context, item) =>
+                                                    getIt<
+                                                      ICustomTranslationService
+                                                    >().translate(item.title),
                                           ),
                                     ),
                                   ),
@@ -395,7 +418,7 @@ class ProfileEditPage extends HookConsumerWidget {
                                 canPop.value
                                     ? null
                                     : () async {
-                                      await onDiscardPressed(context);
+                                      await onDiscardPressed(context, initialLocale);
                                     },
                             child: Text(S.of(context).discardChanges),
                           ),
@@ -412,6 +435,7 @@ class ProfileEditPage extends HookConsumerWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }
@@ -439,7 +463,7 @@ class ProfileEditPage extends HookConsumerWidget {
     }
   }
 
-  Future<void> onDiscardPressed(BuildContext context) async {
+  Future<void> onDiscardPressed(BuildContext context, Locale initialLocale) async {
     final original = S.of(context).discardChanges;
     String titleString = original;
     if (original.isNotEmpty) {
@@ -477,7 +501,11 @@ class ProfileEditPage extends HookConsumerWidget {
           ),
     );
     if (discard == true && context.mounted) {
-      context.pushReplacement('/profile/edit');
+      await _setLanguageAndNavigate(
+        context,
+        initialLocale,
+        () => context.pushReplacement('/profile/edit'),
+      );
     }
   }
 }
@@ -544,4 +572,13 @@ Future<bool> onCancelEditing(BuildContext context) async {
 
 String getCountryDisplayName(Country? country) {
   return '${country?.flagEmoji} ${country?.name}';
+}
+
+Future<void> _setLanguageAndNavigate(
+  BuildContext context,
+  Locale locale,
+  VoidCallback navigate,
+) async {
+  await S.load(locale);
+  if (context.mounted) navigate();
 }

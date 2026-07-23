@@ -26,9 +26,9 @@ class EntityCardSettings {
 mixin EntitiesBase<T, P> {
   final entityDateFormat = DateFormat('yyyy-MM-dd');
 
-  String get title;
+  String title(BuildContext context);
 
-  String get noItemsFoundText;
+  String noItemsFoundText(BuildContext context);
 
   Future<PageData<T>> fetchEntities(P pageKey, {bool refresh = false});
 
@@ -339,7 +339,7 @@ abstract class BaseEntitiesState<T, P> extends ConsumerState<BaseEntitiesWidget<
 
   Widget noItemsFoundIndicatorBuilder(BuildContext context) {
     return FirstPageExceptionIndicator(
-      title: widget.noItemsFoundText,
+      title: widget.noItemsFoundText(context),
       message: S.of(context).listIsEmptyText,
       onTryAgain: widget.searchMode ? null : () => pagingController.refresh(),
     );

@@ -33,7 +33,7 @@ class _AuditLogsPageState extends State<AuditLogsPage> {
       );
     } else {
       appBar = TbAppBar(
-        title: Text(auditLogsList.title),
+        title: Text(auditLogsList.title(context)),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),

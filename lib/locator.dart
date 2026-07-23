@@ -6,6 +6,8 @@ import 'package:thingsboard_app/core/usecases/user_details_usecase.dart';
 import 'package:thingsboard_app/thingsboard_client.dart' hide UserService;
 import 'package:thingsboard_app/utils/services/communication/communication_service.dart';
 import 'package:thingsboard_app/utils/services/communication/i_communication_service.dart';
+import 'package:thingsboard_app/utils/services/custom_translation/custom_translation_service.dart';
+import 'package:thingsboard_app/utils/services/custom_translation/i_custom_translation_service.dart';
 import 'package:thingsboard_app/utils/services/device_info/device_info_service.dart';
 import 'package:thingsboard_app/utils/services/device_info/i_device_info_service.dart';
 import 'package:thingsboard_app/utils/services/endpoint/endpoint_service.dart';
@@ -26,6 +28,8 @@ import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_ser
 import 'package:thingsboard_app/utils/services/tb_client_service/tb_client_service.dart';
 import 'package:thingsboard_app/utils/services/permission/i_permission_service.dart';
 import 'package:thingsboard_app/utils/services/permission/permission_service.dart';
+import 'package:thingsboard_app/utils/services/tb_image_gallery_service/i_tb_image_gallery_service.dart';
+import 'package:thingsboard_app/utils/services/tb_image_gallery_service/tb_image_gallery_service.dart';
 import 'package:thingsboard_app/utils/services/user/i_user_service.dart';
 import 'package:thingsboard_app/utils/services/user/user_service.dart';
 import 'package:thingsboard_app/utils/services/version_service/i_version_service.dart';
@@ -51,6 +55,7 @@ Future<void> setUpRootDependencies() async {
       () => EndpointService(databaseService: getIt()),
     )
     ..registerLazySingleton<IOverlayService>(() => OverlayService())
+    ..registerLazySingleton<ITbImageGalleryService>(() => TbImageGalleryService())
       ..registerLazySingleton<ThingsboardAppRouter>(() => ThingsboardAppRouter(overlayService: getIt()))
     ..registerLazySingleton<IDeviceInfoService>(() => deviceInfoService)
     // ..registerLazySingleton(() => TbContext())
@@ -74,6 +79,9 @@ Future<void> setUpRootDependencies() async {
       () => PermissionService(),
     )
     ..registerLazySingleton<ILayoutService>(() => LayoutService(getIt()))
+    ..registerLazySingleton<ICustomTranslationService>(
+      () => TbCustomTranslationService(),
+    )
     ..registerFactory(() => const UserDetailsUseCase());
   await getIt.getAsync<ITbClientService>();
 }

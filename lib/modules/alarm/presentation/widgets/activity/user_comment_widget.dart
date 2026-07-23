@@ -163,7 +163,7 @@ class _UserCommentState extends State<UserCommentWidget> {
                 ),
                 const SizedBox(width: 4),
                 Visibility(
-                  visible: widget.activity.comment.edited == true,
+                  visible: (widget.activity.comment as AlarmCommentJsonNode).edited,
                   child: Text(
                     ' ${S.of(context).edited}',
                     style: TbTextStyles.bodyMedium.copyWith(
@@ -174,7 +174,7 @@ class _UserCommentState extends State<UserCommentWidget> {
               ],
             ),
             Text(
-              widget.activity.comment.toString(),
+              (widget.activity.comment as AlarmCommentJsonNode).text,
               style: TbTextStyles.bodyLarge.copyWith(
                 color: Colors.black.withValues(alpha: .54),
               ),

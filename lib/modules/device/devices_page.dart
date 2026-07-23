@@ -22,7 +22,7 @@ class _DevicesPageState extends State<DevicesPage> {
       _pageLinkController,
     );
     return Scaffold(
-      appBar: TbAppBar(title: Text(deviceProfilesList.title)),
+      appBar: TbAppBar(title: Text(deviceProfilesList.title(context))),
       body: deviceProfilesList,
     );
   }

@@ -31,7 +31,7 @@ class _TenantsPageState extends State<TenantsPage> {
       );
     } else {
       appBar = TbAppBar(
-        title: Text(tenantsList.title),
+        title: Text(tenantsList.title(context)),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),

@@ -1,21 +1,33 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
+import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/utils/services/mobile_actions/mobile_action.dart';
 import 'package:thingsboard_app/utils/services/mobile_actions/mobile_action_result.dart';
 import 'package:thingsboard_app/utils/services/mobile_actions/widget_mobile_action_result.dart';
 import 'package:thingsboard_app/utils/services/mobile_actions/widget_mobile_action_type.dart';
+import 'package:thingsboard_app/utils/services/tb_image_gallery_service/i_tb_image_gallery_service.dart';
 
 class TakePictureFromGalleryAction extends MobileAction {
   ImageSource get imageSource => ImageSource.gallery;
+
   @override
   Future<WidgetMobileActionResult<MobileActionResult>> execute(
-      List args, InAppWebViewController controller,) {
-    return _takePicture(imageSource);
+    List args,
+    InAppWebViewController controller,
+  ) {
+    final saveToGallery = args.length > 1 && args[1] == true;
+    return _takePicture(imageSource, saveToGallery: saveToGallery);
   }
 
-  Future<WidgetMobileActionResult> _takePicture(ImageSource source) async {
+  Future<WidgetMobileActionResult> _takePicture(
+    ImageSource source, {
+    required bool saveToGallery,
+  }) async {
     try {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(source: source);
@@ -24,6 +36,21 @@ class TakePictureFromGalleryAction extends MobileAction {
         if (mimeType != null) {
           final image = File(pickedFile.path);
           final List<int> imageBytes = await image.readAsBytes();
+
+          if (saveToGallery) {
+            final title = source == ImageSource.camera
+                ? 'tb_photo_${DateTime.now().millisecondsSinceEpoch}.${extensionFromMime(mimeType)}'
+                : pickedFile.name;
+
+            unawaited(
+              getIt<ITbImageGalleryService>().uploadImage(
+                Uint8List.fromList(imageBytes),
+                title: title,
+                mimeType: mimeType,
+              ),
+            );
+          }
+
           final String imageUrl =
               UriData.fromBytes(imageBytes, mimeType: mimeType).toString();
           return WidgetMobileActionResult.successResult(

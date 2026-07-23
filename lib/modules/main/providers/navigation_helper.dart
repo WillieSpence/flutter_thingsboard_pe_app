@@ -1,12 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/modules/main/model/navigation_item_data.dart';
 import 'package:thingsboard_app/modules/notification/widgets/notification_icon.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 
 class NavigationHelper {
+  static String getLocalizedTitle(
+    BuildContext context,
+    String? id,
+    String path,
+    String fallbackTitle,
+  ) {
+    final s = S.of(context);
+    switch (id) {
+      case 'home':
+        return s.home;
+      case 'alarms':
+        return s.alarms(2);
+      case 'devices':
+        return s.devices(2);
+      case 'customers':
+        return s.customers;
+      case 'assets':
+        return s.assets;
+      case 'audit_logs':
+        return s.auditLogs;
+      case 'notifications':
+        return s.notifications(2);
+      case 'device_list':
+        return s.deviceList;
+      case 'dashboards':
+        return s.dashboards(2);
+    }
+    if (path == '/more') return s.more;
+    if (path.contains('/profile')) return s.profile;
+    return fallbackTitle;
+  }
+
 static  int? getCurrentIndexFromPath(String path, List<NavigationItemData> items) {
- 
+
     for (int i = 0; i < items.length; i++) {
       if (items[i].path == path) {
         return i;

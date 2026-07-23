@@ -12,7 +12,13 @@
   "more": "More",
   "customers": "Customers",
   "assets": "Assets",
+  "tenants": "Tenants",
   "auditLogs": "Audit Logs",
+  "noCustomersFound": "No customers found",
+  "noAssetsFound": "No assets found",
+  "noTenantsFound": "No tenants found",
+  "noDevicesFound": "No devices found",
+  "noAuditLogsFound": "No audit logs found",
   "logout": "Log Out",
   "login": "Log In",
   "logoDefaultValue": "ThingsBoard Logo",
@@ -447,6 +453,40 @@
   "phoneIsInvalid": "Phone is invalid",
   "addVerificationMethod": "Add verification method",
   "areYouSureYouWantToExit": "Are you sure you want to exit?",
-  "confirmToCloseTheApp": "Confirm to close the app"
-
+  "confirmToCloseTheApp": "Confirm to close the app",
+  "imageSavedToGallery": "Saved to platform 'Image gallery'",
+  "failedToSaveImage": "Failed to save image",
+  "nSelected": "{count} selected",
+  "@nSelected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "selectAll": "Select all loaded",
+  "failedToPerformOperation": "{count, plural, =1{1 operation failed} other{{count} operations failed}}",
+  "@failedToPerformOperation": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "deleteSelectedNotifications": "{count, plural, =1{Delete 1 notification?} other{Delete {count} notifications?}}",
+  "@deleteSelectedNotifications": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "markSelectedNotificationsAsRead": "{count, plural, =1{Mark 1 notification as read?} other{Mark {count} notifications as read?}}",
+  "@markSelectedNotificationsAsRead": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

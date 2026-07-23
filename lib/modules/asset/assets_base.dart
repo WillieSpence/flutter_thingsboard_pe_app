@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:thingsboard_app/config/routes/router.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
 import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 
 mixin AssetsBase on EntitiesBase<Asset, PageLink> {
   @override
-  String get title => 'Assets';
+  String title(BuildContext context) => S.of(context).assets;
 
   @override
-  String get noItemsFoundText => 'No assets found';
+  String noItemsFoundText(BuildContext context) =>
+      S.of(context).noAssetsFound;
   final tbClient = getIt<ITbClientService>().client;
   @override
   Future<PageData<Asset>> fetchEntities(
@@ -65,17 +67,15 @@ mixin AssetsBase on EntitiesBase<Asset, PageLink> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: FittedBox(
-                              fit: BoxFit.fitWidth,
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                asset.name,
-                                style: const TextStyle(
-                                  color: Color(0xFF282828),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  height: 20 / 14,
-                                ),
+                            child: Text(
+                              asset.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Color(0xFF282828),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                height: 20 / 14,
                               ),
                             ),
                           ),
@@ -94,6 +94,22 @@ mixin AssetsBase on EntitiesBase<Asset, PageLink> {
                           ),
                         ],
                       ),
+                      if (asset.label?.isNotEmpty == true)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            asset.label!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFFAFAFAF),
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              fontStyle: FontStyle.italic,
+                              height: 16 / 12,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 4),
                       Text(
                         asset.type,
@@ -132,19 +148,33 @@ mixin AssetsBase on EntitiesBase<Asset, PageLink> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FittedBox(
-                        fit: BoxFit.fitWidth,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          asset.name,
-                          style: const TextStyle(
-                            color: Color(0xFF282828),
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            height: 1.7,
-                          ),
+                      Text(
+                        asset.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF282828),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.7,
                         ),
                       ),
+                      if (asset.label?.isNotEmpty == true)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            asset.label!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Color(0xFFAFAFAF),
+                              fontSize: 12,
+                              fontWeight: FontWeight.normal,
+                              fontStyle: FontStyle.italic,
+                              height: 16 / 12,
+                            ),
+                          ),
+                        ),
                       Text(
                         asset.type,
                         style: const TextStyle(

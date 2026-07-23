@@ -5,6 +5,7 @@ import 'package:thingsboard_app/modules/dashboard/di/dashboards_di.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/controller/dashboard_controller.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/view/dashboard_permission_error_view.dart';
 import 'package:thingsboard_app/modules/dashboard/presentation/widgets/dashboard_widget.dart';
+import 'package:thingsboard_app/utils/services/custom_translation/i_custom_translation_service.dart';
 import 'package:thingsboard_app/utils/services/endpoint/i_endpoint_service.dart';
 import 'package:thingsboard_app/utils/services/tb_client_service/i_tb_client_service.dart';
 import 'package:thingsboard_app/utils/services/permission/i_permission_service.dart';
@@ -114,7 +115,10 @@ class _FullscreenDashboardPageState extends State<FullscreenDashboardPage> {
     DashboardsDi.init(diKey, tbClient: getIt<ITbClientService>().client);
     havePermission = getIt<IPermissionService>()
         .haveViewDashboardPermission();
-    dashboardTitleValue = ValueNotifier(widget._dashboardTitle ?? 'Dashboard');
+    dashboardTitleValue = ValueNotifier(
+      getIt<ICustomTranslationService>()
+          .translate(widget._dashboardTitle ?? 'Dashboard'),
+    );
   }
 
   @override

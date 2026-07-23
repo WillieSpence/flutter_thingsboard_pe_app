@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:thingsboard_app/config/routes/v2/routes_config/routes/audit_log_routes.dart';
 import 'package:thingsboard_app/core/context/tb_context.dart';
 import 'package:thingsboard_app/core/entity/entities_base.dart';
+import 'package:thingsboard_app/generated/l10n.dart';
 import 'package:thingsboard_app/locator.dart';
 import 'package:thingsboard_app/modules/audit_log/audit_log_details_page.dart';
 import 'package:thingsboard_app/thingsboard_client.dart';
@@ -13,10 +14,11 @@ import 'package:thingsboard_app/utils/translation_utils.dart';
 
 mixin AuditLogsBase on EntitiesBase<AuditLog, TimePageLink> {
   @override
-  String get title => 'Audit Logs';
+  String title(BuildContext context) => S.of(context).auditLogs;
 
   @override
-  String get noItemsFoundText => 'No audit logs found';
+  String noItemsFoundText(BuildContext context) =>
+      S.of(context).noAuditLogsFound;
   final tbClient = getIt<ITbClientService>().client;
   @override
   Future<PageData<AuditLog>> fetchEntities(

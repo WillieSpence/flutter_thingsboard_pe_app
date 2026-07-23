@@ -20,10 +20,11 @@ mixin DeviceProfilesBase on EntitiesBase<DeviceProfileInfo, PageLink> {
   final RefreshDeviceCounts refreshDeviceCounts = RefreshDeviceCounts();
 
   @override
-  String get title => 'Devices';
+  String title(BuildContext context) => S.of(context).devices(2);
 
   @override
-  String get noItemsFoundText => 'No devices found';
+  String noItemsFoundText(BuildContext context) =>
+      S.of(context).noDevicesFound;
   final tbClient = getIt<ITbClientService>().client;
   @override
   Future<PageData<DeviceProfileInfo>> fetchEntities(

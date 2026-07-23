@@ -134,7 +134,7 @@ class _EntitiesListWidgetState<T, P>
                     StreamBuilder<PageData<T>?>(
                       stream: _entitiesStreamController.stream,
                       builder: (context, snapshot) {
-                        var title = widget.title;
+                        var title = widget.title(context);
                         if (snapshot.hasData) {
                           final data = snapshot.data;
                           title += ' (${data!.totalElements})';
@@ -202,7 +202,7 @@ class _EntitiesListWidgetState<T, P>
       ),
       child: Center(
         child: Text(
-          widget.noItemsFoundText,
+          widget.noItemsFoundText(context),
           style: const TextStyle(color: Color(0xFFAFAFAF), fontSize: 14),
         ),
       ),

@@ -31,7 +31,7 @@ class _CustomersPageState extends State<CustomersPage> {
       );
     } else {
       appBar = TbAppBar(
-        title: Text(customersList.title),
+        title: Text(customersList.title(context)),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),

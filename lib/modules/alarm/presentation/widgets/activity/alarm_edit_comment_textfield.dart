@@ -78,7 +78,7 @@ class _AlarmEditCommentState extends State<AlarmEditCommentTextField> {
 
   @override
   void initState() {
-    textController.text = widget.commentToEdit.comment.toString();
+    textController.text = (widget.commentToEdit.comment as AlarmCommentJsonNode).text;
     super.initState();
   }
 
