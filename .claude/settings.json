@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(flutter doctor *)",
+      "Bash(fvm --version)",
+      "Bash(fvm list *)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(mdfind -name 'flutter' -onlyin ~)",
+      "Bash(grep -E '/bin/flutter$')",
+      "Bash(fvm flutter *)",
+      "Bash(sed 's/=.*\\\\//=…\\\\//')",
+      "Bash(sed -n '88,100p' android/app/build.gradle*)",
+      "Bash(xcrun simctl *)",
+      "Bash(echo \"exit $?\")",
+      "Bash(:)",
+      "Bash(grep -vE '^\\\\s*$' /private/tmp/claude-501/-Users-williespence-Git-flutter-thingsboard-pe-app/460abf54-b9aa-4b8b-9176-f52b815da466/scratchpad/aab.log)"
+    ]
+  }
+}
