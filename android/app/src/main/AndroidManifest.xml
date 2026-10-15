@@ -17,8 +17,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <!-- Live GPS tracking in background (geolocator foreground service) -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- OmniThings: live GPS tracking not used; strip so Play doesn't require a foreground-service declaration -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" tools:node="remove" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" tools:node="remove" />
 
     <!-- Permissions options for the provisioning -->
     <uses-permission
@@ -57,6 +58,11 @@
         android:label="${appLabel}"
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true">
+        <!-- OmniThings: drop geolocator's location-type foreground service (live tracking unused);
+             one-shot getCurrentPosition does not need it -->
+        <service
+            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+            tools:node="remove" />
         <!-- Set custom default icon. This is used when no icon is set for incoming notification
         messages.
         See README(https://goo.gl/l4GJaQ) for more. -->
